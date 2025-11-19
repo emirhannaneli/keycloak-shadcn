@@ -9,8 +9,7 @@ import {
     Link2, 
     Monitor, 
     Grid, 
-    FileText,
-    Package
+    FileText
 } from "lucide-react";
 
 interface AccountSidebarProps {
@@ -26,43 +25,43 @@ export function AccountSidebar({ kcContext, currentPageId, onItemClick }: Accoun
     const menuItems = [
         {
             id: "account.ftl",
-            label: i18nToString(i18n, "accountTitleHtml") || i18nToString(i18n, "accountTitle") || "Account",
+            label: i18nToString(i18n, "accountTitleHtml" as any) || i18nToString(i18n, "accountTitle" as any) || "Account",
             icon: User,
             href: url.accountUrl,
         },
         {
             id: "password.ftl",
-            label: i18nToString(i18n, "passwordTitleHtml") || i18nToString(i18n, "passwordTitle") || "Password",
+            label: i18nToString(i18n, "passwordTitleHtml" as any) || i18nToString(i18n, "passwordTitle" as any) || "Password",
             icon: Lock,
             href: url.passwordUrl,
         },
         {
             id: "totp.ftl",
-            label: i18nToString(i18n, "authenticatorTitleHtml") || i18nToString(i18n, "authenticatorTitle") || "Authenticator",
+            label: i18nToString(i18n, "authenticatorTitleHtml" as any) || i18nToString(i18n, "authenticatorTitle" as any) || "Authenticator",
             icon: Shield,
             href: url.totpUrl,
         },
         {
             id: "federatedIdentity.ftl",
-            label: i18nToString(i18n, "federatedIdentityTitleHtml") || i18nToString(i18n, "federatedIdentityTitle") || "Federated Identity",
+            label: i18nToString(i18n, "federatedIdentityTitleHtml" as any) || i18nToString(i18n, "federatedIdentityTitle" as any) || "Federated Identity",
             icon: Link2,
             href: url.socialUrl,
         },
         {
             id: "sessions.ftl",
-            label: i18nToString(i18n, "sessionsTitleHtml") || i18nToString(i18n, "sessionsTitle") || "Sessions",
+            label: i18nToString(i18n, "sessionsTitleHtml" as any) || i18nToString(i18n, "sessionsTitle" as any) || "Sessions",
             icon: Monitor,
             href: url.sessionsUrl,
         },
         {
             id: "applications.ftl",
-            label: i18nToString(i18n, "applicationsTitleHtml") || i18nToString(i18n, "applicationsTitle") || "Applications",
+            label: i18nToString(i18n, "applicationsTitleHtml" as any) || i18nToString(i18n, "applicationsTitle" as any) || "Applications",
             icon: Grid,
             href: url.applicationsUrl,
         },
         {
             id: "log.ftl",
-            label: i18nToString(i18n, "accountLogTitleHtml") || i18nToString(i18n, "accountLogTitle") || "Log",
+            label: i18nToString(i18n, "accountLogTitleHtml" as any) || i18nToString(i18n, "accountLogTitle" as any) || "Log",
             icon: FileText,
             href: url.logUrl,
         },

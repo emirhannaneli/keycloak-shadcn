@@ -17,7 +17,7 @@ export default function ApplicationsPage({
     return (
         <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "applicationsTitleHtml") || i18nToString(i18n, "applicationsTitle") || "Applications"}
+                title={i18nToString(i18n, "applicationsTitleHtml" as any) || i18nToString(i18n, "applicationsTitle" as any) || "Applications"}
                 className="w-full max-w-4xl"
             >
                 {applications?.applications && applications.applications.length > 0 ? (
@@ -27,7 +27,7 @@ export default function ApplicationsPage({
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                     <div>
                                         <h3 className="text-lg font-semibold">
-                                            {app.client?.name || app.client?.clientId}
+                                            {app.client?.name || app.client?.clientId || ""}
                                         </h3>
                                         {app.client?.clientId && (
                                             <p className="text-sm text-muted-foreground">
@@ -42,10 +42,10 @@ export default function ApplicationsPage({
                                             variant="outline"
                                             className="w-full sm:w-auto"
                                             onClick={() => {
-                                                window.location.href = app.effectiveUrl;
+                                                window.location.href = app.effectiveUrl!;
                                             }}
                                         >
-                                            {i18nToString(i18n, "openApplication") || "Open Application"}
+                                            {i18nToString(i18n, "openApplication" as any) || "Open Application"}
                                         </KcButton>
                                     )}
                                 </div>
@@ -58,7 +58,7 @@ export default function ApplicationsPage({
                                         {app.realmRolesAvailable && app.realmRolesAvailable.length > 0 && (
                                             <div>
                                                 <h4 className="text-sm font-medium mb-2">
-                                                    {i18nToString(i18n, "realmRoles") || "Realm Roles"}
+                                                    {i18nToString(i18n, "realmRoles" as any) || "Realm Roles"}
                                                 </h4>
                                                 <div className="flex flex-wrap gap-2">
                                                     {app.realmRolesAvailable.map((role, roleIndex) => (
@@ -79,7 +79,7 @@ export default function ApplicationsPage({
                                             Object.keys(app.resourceRolesAvailable).length > 0 && (
                                                 <div>
                                                     <h4 className="text-sm font-medium mb-2">
-                                                        {i18nToString(i18n, "resourceRoles") || "Resource Roles"}
+                                                        {i18nToString(i18n, "resourceRoles" as any) || "Resource Roles"}
                                                     </h4>
                                                     {Object.entries(app.resourceRolesAvailable).map(
                                                         ([resource, roles]) => (
@@ -123,7 +123,7 @@ export default function ApplicationsPage({
                                         {app.clientScopesGranted && app.clientScopesGranted.length > 0 && (
                                             <div>
                                                 <h4 className="text-sm font-medium mb-2">
-                                                    {i18nToString(i18n, "clientScopesGranted") || "Client Scopes Granted"}
+                                                    {i18nToString(i18n, "clientScopesGranted" as any) || "Client Scopes Granted"}
                                                 </h4>
                                                 <div className="flex flex-wrap gap-2">
                                                     {app.clientScopesGranted.map((scope, scopeIndex) => (
@@ -145,7 +145,7 @@ export default function ApplicationsPage({
                     </div>
                 ) : (
                     <p className="text-muted-foreground text-center py-8">
-                        {i18nToString(i18n, "noApplications") || "No applications"}
+                        {i18nToString(i18n, "noApplications" as any) || "No applications"}
                     </p>
                 )}
             </KcCard>

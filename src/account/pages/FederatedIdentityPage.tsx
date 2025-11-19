@@ -3,7 +3,6 @@ import { useI18n } from "../i18n";
 import { KcCard, KcButton, KcForm, KcAlert } from "../components";
 import { i18nToString } from "../utils/i18n";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 
 export default function FederatedIdentityPage({
     kcContext,
@@ -17,7 +16,7 @@ export default function FederatedIdentityPage({
     return (
         <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "federatedIdentityTitleHtml") || i18nToString(i18n, "federatedIdentityTitle") || "Federated Identity"}
+                title={i18nToString(i18n, "federatedIdentityTitleHtml" as any) || i18nToString(i18n, "federatedIdentityTitle" as any) || "Federated Identity"}
                 className="w-full max-w-3xl"
             >
                 {message && <KcAlert message={message} className="mb-4" />}
@@ -34,11 +33,11 @@ export default function FederatedIdentityPage({
                                         <h3 className="font-semibold">{identity.displayName}</h3>
                                         {identity.connected ? (
                                             <Badge variant="default">
-                                                {i18nToString(i18n, "connected") || "Connected"}
+                                                {i18nToString(i18n, "connected" as any) || "Connected"}
                                             </Badge>
                                         ) : (
                                             <Badge variant="secondary">
-                                                {i18nToString(i18n, "notConnected") || "Not Connected"}
+                                                {i18nToString(i18n, "notConnected" as any) || "Not Connected"}
                                             </Badge>
                                         )}
                                     </div>
@@ -101,7 +100,7 @@ export default function FederatedIdentityPage({
                     </div>
                 ) : (
                     <p className="text-muted-foreground text-center py-8">
-                        {i18nToString(i18n, "noFederatedIdentity") || "No federated identities"}
+                        {i18nToString(i18n, "noFederatedIdentity" as any) || "No federated identities"}
                     </p>
                 )}
             </KcCard>

@@ -78,7 +78,14 @@ export const WithValidationErrors: Story = {
                     accountUrl: "/account"
                 },
                 messagesPerField: {
-                    printIfExists: field => (field === "email" || field === "firstName" ? "has-error" : "")
+                    printIfExists: (field: string) => (field === "email" || field === "firstName" ? "has-error" : ""),
+                    existsError: (field: string) => field === "email" || field === "firstName",
+                    get: (field: string) => {
+                        if (field === "email") return "Email is required.";
+                        if (field === "firstName") return "First name is required.";
+                        return "";
+                    },
+                    exists: () => false
                 },
                 stateChecker: "state-checker"
             }}

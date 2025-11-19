@@ -26,7 +26,8 @@ export function KcCard({
     ...props
 }: KcCardProps) {
     const realm = kcContext?.realm;
-    const realmName = realm?.displayName || realm?.name;
+    const realmName: string | undefined = (realm && "displayName" in realm && typeof realm.displayName === "string" ? realm.displayName : undefined) || 
+                      (realm && "name" in realm && typeof realm.name === "string" ? realm.name : undefined);
 
     // Title'ın HTML içerik olup olmadığını kontrol et
     const isHtmlTitle = typeof title === 'string' && (title.includes('<') || title.includes('&'));

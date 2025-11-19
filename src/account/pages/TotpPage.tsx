@@ -3,7 +3,6 @@ import { useI18n } from "../i18n";
 import { KcForm, KcButton, KcCard, KcAlert, KcInput } from "../components";
 import { Label } from "@/components/ui/label";
 import { i18nToString } from "../utils/i18n";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 export default function TotpPage({
@@ -20,7 +19,7 @@ export default function TotpPage({
     return (
         <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "authenticatorTitleHtml") || i18nToString(i18n, "authenticatorTitle") || "Authenticator"}
+                title={i18nToString(i18n, "authenticatorTitleHtml" as any) || i18nToString(i18n, "authenticatorTitle" as any) || "Authenticator"}
                 className="w-full max-w-3xl"
             >
                 {message && <KcAlert message={message} className="mb-4" />}
@@ -28,7 +27,7 @@ export default function TotpPage({
                 {totp?.enabled && totp.otpCredentials && totp.otpCredentials.length > 0 && (
                     <div className="mb-6 space-y-4">
                         <h3 className="text-lg font-semibold">
-                            {i18nToString(i18n, "configuredAuthenticators") || "Configured Authenticators"}
+                            {i18nToString(i18n, "configuredAuthenticators" as any) || "Configured Authenticators"}
                         </h3>
                         {totp.otpCredentials.map((credential) => (
                             <div
@@ -50,7 +49,7 @@ export default function TotpPage({
                                         variant="destructive"
                                         size="sm"
                                     >
-                                        {i18nToString(i18n, "doDelete") || "Delete"}
+                                        {i18nToString(i18n, "doDelete" as any) || "Delete"}
                                     </KcButton>
                                 </KcForm>
                             </div>
@@ -76,7 +75,7 @@ export default function TotpPage({
                                             href={totp.manualUrl}
                                             className="text-sm text-muted-foreground hover:underline"
                                         >
-                                            {i18nToString(i18n, "totpManualEntry") || "Manual Entry"}
+                                            {i18nToString(i18n, "totpManualEntry" as any) || "Manual Entry"}
                                         </a>
                                     </div>
                                 )}
@@ -86,7 +85,7 @@ export default function TotpPage({
                         {isManualMode && totp?.totpSecretEncoded && (
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label>{i18nToString(i18n, "totpSecret") || "TOTP Secret"}</Label>
+                                    <Label>{i18nToString(i18n, "totpSecret" as any) || "TOTP Secret"}</Label>
                                     <div className="p-4 bg-muted rounded-lg font-mono text-center text-lg">
                                         {totp.totpSecretEncoded}
                                     </div>
@@ -114,7 +113,7 @@ export default function TotpPage({
                             <div className="space-y-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="totp">
-                                        {i18nToString(i18n, "totpOneTime") || "One-time Code"}
+                                        {i18nToString(i18n, "totpOneTime" as any) || "One-time Code"}
                                     </Label>
                                     <KcInput
                                         kcContext={kcContext}
@@ -137,7 +136,7 @@ export default function TotpPage({
                                     />
                                     {messagesPerField.existsError("totp") && (
                                         <span id="totp-error" className="text-sm text-destructive">
-                                            {messagesPerField.getFirstError("totp")}
+                                            {messagesPerField.get("totp")}
                                         </span>
                                     )}
                                 </div>
@@ -161,7 +160,7 @@ export default function TotpPage({
                                         type="submit"
                                         className="w-full"
                                     >
-                                        {i18nToString(i18n, "doSubmit") || "Submit"}
+                                        {i18nToString(i18n, "doSubmit" as any) || "Submit"}
                                     </KcButton>
                                 </div>
                             </div>

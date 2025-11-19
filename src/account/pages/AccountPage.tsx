@@ -16,9 +16,10 @@ export default function AccountPage({
     const showUsername = !realm?.registrationEmailAsUsername;
     const canEditUsername = realm?.editUsernameAllowed ?? false;
 
-    const realmName = realm?.displayName || realm?.name || "";
-    const titleHtml = i18nToString(i18n, "accountTitleHtml", { 0: realmName }, realmName);
-    const titlePlain = i18nToString(i18n, "accountTitle", { 0: realmName }, realmName);
+    const realmName: string = (realm && "displayName" in realm && typeof realm.displayName === "string" ? realm.displayName : undefined) || 
+                      (realm && "name" in realm && typeof realm.name === "string" ? realm.name : undefined) || "";
+    const titleHtml = i18nToString(i18n, "accountTitleHtml" as any, realmName ? { 0: realmName } : undefined, realmName);
+    const titlePlain = i18nToString(i18n, "accountTitle" as any, realmName ? { 0: realmName } : undefined, realmName);
     const title = titleHtml || titlePlain || "Account";
 
     return (
@@ -71,7 +72,7 @@ export default function AccountPage({
                                 />
                                 {messagesPerField.existsError("username") && (
                                     <span id="username-error" className="text-sm text-destructive">
-                                        {messagesPerField.getFirstError("username")}
+                                        {messagesPerField.get("username")}
                                     </span>
                                 )}
                             </div>
@@ -104,7 +105,7 @@ export default function AccountPage({
                             />
                             {messagesPerField.existsError("email") && (
                                 <span id="email-error" className="text-sm text-destructive">
-                                    {messagesPerField.getFirstError("email")}
+                                    {messagesPerField.get("email")}
                                 </span>
                             )}
                         </div>
@@ -135,7 +136,7 @@ export default function AccountPage({
                             />
                             {messagesPerField.existsError("firstName") && (
                                 <span id="firstName-error" className="text-sm text-destructive">
-                                    {messagesPerField.getFirstError("firstName")}
+                                    {messagesPerField.get("firstName")}
                                 </span>
                             )}
                         </div>
@@ -166,7 +167,7 @@ export default function AccountPage({
                             />
                             {messagesPerField.existsError("lastName") && (
                                 <span id="lastName-error" className="text-sm text-destructive">
-                                    {messagesPerField.getFirstError("lastName")}
+                                    {messagesPerField.get("lastName")}
                                 </span>
                             )}
                         </div>
@@ -188,7 +189,7 @@ export default function AccountPage({
                                 kcContext={kcContext}
                                 type="submit"
                             >
-                                {i18nToString(i18n, "doSubmit") || "Submit"}
+                                {i18nToString(i18n, "doSubmit" as any) || "Submit"}
                             </KcButton>
                         </div>
                     </div>

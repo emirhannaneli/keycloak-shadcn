@@ -26,7 +26,7 @@ export default function SessionsPage({
     return (
         <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "sessionsTitleHtml") || i18nToString(i18n, "sessionsTitle") || "Sessions"}
+                title={i18nToString(i18n, "sessionsTitleHtml" as any) || i18nToString(i18n, "sessionsTitle" as any) || "Sessions"}
                 className="w-full max-w-4xl"
             >
                 {sessions?.sessions && sessions.sessions.length > 0 ? (
@@ -37,7 +37,7 @@ export default function SessionsPage({
                                     <div className="space-y-2 flex-1">
                                         <div className="flex items-center gap-2">
                                             <span className="text-sm font-medium">
-                                                {i18nToString(i18n, "ipAddress") || "IP Address"}:
+                                                {i18nToString(i18n, "ipAddress" as any) || "IP Address"}:
                                             </span>
                                             <Badge variant="outline">{session.ipAddress}</Badge>
                                         </div>
@@ -108,14 +108,14 @@ export default function SessionsPage({
                                     variant="destructive"
                                     className="w-full"
                                 >
-                                    {i18nToString(i18n, "doLogoutAllSessions") || "Logout All Sessions"}
+                                    {i18nToString(i18n, "doLogoutAllSessions" as any) || "Logout All Sessions"}
                                 </KcButton>
                             </KcForm>
                         )}
                     </div>
                 ) : (
                     <p className="text-muted-foreground text-center py-8">
-                        {i18nToString(i18n, "noActiveSessions") || "No active sessions"}
+                        {i18nToString(i18n, "noActiveSessions" as any) || "No active sessions"}
                     </p>
                 )}
             </KcCard>

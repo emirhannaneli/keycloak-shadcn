@@ -14,19 +14,19 @@ export default function LogPage({
 
     const { log } = kcContext;
 
-    const formatDate = (dateString: string) => {
+    const formatDate = (dateValue: string | number | Date) => {
         try {
-            const date = new Date(dateString);
+            const date = new Date(dateValue);
             return date.toLocaleString();
         } catch {
-            return dateString;
+            return String(dateValue);
         }
     };
 
     return (
         <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "accountLogTitleHtml") || i18nToString(i18n, "accountLogTitle") || "Account Log"}
+                title={i18nToString(i18n, "accountLogTitleHtml" as any) || i18nToString(i18n, "accountLogTitle" as any) || "Account Log"}
                 className="w-full max-w-4xl"
             >
                 {log?.events && log.events.length > 0 ? (
@@ -56,7 +56,7 @@ export default function LogPage({
                                             {event.ipAddress && (
                                                 <div>
                                                     <span className="text-muted-foreground">
-                                                        {i18nToString(i18n, "ipAddress") || "IP Address"}:
+                                                        {i18nToString(i18n, "ipAddress" as any) || "IP Address"}:
                                                     </span>
                                                     <Badge variant="secondary" className="ml-2">
                                                         {event.ipAddress}
@@ -94,7 +94,7 @@ export default function LogPage({
                     </div>
                 ) : (
                     <p className="text-muted-foreground text-center py-8">
-                        {i18nToString(i18n, "noLogEvents") || "No log events"}
+                        {i18nToString(i18n, "noLogEvents" as any) || "No log events"}
                     </p>
                 )}
             </KcCard>
