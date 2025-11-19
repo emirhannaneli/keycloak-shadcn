@@ -1,6 +1,37 @@
 <style>
     body.sb-show-main.sb-main-padded {
-        padding: 0;
+        padding: 0 !important;
+    }
+
+    #storybook-root {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    #storybook-root > * {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Fix for Storybook layout spacing */
+    #storybook-root > div {
+        margin-left: 0.5rem !important;
+    }
+
+    /* Center content in Storybook */
+    #storybook-root main {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    #storybook-root main > div {
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 
     /* Following styles are just meant to avoid white flash when switching from one story to another */

@@ -11,7 +11,7 @@ export default defineConfig({
     plugins: [
         react(),
         keycloakify({
-            accountThemeImplementation: "none",
+            accountThemeImplementation: "Multi-Page",
             artifactId: "keycloak-shadcn",
             keycloakVersionTargets: {
                 "22-to-25": "keycloak-shadcn-22-to-25.jar",
