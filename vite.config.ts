@@ -11,7 +11,12 @@ export default defineConfig({
     plugins: [
         react(),
         keycloakify({
-            accountThemeImplementation: "none"
+            accountThemeImplementation: "none",
+            artifactId: "keycloak-shadcn",
+            keycloakVersionTargets: {
+                "22-to-25": "keycloak-shadcn-22-to-25.jar",
+                "all-other-versions": "keycloak-shadcn-all-other-versions.jar"
+            }
         })
     ],
     resolve: {
