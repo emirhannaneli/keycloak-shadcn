@@ -16,29 +16,42 @@ import LogPage from "./pages/LogPage";
 export default function KcPage(props: { kcContext: KcContext }) {
     const { kcContext } = props;
 
-    const { i18n } = useI18n({ kcContext });
+    // realm undefined olabilir, bu yüzden güvenli bir şekilde kontrol ediyoruz
+    // Mevcut realm objesini koruyarak sadece eksik özelliği ekliyoruz
+    const safeKcContext = {
+        ...kcContext,
+        realm: kcContext.realm ? {
+            ...kcContext.realm,
+            internationalizationEnabled: kcContext.realm.internationalizationEnabled ?? false
+        } : {
+            userManagedAccessAllowed: true,
+            internationalizationEnabled: false
+        }
+    };
+
+    const { i18n } = useI18n({ kcContext: safeKcContext as any });
 
     return (
-        <PageWrapper kcContext={kcContext}>
+        <PageWrapper kcContext={safeKcContext as any}>
             <Suspense>
                 {(() => {
                     switch (kcContext.pageId) {
                         case "account.ftl":
-                            return <AccountPage kcContext={kcContext} />;
+                            return <AccountPage kcContext={safeKcContext as any} />;
                         case "password.ftl":
-                            return <PasswordPage kcContext={kcContext} />;
+                            return <PasswordPage kcContext={safeKcContext as any} />;
                         case "applications.ftl":
-                            return <ApplicationsPage kcContext={kcContext} />;
+                            return <ApplicationsPage kcContext={safeKcContext as any} />;
                         case "sessions.ftl":
-                            return <SessionsPage kcContext={kcContext} />;
+                            return <SessionsPage kcContext={safeKcContext as any} />;
                         case "totp.ftl":
-                            return <TotpPage kcContext={kcContext} />;
+                            return <TotpPage kcContext={safeKcContext as any} />;
                         case "federatedIdentity.ftl":
-                            return <FederatedIdentityPage kcContext={kcContext} />;
+                            return <FederatedIdentityPage kcContext={safeKcContext as any} />;
                         case "log.ftl":
-                            return <LogPage kcContext={kcContext} />;
+                            return <LogPage kcContext={safeKcContext as any} />;
                         default:
-                            return <DefaultPage kcContext={kcContext} i18n={i18n} classes={classes} Template={Template} doUseDefaultCss={true} />;
+                            return <DefaultPage kcContext={safeKcContext as any} i18n={i18n} classes={classes} Template={Template} doUseDefaultCss={true} />;
                     }
                 })()}
             </Suspense>

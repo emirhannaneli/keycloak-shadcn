@@ -20,7 +20,20 @@ interface KcAlertProps {
 export function KcAlert({ kcContext, message, className }: KcAlertProps) {
     if (!message) return null;
 
-    const { i18n } = kcContext ? useI18n({ kcContext }) : { i18n: null };
+    // realm undefined olabilir, bu yüzden güvenli bir şekilde kontrol ediyoruz
+    // Mevcut realm objesini koruyarak sadece eksik özelliği ekliyoruz
+    const safeKcContext = kcContext ? {
+        ...kcContext,
+        realm: kcContext.realm ? {
+            ...kcContext.realm,
+            internationalizationEnabled: kcContext.realm.internationalizationEnabled ?? false
+        } : {
+            userManagedAccessAllowed: true,
+            internationalizationEnabled: false
+        }
+    } : undefined;
+
+    const { i18n } = safeKcContext ? useI18n({ kcContext: safeKcContext as any }) : { i18n: null };
 
     const variant = message.type === "error" ? "destructive" : "default";
 

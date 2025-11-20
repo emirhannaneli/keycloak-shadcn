@@ -19,6 +19,10 @@ export const Default: Story = {
     render: () => (
         <KcPageStory
             kcContext={{
+                realm: {
+                    userManagedAccessAllowed: true,
+                    internationalizationEnabled: false
+                },
                 log: {
                     events: [
                         {
@@ -359,6 +363,10 @@ export const LogsMissingDetails: Story = {
         <KcPageStory
             kcContext={{
                 pageId: "log.ftl",
+                realm: {
+                    userManagedAccessAllowed: true,
+                    internationalizationEnabled: false
+                },
                 log: {
                     events: [
                         {
@@ -379,6 +387,10 @@ export const SingleLogEntry: Story = {
         <KcPageStory
             kcContext={{
                 pageId: "log.ftl",
+                realm: {
+                    userManagedAccessAllowed: true,
+                    internationalizationEnabled: false
+                },
                 log: {
                     events: [
                         {
@@ -402,6 +414,10 @@ export const LogsWithLongDetails: Story = {
         <KcPageStory
             kcContext={{
                 pageId: "log.ftl",
+                realm: {
+                    userManagedAccessAllowed: true,
+                    internationalizationEnabled: false
+                },
                 log: {
                     events: [
                         {
@@ -428,6 +444,10 @@ export const EmptyClientField: Story = {
         <KcPageStory
             kcContext={{
                 pageId: "log.ftl",
+                realm: {
+                    userManagedAccessAllowed: true,
+                    internationalizationEnabled: false
+                },
                 log: {
                     events: [
                         {
@@ -451,6 +471,10 @@ export const NoLogsAvailable: Story = {
         <KcPageStory
             kcContext={{
                 pageId: "log.ftl",
+                realm: {
+                    userManagedAccessAllowed: true,
+                    internationalizationEnabled: false
+                },
                 log: {
                     events: [] // No log events
                 }

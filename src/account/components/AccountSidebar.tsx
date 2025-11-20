@@ -26,8 +26,26 @@ interface AccountSidebarProps {
 }
 
 export function AccountSidebar({ kcContext, currentPageId, onItemClick }: AccountSidebarProps) {
-    const { i18n } = useI18n({ kcContext });
+    // realm undefined olabilir, bu yüzden güvenli bir şekilde kontrol ediyoruz
+    // Mevcut realm objesini koruyarak sadece eksik özelliği ekliyoruz
+    const safeKcContext = {
+        ...kcContext,
+        realm: kcContext.realm ? {
+            ...kcContext.realm,
+            internationalizationEnabled: kcContext.realm.internationalizationEnabled ?? false
+        } : {
+            userManagedAccessAllowed: true,
+            internationalizationEnabled: false
+        }
+    };
+    
+    const { i18n } = useI18n({ kcContext: safeKcContext as any });
     const { url } = kcContext;
+
+    // Totp ve Log özelliklerinin açık olup olmadığını kontrol et
+    // url.totpUrl varsa TOTP menü öğesini göster (totp objesi olmasa bile sayfa açılabilir)
+    const isTotpEnabled = url.totpUrl !== undefined;
+    const isLogEnabled = url.logUrl !== undefined;
 
     const menuItems = [
         {
@@ -42,12 +60,13 @@ export function AccountSidebar({ kcContext, currentPageId, onItemClick }: Accoun
             icon: Lock,
             href: url.passwordUrl,
         },
-        {
+        // Totp özelliği açıksa göster
+        ...(isTotpEnabled ? [{
             id: "totp.ftl",
             label: i18nToString(i18n, "authenticatorTitleHtml" as any) || i18nToString(i18n, "authenticatorTitle" as any) || "Authenticator",
             icon: Shield,
             href: url.totpUrl,
-        },
+        }] : []),
         {
             id: "federatedIdentity.ftl",
             label: i18nToString(i18n, "federatedIdentityTitleHtml" as any) || i18nToString(i18n, "federatedIdentityTitle" as any) || "Federated Identity",
@@ -66,12 +85,13 @@ export function AccountSidebar({ kcContext, currentPageId, onItemClick }: Accoun
             icon: Grid,
             href: url.applicationsUrl,
         },
-        {
+        // Log özelliği açıksa göster
+        ...(isLogEnabled ? [{
             id: "log.ftl",
             label: i18nToString(i18n, "accountLogTitleHtml" as any) || i18nToString(i18n, "accountLogTitle" as any) || "Log",
             icon: FileText,
             href: url.logUrl,
-        },
+        }] : []),
     ];
 
     return (
