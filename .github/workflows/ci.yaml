@@ -50,6 +50,6 @@ jobs:
                   generate_release_notes: true
                   draft: false
                   prerelease: ${{ needs.check_if_version_upgraded.outputs.is_pre_release == 'true' }}
-                  files: dist_keycloak/keycloak-theme-*.jar
+                  files: dist_keycloak/keycloak-shadcn-*.jar
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
