@@ -14,6 +14,10 @@
 
 A modern, production-ready starter template for building custom Keycloak themes using **Keycloakify v11**, **React 18**, **TypeScript**, and **shadcn/ui** components. This starter provides a beautiful, accessible, and fully customizable authentication experience for Keycloak.
 
+<p align="center">
+    <img src=".present/account.gif" alt="Account Theme Preview" />
+</p>
+
 ## ✨ Features
 
 - 🎨 **Modern UI** - Built with shadcn/ui components and Tailwind CSS

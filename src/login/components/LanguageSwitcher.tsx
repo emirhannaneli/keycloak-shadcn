@@ -29,13 +29,33 @@ export function LanguageSwitcher({ kcContext }: LanguageSwitcherProps) {
     const currentLanguage = kcContext.locale?.currentLanguageTag || "en";
 
     const handleLanguageChange = (langCode: string) => {
-        // Keycloak locale URL formatı: /auth/realms/{realm}/protocol/openid-connect/auth?kc_locale={lang}
+        // Keycloak'ın default temalarında locale değişikliği için url.localeUrl(locale) function'ı kullanılır
+        // Bu function, mevcut URL'ye kc_locale parametresini ekleyerek yeni bir URL döndürür
+        const url = (kcContext as any).url;
+        
+        // Keycloak'ın locale URL mekanizmasını kontrol et
+        if (url?.localeUrl && typeof url.localeUrl === "function") {
+            try {
+                // Keycloak'ın default temalarında url.localeUrl(locale) şeklinde çağrılır
+                const localeUrl = url.localeUrl(langCode);
+                if (localeUrl) {
+                    // Keycloak'ın default temalarında bu URL'ye yönlendirme yapılır
+                    window.location.href = localeUrl;
+                    return;
+                }
+            } catch (e) {
+                console.warn("url.localeUrl function call failed:", e);
+            }
+        }
+        
+        // Fallback: Keycloak'ın default temalarındaki mekanizmayı manuel olarak uygula
+        // Mevcut URL'ye kc_locale parametresini ekle, tüm query parametrelerini koru
         const currentUrl = new URL(window.location.href);
         
-        // Mevcut tüm query parametrelerini koru, sadece kc_locale'i güncelle
+        // Mevcut tüm query parametrelerini koru, sadece kc_locale'i güncelle veya ekle
         currentUrl.searchParams.set("kc_locale", langCode);
         
-        // Sayfayı yeniden yükle
+        // Keycloak'ın default temalarında sayfayı tamamen yeniden yükler
         window.location.href = currentUrl.toString();
     };
 
