@@ -14,8 +14,12 @@ export default defineConfig({
             accountThemeImplementation: "Multi-Page",
             artifactId: "keycloak-shadcn",
             keycloakVersionTargets: {
-                "22-to-25": "keycloak-shadcn-22-to-25.jar",
-                "all-other-versions": "keycloak-shadcn-all-other-versions.jar"
+                "26.2-and-above": "keycloak-shadcn-26.2-and-above.jar",
+                "26.0-to-26.1": "keycloak-shadcn-26.0-to-26.1.jar",
+                "25": "keycloak-shadcn-25.jar",
+                "24": "keycloak-shadcn-24.jar",
+                "23": "keycloak-shadcn-23.jar",
+                "21-and-below": "keycloak-shadcn-21-and-below.jar",
             }
         })
     ],

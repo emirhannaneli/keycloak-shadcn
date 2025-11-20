@@ -20,16 +20,6 @@ const config: StorybookConfig = {
                     "@": path.resolve(__dirname, "../src"),
                 },
             },
-            optimizeDeps: {
-                include: [
-                    "keycloakify/account/UserProfileFormFields",
-                    "keycloakify/account/DefaultPage",
-                    "keycloakify/account/Template",
-                    "react",
-                    "react-dom"
-                ],
-                exclude: [],
-            },
             build: {
                 commonjsOptions: {
                     include: [/keycloakify/, /node_modules/],
