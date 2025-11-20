@@ -25,6 +25,8 @@ A modern, production-ready starter template for building custom Keycloak themes 
 - 🎭 **Storybook** - Visual component development and testing
 - 🔧 **Customizable** - Easy to customize and extend
 - 📦 **Production Ready** - Optimized builds with code splitting
+- 🌍 **Multi-Language Support** - Built-in i18n with 21 languages for Account and 28 languages for Login themes
+- 🔤 **Translation Management** - Automated scripts for generating and fixing translations
 
 ## 🎯 Customized Pages
 
@@ -145,6 +147,50 @@ For detailed customization guides, see the [Keycloakify customization documentat
 2. Add the route in `src/kc.gen.tsx`
 3. Customize the page using shadcn/ui components
 
+## 🌍 Multi-Language Support (i18n)
+
+This starter includes comprehensive internationalization support with automated translation management.
+
+### Supported Languages
+
+**Account Theme (21 languages):**
+- Arabic (ar), Catalan (ca), Czech (cs), Danish (da), German (de), Spanish (es), Finnish (fi), French (fr), Hungarian (hu), Italian (it), Japanese (ja), Lithuanian (lt), Latvian (lv), Dutch (nl), Norwegian (no), Polish (pl), Portuguese (pt-BR), Russian (ru), Slovak (sk), Swedish (sv), Chinese Simplified (zh-CN)
+
+**Login Theme (28 languages):**
+- All Account languages plus: Greek (el), Persian (fa), Georgian (ka), Portuguese (pt), Thai (th), Ukrainian (uk), Chinese Traditional (zh-TW)
+
+### Translation Management Scripts
+
+The project includes automated scripts for managing translations:
+
+#### Generate Translations
+Generate translation files from Keycloakify default messages:
+
+```bash
+node scripts/generate-translations.js
+```
+
+#### Fix Translations
+Fix and update existing translation files:
+
+```bash
+node scripts/fix-translations.js
+```
+
+#### Update i18n Configuration
+Update the i18n configuration files after adding new languages:
+
+```bash
+node scripts/update-i18n.js
+```
+
+### Adding Custom Translations
+
+1. Edit translation files in `src/account/messages/` or `src/login/messages/`
+2. Add new language files following the existing pattern
+3. Run `node scripts/update-i18n.js` to update the i18n configuration
+4. Translations are automatically integrated via the `useI18n` hook
+
 ## 📦 Building the Theme
 
 Build the Keycloak theme JAR files:
@@ -214,6 +260,7 @@ To release a new version, simply update the `version` field in `package.json` an
 - **Forms:** React Hook Form + Zod
 - **Icons:** Lucide React
 - **Theme Builder:** Keycloakify v11
+- **Internationalization:** Keycloakify i18n with 21-28 language support
 
 ## 📖 Documentation
 

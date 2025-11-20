@@ -6,7 +6,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 type Theme = "light" | "dark" | "system";
 
@@ -14,34 +14,7 @@ export function ThemeSwitcher() {
     const [theme, setTheme] = useState<Theme>("system");
     const [mounted, setMounted] = useState(false);
 
-    useEffect(() => {
-        setMounted(true);
-        const stored = localStorage.getItem("theme") as Theme | null;
-        if (stored) {
-            setTheme(stored);
-        } else {
-            // Sistem temasını kontrol et
-            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-            setTheme("system");
-            updateTheme("system", prefersDark);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (!mounted) return;
-        
-        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-        const handleChange = (e: MediaQueryListEvent) => {
-            if (theme === "system") {
-                updateTheme("system", e.matches);
-            }
-        };
-
-        mediaQuery.addEventListener("change", handleChange);
-        return () => mediaQuery.removeEventListener("change", handleChange);
-    }, [theme, mounted]);
-
-    const updateTheme = (newTheme: Theme, isDark?: boolean) => {
+    const updateTheme = useCallback((newTheme: Theme, isDark?: boolean) => {
         const root = document.documentElement;
         
         if (newTheme === "system") {
@@ -56,7 +29,35 @@ export function ThemeSwitcher() {
         } else {
             root.classList.remove("dark");
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        setMounted(true);
+        const stored = localStorage.getItem("theme") as Theme | null;
+        if (stored) {
+            setTheme(stored);
+            updateTheme(stored);
+        } else {
+            // Sistem temasını kontrol et
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            setTheme("system");
+            updateTheme("system", prefersDark);
+        }
+    }, [updateTheme]);
+
+    useEffect(() => {
+        if (!mounted) return;
+        
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+        const handleChange = (e: MediaQueryListEvent) => {
+            if (theme === "system") {
+                updateTheme("system", e.matches);
+            }
+        };
+
+        mediaQuery.addEventListener("change", handleChange);
+        return () => mediaQuery.removeEventListener("change", handleChange);
+    }, [theme, mounted, updateTheme]);
 
     const handleThemeChange = (newTheme: Theme) => {
         setTheme(newTheme);

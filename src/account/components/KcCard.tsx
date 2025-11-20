@@ -35,22 +35,22 @@ export function KcCard({
     return (
         <Card className={cn("shadow-lg w-full", className)} {...props}>
             {(title || description || realmName) && (
-                <CardHeader className="space-y-1 pb-4">
+                <CardHeader className="space-y-0.5 pb-2">
                     {title && (
                         <CardTitle 
-                            className="text-2xl"
+                            className="text-xl"
                             {...(isHtmlTitle ? { dangerouslySetInnerHTML: { __html: title } } : { children: title })}
                         />
                     )}
-                    {description && <CardDescription className="text-base">{description}</CardDescription>}
+                    {description && <CardDescription className="text-sm">{description}</CardDescription>}
                     {realmName && (
-                        <CardDescription className="text-sm text-muted-foreground mt-2">
+                        <CardDescription className="text-xs text-muted-foreground mt-1">
                             {realmName}
                         </CardDescription>
                     )}
                 </CardHeader>
             )}
-            <CardContent className="space-y-4">{children}</CardContent>
+            <CardContent className="space-y-2">{children}</CardContent>
         </Card>
     );
 }

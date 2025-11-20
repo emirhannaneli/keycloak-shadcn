@@ -13,8 +13,8 @@ interface PageHeaderProps {
 export function PageHeader({ kcContext }: PageHeaderProps) {
     return (
         <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-6xl px-4 pointer-events-none">
-            <div className="bg-white/10 dark:bg-black/10 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl pt-2 pointer-events-auto">
-                <div className="flex items-center justify-between min-h-16 gap-4 pb-2 px-2 md:px-4">
+            <div className="bg-white/10 dark:bg-black/10 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl pt-1 pointer-events-auto">
+                <div className="flex items-center justify-between min-h-12 gap-4 pb-1 px-2 md:px-3">
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center flex-1 min-w-0 overflow-hidden">
                         <AccountSidebar 

@@ -1,6 +1,6 @@
 import { type KcContext } from "../KcContext";
 import { useI18n } from "../i18n";
-import { KcForm, KcButton, KcCard, KcAlert } from "../components";
+import { KcForm, KcButton, KcCard, KcAlert, KcInput } from "../components";
 import { Label } from "@/components/ui/label";
 import { i18nToString } from "../utils/i18n";
 import { Suspense, lazy } from "react";
@@ -171,34 +171,47 @@ export default function RegisterPage({ kcContext }: { kcContext: Extract<KcConte
                         id="kc-register-form"
                     >
                         <Suspense>
-                            <UserProfileFormFields
-                                kcContext={kcContext}
-                                i18n={i18n}
-                                kcClsx={() => ""}
-                                doMakeUserConfirmPassword={true}
-                                onIsFormSubmittableValueChange={() => {}}
-                                BeforeField={({ attribute }: { attribute: any }) => (
-                                    <div className="space-y-2">
-                                        <Label htmlFor={attribute.name}>
-                                            {attribute.displayName ?? ""}
-                                            {attribute.required && <span className="text-destructive">*</span>}
-                                        </Label>
-                                    </div>
-                                )}
-                                AfterField={({ attribute }: { attribute: any }) => {
-                                    const error = messagesPerField.existsError(attribute.name)
-                                        ? messagesPerField.getFirstError(attribute.name)
-                                        : undefined;
+                            <div className="space-y-4">
+                                <UserProfileFormFields
+                                    kcContext={kcContext}
+                                    i18n={i18n}
+                                    kcClsx={() => ""}
+                                    doMakeUserConfirmPassword={true}
+                                    onIsFormSubmittableValueChange={() => {}}
+                                    inputComponent={(props: any) => (
+                                        <KcInput
+                                            {...props}
+                                            kcContext={kcContext}
+                                            className={
+                                                messagesPerField.existsError(props.name)
+                                                    ? "border-destructive"
+                                                    : props.className
+                                            }
+                                        />
+                                    )}
+                                    BeforeField={({ attribute }: { attribute: any }) => (
+                                        <div className="space-y-2 mb-2">
+                                            <Label htmlFor={attribute.name}>
+                                                {attribute.displayName ?? ""}
+                                                {attribute.required && <span className="text-destructive">*</span>}
+                                            </Label>
+                                        </div>
+                                    )}
+                                    AfterField={({ attribute }: { attribute: any }) => {
+                                        const error = messagesPerField.existsError(attribute.name)
+                                            ? messagesPerField.getFirstError(attribute.name)
+                                            : undefined;
 
-                                    return (
-                                        <>
-                                            {error && (
-                                                <span className="text-sm text-destructive">{error}</span>
-                                            )}
-                                        </>
-                                    );
-                                }}
-                            />
+                                        return (
+                                            <div className="mt-1">
+                                                {error && (
+                                                    <span className="text-sm text-destructive">{error}</span>
+                                                )}
+                                            </div>
+                                        );
+                                    }}
+                                />
+                            </div>
                         </Suspense>
 
                         <div className="mt-6 space-y-4">

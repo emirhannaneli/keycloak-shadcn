@@ -18,7 +18,7 @@ export default function LoginIdpLinkEmailPage({
         <div className="flex min-h-screen items-center justify-center p-4">
             <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "loginTitle", undefined, realm?.displayName || realm?.name || "")}
+                title={i18nToString(i18n, "emailLinkIdpTitle", undefined, idpAlias || "")}
                 className="w-full max-w-md"
             >
                 {message && <KcAlert message={message} className="mb-4" />}
@@ -31,20 +31,14 @@ export default function LoginIdpLinkEmailPage({
                 </div>
 
                 <div className="text-center mb-6">
-                    <p className="text-sm text-muted-foreground mb-2">
-                        {i18nToString(i18n, "loginTitle", undefined, realm?.displayName || realm?.name || "")}
-                    </p>
                     {idpAlias && (
-                        <p className="font-medium text-foreground mb-1">{idpAlias}</p>
-                    )}
-                    {brokerContext?.username && (
-                        <p className="text-sm text-muted-foreground">
-                            {i18nToString(i18n, "username")}: {brokerContext.username}
+                        <p className="text-sm text-muted-foreground mb-2">
+                            {i18nToString(i18n, "emailLinkIdp", undefined, idpAlias)}
                         </p>
                     )}
-                    {realm?.displayName && (
-                        <p className="text-sm text-muted-foreground">
-                            {realm.displayName}
+                    {brokerContext?.username && (
+                        <p className="text-sm text-muted-foreground mb-1">
+                            {i18nToString(i18n, "username")}: {brokerContext.username}
                         </p>
                     )}
                 </div>
