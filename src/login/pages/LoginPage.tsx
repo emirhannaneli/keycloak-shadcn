@@ -3,7 +3,7 @@ import { useI18n } from "../i18n";
 import { KcForm, KcInput, KcButton, KcCard, KcAlert, KcCheckbox } from "../components";
 import { Label } from "@/components/ui/label";
 import { i18nToString } from "../utils/i18n";
-import React from "react";
+import React, { useEffect } from "react";
 import { 
     type LucideIcon
 } from "lucide-react";
@@ -122,6 +122,22 @@ export default function LoginPage({ kcContext }: { kcContext: Extract<KcContext,
         themeName,
     } = kcContext;
 
+    // Başlık hesaplama
+    const realmName = realm.displayName || realm.name || "";
+    const htmlTitle = (i18nToString as any)(i18n, "loginTitleHtml", { 0: realmName }, realmName);
+    const baseTitle = i18nToString(i18n, "loginTitle");
+    const title = htmlTitle && htmlTitle !== "loginTitleHtml" && htmlTitle !== "" 
+        ? htmlTitle 
+        : realmName && baseTitle.includes("{0}")
+        ? baseTitle.replace("{0}", realmName)
+        : realmName ? `${baseTitle} ${realmName}` : baseTitle;
+
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Sign In";
+    }, [title]);
+
     // Keycloakify'da production build'de static dosyalar için path
     const getResourcePath = (path: string) => {
         // Development'ta keycloakify-dev-resources
@@ -162,25 +178,7 @@ export default function LoginPage({ kcContext }: { kcContext: Extract<KcContext,
                 
                 <KcCard 
                     kcContext={kcContext} 
-                    title={
-                        (() => {
-                            const realmName = realm.displayName || realm.name || "";
-                            // loginTitleHtml key'ini dene
-                            const htmlTitle = (i18nToString as any)(i18n, "loginTitleHtml", { 0: realmName }, realmName);
-                            
-                            // Eğer loginTitleHtml çevrildiyse (boş değilse ve key'den farklıysa) kullan
-                            if (htmlTitle && htmlTitle !== "loginTitleHtml" && htmlTitle !== "") {
-                                return htmlTitle;
-                            }
-                            
-                            // Fallback: loginTitle kullan ve realm adını ekle
-                            const baseTitle = i18nToString(i18n, "loginTitle");
-                            if (realmName && baseTitle.includes("{0}")) {
-                                return baseTitle.replace("{0}", realmName);
-                            }
-                            return realmName ? `${baseTitle} ${realmName}` : baseTitle;
-                        })()
-                    }
+                    title={title}
                     className="w-full"
                 >
                     {message && <KcAlert message={message} className="mb-4" />}

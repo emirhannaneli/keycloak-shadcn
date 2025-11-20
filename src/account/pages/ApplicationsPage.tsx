@@ -4,6 +4,7 @@ import { KcCard, KcButton } from "../components";
 import { i18nToString } from "../utils/i18n";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useEffect } from "react";
 
 export default function ApplicationsPage({
     kcContext,
@@ -14,10 +15,18 @@ export default function ApplicationsPage({
 
     const { applications } = kcContext;
 
+    const title = i18nToString(i18n, "applicationsTitleHtml" as any) || i18nToString(i18n, "applicationsTitle" as any) || "Applications";
+
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Applications";
+    }, [title]);
+
     return (
         <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "applicationsTitleHtml" as any) || i18nToString(i18n, "applicationsTitle" as any) || "Applications"}
+                title={title}
                 className="w-full max-w-4xl"
             >
                 {applications?.applications && applications.applications.length > 0 ? (

@@ -4,6 +4,7 @@ import { KcCard } from "../components";
 import { i18nToString } from "../utils/i18n";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useEffect } from "react";
 
 export default function LogPage({
     kcContext,
@@ -13,6 +14,14 @@ export default function LogPage({
     const { i18n } = useI18n({ kcContext });
 
     const { log } = kcContext;
+
+    const title = i18nToString(i18n, "accountLogTitleHtml" as any) || i18nToString(i18n, "accountLogTitle" as any) || "Account Log";
+
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Account Log";
+    }, [title]);
 
     const formatDate = (dateValue: string | number | Date) => {
         try {
@@ -28,7 +37,7 @@ export default function LogPage({
         return (
             <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "accountLogTitleHtml" as any) || i18nToString(i18n, "accountLogTitle" as any) || "Account Log"}
+                title={title}
                 className="w-full max-w-4xl"
             >
                 <p className="text-muted-foreground text-center py-8">
@@ -41,7 +50,7 @@ export default function LogPage({
     return (
         <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "accountLogTitleHtml" as any) || i18nToString(i18n, "accountLogTitle" as any) || "Account Log"}
+                title={title}
                 className="w-full max-w-4xl"
             >
                 {log.events.length > 0 ? (

@@ -3,6 +3,7 @@ import { useI18n } from "../i18n";
 import { KcCard, KcButton, KcForm, KcAlert } from "../components";
 import { i18nToString } from "../utils/i18n";
 import { Badge } from "@/components/ui/badge";
+import { useEffect } from "react";
 
 export default function FederatedIdentityPage({
     kcContext,
@@ -13,10 +14,18 @@ export default function FederatedIdentityPage({
 
     const { url, message, federatedIdentity } = kcContext;
 
+    const title = i18nToString(i18n, "federatedIdentityTitleHtml" as any) || i18nToString(i18n, "federatedIdentityTitle" as any) || "Federated Identity";
+
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Connected Accounts";
+    }, [title]);
+
     return (
         <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "federatedIdentityTitleHtml" as any) || i18nToString(i18n, "federatedIdentityTitle" as any) || "Federated Identity"}
+                title={title}
                 className="w-full max-w-3xl"
             >
                 {message && <KcAlert message={message} className="mb-4" />}

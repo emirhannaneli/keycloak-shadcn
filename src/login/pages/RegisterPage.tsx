@@ -3,7 +3,7 @@ import { useI18n } from "../i18n";
 import { KcForm, KcButton, KcCard, KcAlert, KcInput } from "../components";
 import { Label } from "@/components/ui/label";
 import { i18nToString } from "../utils/i18n";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { 
     type LucideIcon
 } from "lucide-react";
@@ -123,6 +123,14 @@ export default function RegisterPage({ kcContext }: { kcContext: Extract<KcConte
         themeName,
     } = kcContext as any;
 
+    const title = i18nToString(i18n, "registerTitle");
+
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Register";
+    }, [title]);
+
     // Keycloakify'da production build'de static dosyalar için path
     const getResourcePath = (path: string) => {
         // Development'ta keycloakify-dev-resources
@@ -161,7 +169,7 @@ export default function RegisterPage({ kcContext }: { kcContext: Extract<KcConte
                     />
                 </div>
                 
-                <KcCard kcContext={kcContext} title={i18nToString(i18n, "registerTitle")} className="w-full">
+                <KcCard kcContext={kcContext} title={title} className="w-full">
                     {message && <KcAlert message={message} className="mb-4" />}
 
                     <KcForm

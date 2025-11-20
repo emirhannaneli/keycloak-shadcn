@@ -4,6 +4,7 @@ import { KcForm, KcInput, KcButton, KcCard, KcAlert } from "../components";
 import { Label } from "@/components/ui/label";
 import { i18nToString } from "../utils/i18n";
 import { Mail, Link2 } from "lucide-react";
+import { useEffect } from "react";
 
 export default function LoginIdpLinkEmailPage({
     kcContext,
@@ -14,11 +15,19 @@ export default function LoginIdpLinkEmailPage({
 
     const { url, messagesPerField, message, idpAlias, brokerContext } = kcContext;
 
+    const title = i18nToString(i18n, "emailLinkIdpTitle", idpAlias ? { 0: idpAlias } : undefined, idpAlias || "");
+
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Link Account";
+    }, [title]);
+
     return (
         <div className="flex min-h-screen items-center justify-center p-4">
             <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "emailLinkIdpTitle", undefined, idpAlias || "")}
+                title={title}
                 className="w-full max-w-md"
             >
                 {message && <KcAlert message={message} className="mb-4" />}

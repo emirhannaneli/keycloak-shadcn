@@ -3,6 +3,7 @@ import { useI18n } from "../i18n";
 import { KcForm, KcButton, KcCard, KcAlert, KcInput } from "../components";
 import { Label } from "@/components/ui/label";
 import { i18nToString } from "../utils/i18n";
+import { useEffect } from "react";
 
 export default function PasswordPage({
     kcContext,
@@ -13,10 +14,18 @@ export default function PasswordPage({
 
     const { url, messagesPerField, message, password } = kcContext;
 
+    const title = i18nToString(i18n, "passwordTitleHtml" as any) || i18nToString(i18n, "passwordTitle" as any) || "Password";
+
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Password";
+    }, [title]);
+
     return (
         <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "passwordTitleHtml" as any) || i18nToString(i18n, "passwordTitle" as any) || "Password"}
+                title={title}
                 className="w-full max-w-lg mx-auto"
             >
                 {message && <KcAlert message={message} className="mb-4" />}

@@ -4,6 +4,7 @@ import { KcCard, KcButton, KcForm } from "../components";
 import { i18nToString } from "../utils/i18n";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useEffect } from "react";
 
 export default function SessionsPage({
     kcContext,
@@ -13,6 +14,14 @@ export default function SessionsPage({
     const { i18n } = useI18n({ kcContext });
 
     const { url, sessions } = kcContext;
+
+    const title = i18nToString(i18n, "sessionsTitleHtml" as any) || i18nToString(i18n, "sessionsTitle" as any) || "Sessions";
+
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Sessions";
+    }, [title]);
 
     const formatDate = (dateString: string) => {
         try {
@@ -26,7 +35,7 @@ export default function SessionsPage({
     return (
         <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "sessionsTitleHtml" as any) || i18nToString(i18n, "sessionsTitle" as any) || "Sessions"}
+                title={title}
                 className="w-full max-w-4xl"
             >
                 {sessions?.sessions && sessions.sessions.length > 0 ? (

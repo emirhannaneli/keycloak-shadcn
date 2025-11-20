@@ -3,6 +3,7 @@ import { useI18n } from "../i18n";
 import { KcForm, KcInput, KcButton, KcCard, KcAlert } from "../components";
 import { Label } from "@/components/ui/label";
 import { i18nToString } from "../utils/i18n";
+import { useEffect } from "react";
 
 export default function ResetPasswordPage({ kcContext }: { kcContext: Extract<KcContext, { pageId: "login-reset-password.ftl" }> }) {
     const { i18n } = useI18n({ kcContext });
@@ -14,9 +15,17 @@ export default function ResetPasswordPage({ kcContext }: { kcContext: Extract<Kc
         realm,
     } = kcContext;
 
+    const title = i18nToString(i18n, "doForgotPassword");
+
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Forgot Password";
+    }, [title]);
+
     return (
         <div className="flex min-h-screen items-center justify-center p-4">
-            <KcCard kcContext={kcContext} title={i18nToString(i18n, "doForgotPassword")} className="w-full max-w-md">
+            <KcCard kcContext={kcContext} title={title} className="w-full max-w-md">
                     {message && <KcAlert message={message} className="mb-4" />}
 
                     <KcForm

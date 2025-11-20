@@ -3,7 +3,7 @@ import { useI18n } from "../i18n";
 import { KcForm, KcButton, KcCard, KcAlert, KcInput } from "../components";
 import { Label } from "@/components/ui/label";
 import { i18nToString } from "../utils/i18n";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 const UserProfileFormFields = lazy(
     () => import("keycloakify/login/UserProfileFormFields")
 );
@@ -17,11 +17,20 @@ export default function LoginUpdateProfilePage({
 
     const { url, messagesPerField, message, isAppInitiatedAction, realm } = kcContext;
 
+    const realmName = realm?.displayName || realm?.name || "";
+    const title = i18nToString(i18n, "loginProfileTitle") || i18nToString(i18n, "loginTitle", undefined, realmName);
+
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Update Account Information";
+    }, [title]);
+
     return (
         <div className="flex min-h-screen items-center justify-center p-4">
             <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "loginTitle", undefined, realm?.displayName || realm?.name || "")}
+                title={title}
                 className="w-full max-w-md"
             >
                 {message && <KcAlert message={message} className="mb-4" />}

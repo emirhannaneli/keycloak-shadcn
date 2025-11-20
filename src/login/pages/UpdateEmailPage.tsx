@@ -4,6 +4,7 @@ import { KcForm, KcInput, KcButton, KcCard, KcAlert } from "../components";
 import { Label } from "@/components/ui/label";
 import { i18nToString } from "../utils/i18n";
 import { Mail } from "lucide-react";
+import { useEffect } from "react";
 
 export default function UpdateEmailPage({
     kcContext,
@@ -16,11 +17,19 @@ export default function UpdateEmailPage({
     
     const email = profile?.attributesByName?.email;
 
+    const title = i18nToString(i18n, "updateEmailTitle") || i18nToString(i18n, "loginTitle", undefined, realm?.displayName || realm?.name || "");
+
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Update Email";
+    }, [title]);
+
     return (
         <div className="flex min-h-screen items-center justify-center p-4">
             <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "loginTitle", undefined, realm?.displayName || realm?.name || "")}
+                title={title}
                 className="w-full max-w-md"
             >
                 {message && <KcAlert message={message} className="mb-4" />}

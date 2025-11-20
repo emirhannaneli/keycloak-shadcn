@@ -3,6 +3,7 @@ import { useI18n } from "../i18n";
 import { KcForm, KcButton, KcCard, KcAlert } from "../components";
 import { i18nToString } from "../utils/i18n";
 import { Key, AlertTriangle } from "lucide-react";
+import { useEffect } from "react";
 
 export default function DeleteCredentialPage({
     kcContext,
@@ -13,11 +14,19 @@ export default function DeleteCredentialPage({
 
     const { url, message, credentialLabel } = kcContext;
 
+    const title = i18nToString(i18n, "deleteCredentialTitle", credentialLabel ? { 0: credentialLabel } : undefined, credentialLabel) || i18nToString(i18n, "errorTitle");
+
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Delete Credential";
+    }, [title]);
+
     return (
         <div className="flex min-h-screen items-center justify-center p-4">
             <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "errorTitle")}
+                title={title}
                 className="w-full max-w-md"
             >
                 {message && <KcAlert message={message} className="mb-6" />}

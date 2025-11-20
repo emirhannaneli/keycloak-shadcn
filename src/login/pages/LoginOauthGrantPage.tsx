@@ -4,6 +4,7 @@ import { KcForm, KcButton, KcCard, KcAlert } from "../components";
 import { i18nToString } from "../utils/i18n";
 import { Shield, CheckCircle2, XCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { useEffect } from "react";
 
 export default function LoginOauthGrantPage({
     kcContext,
@@ -16,11 +17,23 @@ export default function LoginOauthGrantPage({
 
     const clientScopesRequested = oauth?.clientScopesRequested ?? [];
 
+    const realmName = realm?.displayName || realm?.name || "";
+    const clientName = client?.name || "";
+    const oauthTitle = i18nToString(i18n, "oauthGrantTitle", clientName ? { 0: clientName } : undefined, clientName);
+    const oauthTitleHtml = i18nToString(i18n, "oauthGrantTitleHtml", clientName ? { 0: clientName } : undefined, clientName);
+    const title = oauthTitleHtml || oauthTitle || i18nToString(i18n, "loginTitle", undefined, realmName);
+
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Grant Access";
+    }, [title]);
+
     return (
         <div className="flex min-h-screen items-center justify-center p-4">
             <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "loginTitle", undefined, realm?.displayName || realm?.name || "")}
+                title={title}
                 className="w-full max-w-md"
             >
                 {message && <KcAlert message={message} className="mb-6" />}

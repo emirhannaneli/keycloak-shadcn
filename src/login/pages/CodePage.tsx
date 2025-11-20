@@ -3,6 +3,7 @@ import { useI18n } from "../i18n";
 import { KcForm, KcInput, KcButton, KcCard, KcAlert } from "../components";
 import { i18nToString } from "../utils/i18n";
 import { Key } from "lucide-react";
+import { useEffect } from "react";
 
 export default function CodePage({
     kcContext,
@@ -13,11 +14,20 @@ export default function CodePage({
 
     const { url, messagesPerField, code, realm } = kcContext;
 
+    const realmName = realm?.displayName || realm?.name || "";
+    const title = code?.success ? i18nToString(i18n, "codeSuccessTitle") : code?.error ? i18nToString(i18n, "codeErrorTitle", code.error ? { 0: code.error } : undefined, code.error) : i18nToString(i18n, "loginTitle", undefined, realmName);
+
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Code";
+    }, [title]);
+
     return (
         <div className="flex min-h-screen items-center justify-center p-4">
             <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "loginTitle", undefined, realm?.displayName || realm?.name || "")}
+                title={title}
                 className="w-full max-w-md"
             >
                 {code?.error && (

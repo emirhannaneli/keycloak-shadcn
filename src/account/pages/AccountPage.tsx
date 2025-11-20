@@ -7,6 +7,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Lock, Shield, Link2, Monitor, Grid, Mail, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEffect, useMemo, useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function AccountPage({
     kcContext,
@@ -20,17 +24,55 @@ export default function AccountPage({
     const showUsername = !realm?.registrationEmailAsUsername;
     const canEditUsername = realm?.editUsernameAllowed ?? false;
 
+    // Dinamik attribute'ları filtrele - standart alanları hariç tut
+    // Account context'inde attribute'lar account.profile.attributes altında olabilir
+    const standardFields = ["username", "email", "firstName", "lastName"];
+    const dynamicAttributes = useMemo(() => {
+        // Account context'inde profile bilgisi account.profile altında olabilir
+        const profileData = (account as any)?.profile;
+        if (!profileData?.attributes) return [];
+        return profileData.attributes.filter(
+            (attr: any) => attr.name && !standardFields.includes(attr.name)
+        );
+    }, [account]);
+
     const realmName: string = (realm && "displayName" in realm && typeof realm.displayName === "string" ? realm.displayName : undefined) || 
                       (realm && "name" in realm && typeof realm.name === "string" ? realm.name : undefined) || "";
     const titleHtml = i18nToString(i18n, "accountTitleHtml" as any, realmName ? { 0: realmName } : undefined, realmName);
     const titlePlain = i18nToString(i18n, "accountTitle" as any, realmName ? { 0: realmName } : undefined, realmName);
     const title = titleHtml || titlePlain || "Account";
 
-    // İstatistikler - varsayılan değerler (gerçek veriler diğer sayfalardan gelir)
-    const activeSessionsCount: number = 0;
-    const applicationsCount: number = 0;
-    const federatedIdentitiesCount: number = 0;
-    const emailVerified: boolean = false;
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Account";
+    }, [title]);
+
+    // İstatistikler için state
+    const [activeSessionsCount, setActiveSessionsCount] = useState<number>(0);
+    const [applicationsCount, setApplicationsCount] = useState<number>(0);
+    const [federatedIdentitiesCount, setFederatedIdentitiesCount] = useState<number>(0);
+
+    // Email verified durumu - account objesinden veya kcContext'ten al
+    const emailVerified: boolean = (account as any)?.emailVerified ?? (kcContext as any)?.account?.emailVerified ?? false;
+
+    // Verileri kcContext'ten al
+    useEffect(() => {
+        // kcContext'te direkt veriler varsa onları kullan
+        const contextSessions = (kcContext as any).sessions;
+        const contextApplications = (kcContext as any).applications;
+        const contextFederatedIdentity = (kcContext as any).federatedIdentity;
+
+        if (contextSessions?.sessions && Array.isArray(contextSessions.sessions)) {
+            setActiveSessionsCount(contextSessions.sessions.length);
+        }
+        if (contextApplications?.applications && Array.isArray(contextApplications.applications)) {
+            setApplicationsCount(contextApplications.applications.length);
+        }
+        if (contextFederatedIdentity?.identities && Array.isArray(contextFederatedIdentity.identities)) {
+            setFederatedIdentitiesCount(contextFederatedIdentity.identities.length);
+        }
+    }, [kcContext]);
 
     // Hızlı erişim linkleri
     const quickLinks = [
@@ -200,6 +242,7 @@ export default function AccountPage({
                     <input type="hidden" name="stateChecker" value={kcContext.stateChecker} />
 
                     <div className="space-y-4 w-full">
+                        {/* Standart Alanlar */}
                         {showUsername && (
                             <div className="space-y-2">
                                 <Label htmlFor="username">
@@ -327,6 +370,154 @@ export default function AccountPage({
                                 </span>
                             )}
                         </div>
+
+                        {/* Dinamik Attribute'lar */}
+                        {dynamicAttributes.map((attribute: any) => {
+                            const fieldName = `user.attributes.${attribute.name}`;
+                            const hasError = messagesPerField.existsError(fieldName);
+                            const errorMessage = hasError ? messagesPerField.get(fieldName) : undefined;
+                            const attributeValue = Array.isArray(attribute.value) 
+                                ? attribute.value[0] || "" 
+                                : attribute.value || "";
+                            
+                            // Attribute tipine göre input tipi belirle
+                            const inputType = attribute.annotations?.["inputType"] || 
+                                           attribute.annotations?.["input-type"] || 
+                                           "text";
+                            
+                            // Select için options
+                            const options = attribute.validators?.options?.options || 
+                                          attribute.annotations?.["options"] || 
+                                          [];
+
+                            return (
+                                <div key={attribute.name} className="space-y-2">
+                                    <Label htmlFor={fieldName}>
+                                        {attribute.displayName || attribute.name}
+                                        {attribute.required && <span className="text-destructive">*</span>}
+                                    </Label>
+                                    
+                                    {inputType === "select" && options.length > 0 ? (
+                                        <>
+                                            <input
+                                                type="hidden"
+                                                name={fieldName}
+                                                id={`${fieldName}-hidden`}
+                                                value={attributeValue}
+                                            />
+                                            <Select
+                                                defaultValue={attributeValue}
+                                                onValueChange={(value) => {
+                                                    const hiddenInput = document.getElementById(`${fieldName}-hidden`) as HTMLInputElement;
+                                                    if (hiddenInput) {
+                                                        hiddenInput.value = value;
+                                                    }
+                                                }}
+                                                disabled={attribute.readOnly}
+                                            >
+                                                <SelectTrigger
+                                                    className={
+                                                        hasError ? "border-destructive" : ""
+                                                    }
+                                                    aria-invalid={hasError}
+                                                    aria-describedby={
+                                                        hasError ? `${fieldName}-error` : undefined
+                                                    }
+                                                >
+                                                    <SelectValue placeholder={
+                                                        i18nToString(i18n, `profile.attributes.${attribute.name}.placeholder` as any) ||
+                                                        `Select ${attribute.displayName || attribute.name}`
+                                                    } />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {options.map((option: string) => (
+                                                        <SelectItem key={option} value={option}>
+                                                            {i18nToString(
+                                                                i18n,
+                                                                `profile.attributes.${attribute.name}.options.${option}` as any
+                                                            ) || option}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </>
+                                    ) : inputType === "checkbox" || inputType === "boolean" ? (
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox
+                                                id={fieldName}
+                                                name={fieldName}
+                                                defaultChecked={attributeValue === "true" || attributeValue === true}
+                                                disabled={attribute.readOnly}
+                                                required={attribute.required}
+                                            />
+                                            <label
+                                                htmlFor={fieldName}
+                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                            >
+                                                {i18nToString(
+                                                    i18n,
+                                                    `profile.attributes.${attribute.name}.label` as any
+                                                ) || attribute.displayName || attribute.name}
+                                            </label>
+                                        </div>
+                                    ) : inputType === "textarea" ? (
+                                        <Textarea
+                                            id={fieldName}
+                                            name={fieldName}
+                                            defaultValue={attributeValue}
+                                            required={attribute.required}
+                                            disabled={attribute.readOnly}
+                                            rows={attribute.annotations?.["rows"] || 4}
+                                            className={
+                                                hasError ? "border-destructive" : ""
+                                            }
+                                            aria-invalid={hasError}
+                                            aria-describedby={
+                                                hasError ? `${fieldName}-error` : undefined
+                                            }
+                                        />
+                                    ) : (
+                                        <KcInput
+                                            kcContext={kcContext}
+                                            id={fieldName}
+                                            name={fieldName}
+                                            type={inputType === "email" ? "email" : 
+                                                  inputType === "tel" ? "tel" : 
+                                                  inputType === "url" ? "url" : 
+                                                  inputType === "number" ? "number" : "text"}
+                                            defaultValue={attributeValue}
+                                            required={attribute.required}
+                                            disabled={attribute.readOnly}
+                                            placeholder={
+                                                i18nToString(i18n, `profile.attributes.${attribute.name}.placeholder` as any) || ""
+                                            }
+                                            className={
+                                                hasError ? "border-destructive" : ""
+                                            }
+                                            aria-invalid={hasError}
+                                            aria-describedby={
+                                                hasError ? `${fieldName}-error` : undefined
+                                            }
+                                        />
+                                    )}
+                                    
+                                    {hasError && (
+                                        <span id={`${fieldName}-error`} className="text-sm text-destructive">
+                                            {errorMessage}
+                                        </span>
+                                    )}
+                                    
+                                    {attribute.annotations?.["inputHelperText"] && (
+                                        <p className="text-xs text-muted-foreground">
+                                            {i18nToString(
+                                                i18n,
+                                                attribute.annotations["inputHelperText"] as any
+                                            ) || attribute.annotations["inputHelperText"]}
+                                        </p>
+                                    )}
+                                </div>
+                            );
+                        })}
 
                         <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-end">
                             {referrer?.url && (

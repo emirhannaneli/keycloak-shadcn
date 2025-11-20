@@ -15,6 +15,14 @@ export default function TotpPage({
 
     const { url, messagesPerField, message, totp, mode } = kcContext;
 
+    const title = i18nToString(i18n, "authenticatorTitleHtml" as any) || i18nToString(i18n, "authenticatorTitle" as any) || "Authenticator";
+
+    // Document title'ı ayarla
+    useEffect(() => {
+        const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
+        document.title = titleText || "Authenticator";
+    }, [title]);
+
     // URL'den referrer parametrelerini al
     const [referrerParams, setReferrerParams] = useState<{ referrer?: string; referrer_uri?: string }>({});
     
@@ -38,7 +46,7 @@ export default function TotpPage({
         return (
             <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "authenticatorTitleHtml" as any) || i18nToString(i18n, "authenticatorTitle" as any) || "Authenticator"}
+                title={title}
                 className="w-full max-w-3xl"
             >
                 <p className="text-muted-foreground text-center py-8">
@@ -63,7 +71,7 @@ export default function TotpPage({
     return (
         <KcCard
                 kcContext={kcContext}
-                title={i18nToString(i18n, "authenticatorTitleHtml" as any) || i18nToString(i18n, "authenticatorTitle" as any) || "Authenticator"}
+                title={title}
                 className="w-full max-w-3xl"
             >
                 {shouldShowMessage && <KcAlert message={message} className="mb-4" />}
