@@ -62,7 +62,7 @@ const messages = {
     realmChoice: "Realm",
 
     // Identity provider
-    "identity-provider-login-label": "Sign in with {0}",
+    "identity-provider-login-label": "Sign in with social",
     emailLinkIdpTitle: "Link {0}",
     emailLinkIdp: "Link your account with {0}.",
     emailLinkIdpTitleHtml: "Link {0}",

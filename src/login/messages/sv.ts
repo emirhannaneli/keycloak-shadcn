@@ -2,7 +2,7 @@
 const messages = {
     doLogIn: "Logga in",
     termsPlainText: "Terms and conditions to be defined.",
-    "identity-provider-login-label": "Sign in with {0}",
+    "identity-provider-login-label": "Logga in med social",
     registerTitle: "Register",
     displayUnsupported: "Requested display type unsupported",
     browserRequired: "Browser required to login",

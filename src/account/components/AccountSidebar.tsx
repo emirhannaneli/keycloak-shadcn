@@ -4,6 +4,12 @@ import { i18nToString } from "../utils/i18n";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { 
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { 
     User, 
     Lock, 
     Shield, 
@@ -69,34 +75,43 @@ export function AccountSidebar({ kcContext, currentPageId, onItemClick }: Accoun
     ];
 
     return (
-        <nav className="flex flex-row flex-wrap items-center gap-2 overflow-hidden py-2 pl-1 pr-1">
-            {menuItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = currentPageId === item.id;
-                
-                return (
-                    <a
-                        key={item.id}
-                        href={item.href}
-                        onClick={onItemClick}
-                        className="inline-block"
-                    >
-                        <Badge
-                            variant={isActive ? "default" : "outline"}
-                            className={cn(
-                                "flex items-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold transition-all cursor-pointer whitespace-nowrap w-auto backdrop-blur-md rounded-lg",
-                                isActive
-                                    ? "bg-primary text-primary-foreground shadow-xl border-0 ring-2 ring-primary/50 dark:ring-primary/40 scale-105 brightness-110"
-                                    : "bg-white/10 dark:bg-black/10 border border-white/20 dark:border-white/10 text-foreground hover:bg-white/20 dark:hover:bg-black/20 hover:border-white/30 dark:hover:border-white/15 hover:shadow-lg"
-                            )}
-                        >
-                            <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
-                            <span className="hidden sm:inline">{item.label}</span>
-                        </Badge>
-                    </a>
-                );
-            })}
-        </nav>
+        <div className="inline-block">
+            <TooltipProvider>
+                <nav className="inline-flex flex-row flex-wrap items-center justify-center gap-2 py-2 px-1">
+                {menuItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = currentPageId === item.id;
+                    
+                    return (
+                        <Tooltip key={item.id}>
+                            <TooltipTrigger asChild>
+                                <a
+                                    href={item.href}
+                                    onClick={onItemClick}
+                                    className="inline-block"
+                                >
+                                    <Badge
+                                        variant={isActive ? "default" : "outline"}
+                                        className={cn(
+                                            "flex items-center justify-center px-2 sm:px-3 py-1.5 sm:py-2 transition-all cursor-pointer backdrop-blur-md rounded-lg",
+                                            isActive
+                                                ? "bg-primary text-primary-foreground shadow-xl border-0 ring-2 ring-primary/50 dark:ring-primary/40 scale-105 brightness-110"
+                                                : "bg-white/10 dark:bg-black/10 border border-white/20 dark:border-white/10 text-foreground hover:bg-white/20 dark:hover:bg-black/20 hover:border-white/30 dark:hover:border-white/15 hover:shadow-lg"
+                                        )}
+                                    >
+                                        <Icon className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                                    </Badge>
+                                </a>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{item.label}</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    );
+                })}
+                </nav>
+            </TooltipProvider>
+        </div>
     );
 }
 

@@ -15,6 +15,8 @@ export default function TotpPage({
     const { url, messagesPerField, message, totp, mode } = kcContext;
 
     const isManualMode = mode === "manual";
+    const isTotpEnabled = totp?.enabled === true;
+    const hasCredentials = totp?.otpCredentials && Array.isArray(totp.otpCredentials) && totp.otpCredentials.length > 0;
 
     return (
         <KcCard
@@ -24,7 +26,7 @@ export default function TotpPage({
             >
                 {message && <KcAlert message={message} className="mb-4" />}
 
-                {totp?.enabled && totp.otpCredentials && totp.otpCredentials.length > 0 && (
+                {isTotpEnabled && hasCredentials && (
                     <div className="mb-6 space-y-4">
                         <h3 className="text-lg font-semibold">
                             {i18nToString(i18n, "configuredAuthenticators" as any) || "Configured Authenticators"}
@@ -58,7 +60,7 @@ export default function TotpPage({
                     </div>
                 )}
 
-                {!totp?.enabled && (
+                {!isTotpEnabled && (
                     <div className="space-y-6">
                         {!isManualMode && totp?.totpSecretQrCode && (
                             <div className="space-y-4">

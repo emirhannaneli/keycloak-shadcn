@@ -26,15 +26,15 @@ const messages = {
     applicationsTitleHtml: "Uygulamalar",
     accountLogTitle: "Hesap Günlüğü",
     accountLogTitleHtml: "Hesap Günlüğü",
-    federatedIdentityTitle: "Federasyon Kimliği",
-    federatedIdentityTitleHtml: "Federasyon Kimliği",
+    federatedIdentityTitle: "Bağlı Hesaplar",
+    federatedIdentityTitleHtml: "Bağlı Hesaplar",
 
     // Account page
     activeSessions: "Aktif Oturumlar",
     active: "aktif",
     applications: "Uygulamalar",
     authorizedApps: "yetkili uygulamalar",
-    federatedIdentity: "Federasyon Kimliği",
+    federatedIdentity: "Bağlı Hesaplar",
     linkedAccounts: "bağlantılı hesaplar",
     emailVerification: "E-posta Durumu",
     verified: "Doğrulandı",
@@ -83,7 +83,7 @@ const messages = {
     // Federated Identity page
     connected: "Bağlı",
     notConnected: "Bağlı Değil",
-    noFederatedIdentity: "Federasyon kimliği yok",
+    noFederatedIdentity: "Bağlı hesap yok",
 
     // Log page
     date: "Tarih",

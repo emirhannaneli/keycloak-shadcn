@@ -26,15 +26,15 @@ const messages = {
     applicationsTitleHtml: "Applications",
     accountLogTitle: "Account Log",
     accountLogTitleHtml: "Account Log",
-    federatedIdentityTitle: "Federated Identity",
-    federatedIdentityTitleHtml: "Federated Identity",
+    federatedIdentityTitle: "Connected Accounts",
+    federatedIdentityTitleHtml: "Connected Accounts",
 
     // Account page
     activeSessions: "Active Sessions",
     active: "active",
     applications: "Applications",
     authorizedApps: "authorized applications",
-    federatedIdentity: "Federated Identity",
+    federatedIdentity: "Connected Accounts",
     linkedAccounts: "linked accounts",
     emailVerification: "Email Status",
     verified: "Verified",
@@ -83,7 +83,7 @@ const messages = {
     // Federated Identity page
     connected: "Connected",
     notConnected: "Not Connected",
-    noFederatedIdentity: "No federated identities",
+    noFederatedIdentity: "No connected accounts",
 
     // Log page
     date: "Date",

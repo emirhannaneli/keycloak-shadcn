@@ -1,7 +1,7 @@
 /* spell-checker: disable */
 const messages = {
     doLogIn: "Pieslēgties",
-    "identity-provider-login-label": "Sign in with {0}",
+    "identity-provider-login-label": "Pieslēgties ar sociālo tīklu",
     authenticateStrong: "Strong authentication required to continue",
     termsText: "",
     deleteCredentialTitle: "Delete {0}",

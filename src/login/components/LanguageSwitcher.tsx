@@ -22,7 +22,7 @@ const languages = [
     { code: "pt", name: "Português", flag: "🇵🇹" },
     { code: "ru", name: "Русский", flag: "🇷🇺" },
     { code: "ja", name: "日本語", flag: "🇯🇵" },
-    { code: "zh", name: "中文", flag: "🇨🇳" },
+    { code: "zh-CN", name: "中文", flag: "🇨🇳" },
 ];
 
 export function LanguageSwitcher({ kcContext }: LanguageSwitcherProps) {
@@ -31,7 +31,11 @@ export function LanguageSwitcher({ kcContext }: LanguageSwitcherProps) {
     const handleLanguageChange = (langCode: string) => {
         // Keycloak locale URL formatı: /auth/realms/{realm}/protocol/openid-connect/auth?kc_locale={lang}
         const currentUrl = new URL(window.location.href);
+        
+        // Mevcut tüm query parametrelerini koru, sadece kc_locale'i güncelle
         currentUrl.searchParams.set("kc_locale", langCode);
+        
+        // Sayfayı yeniden yükle
         window.location.href = currentUrl.toString();
     };
 
@@ -52,7 +56,7 @@ export function LanguageSwitcher({ kcContext }: LanguageSwitcherProps) {
                     >
                         <span className="mr-2 text-lg">{lang.flag}</span>
                         <span>{lang.name}</span>
-                        {currentLanguage === lang.code && <span className="ml-auto">✓</span>}
+                        {(currentLanguage === lang.code || currentLanguage.startsWith(lang.code + "-")) && <span className="ml-auto">✓</span>}
                     </DropdownMenuItem>
                 ))}
             </DropdownMenuContent>

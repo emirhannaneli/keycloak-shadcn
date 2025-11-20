@@ -1,7 +1,7 @@
 /* spell-checker: disable */
 const messages = {
     doLogIn: "Logowanie",
-    "identity-provider-login-label": "Sign in with {0}",
+    "identity-provider-login-label": "Zaloguj się przez media społecznościowe",
     authenticateStrong: "Strong authentication required to continue",
     termsText: "",
     deleteCredentialTitle: "Delete {0}",

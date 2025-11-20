@@ -62,7 +62,7 @@ const messages = {
     realmChoice: "Realm",
 
     // Identity provider
-    "identity-provider-login-label": "{0} ile giriş yap",
+    "identity-provider-login-label": "Sosyal medya ile giriş yap",
     emailLinkIdpTitle: "{0} Bağla",
     emailLinkIdp: "Hesabınızı {0} ile bağlayın.",
     emailLinkIdpTitleHtml: "{0} Bağla",

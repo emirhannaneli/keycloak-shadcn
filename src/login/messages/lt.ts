@@ -2,7 +2,7 @@
 const messages = {
     doLogIn: "Prisijungti",
     termsPlainText: "Terms and conditions to be defined.",
-    "identity-provider-login-label": "Sign in with {0}",
+    "identity-provider-login-label": "Prisijungti per socialinius tinklus",
     registerTitle: "Register",
     displayUnsupported: "Requested display type unsupported",
     browserRequired: "Browser required to login",
