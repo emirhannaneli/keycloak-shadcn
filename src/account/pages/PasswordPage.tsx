@@ -17,7 +17,7 @@ export default function PasswordPage({
         <KcCard
                 kcContext={kcContext}
                 title={i18nToString(i18n, "passwordTitleHtml" as any) || i18nToString(i18n, "passwordTitle" as any) || "Password"}
-                className="w-full max-w-lg"
+                className="w-full max-w-lg mx-auto"
             >
                 {message && <KcAlert message={message} className="mb-4" />}
 

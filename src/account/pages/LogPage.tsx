@@ -23,13 +23,28 @@ export default function LogPage({
         }
     };
 
+    // Güvenli kontrol - log undefined veya events yoksa boş durumu göster
+    if (!log || !log.events || log.events.length === 0) {
+        return (
+            <KcCard
+                kcContext={kcContext}
+                title={i18nToString(i18n, "accountLogTitleHtml" as any) || i18nToString(i18n, "accountLogTitle" as any) || "Account Log"}
+                className="w-full max-w-4xl"
+            >
+                <p className="text-muted-foreground text-center py-8">
+                    {i18nToString(i18n, "noLogEvents" as any) || "No log events"}
+                </p>
+            </KcCard>
+        );
+    }
+
     return (
         <KcCard
                 kcContext={kcContext}
                 title={i18nToString(i18n, "accountLogTitleHtml" as any) || i18nToString(i18n, "accountLogTitle" as any) || "Account Log"}
                 className="w-full max-w-4xl"
             >
-                {log?.events && log.events.length > 0 ? (
+                {log.events.length > 0 ? (
                     <div className="space-y-4">
                         {log.events.map((event, index) => (
                             <div key={index} className="space-y-3 p-4 border rounded-lg">
