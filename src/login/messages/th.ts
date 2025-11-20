@@ -1,6 +1,13 @@
 /* spell-checker: disable */
 const messages = {
     doLogIn: "เข้าสู่ระบบ",
+    authenticateStrong: "Strong authentication required to continue",
+    termsText: "",
+    deleteCredentialTitle: "Delete {0}",
+    deleteCredentialMessage: "Do you want to delete {0}?",
+    emailLinkIdpTitleHtml: "Link {0}",
+    hidePassword: "Hide password",
+    showPassword: "Show password",
     doRegister: "ลงทะเบียน",
     doSubmit: "ส่ง",
     doCancel: "ยกเลิก",

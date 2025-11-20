@@ -12,7 +12,7 @@ export default function LoginIdpLinkEmailPage({
 }) {
     const { i18n } = useI18n({ kcContext });
 
-    const { url, messagesPerField, message, idpAlias, brokerContext, realm } = kcContext;
+    const { url, messagesPerField, message, idpAlias, brokerContext } = kcContext;
 
     return (
         <div className="flex min-h-screen items-center justify-center p-4">

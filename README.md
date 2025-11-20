@@ -30,7 +30,7 @@ A modern, production-ready starter template for building custom Keycloak themes 
 
 ## 🎯 Customized Pages
 
-This starter includes **14 fully customized pages** with modern UI components:
+This starter includes **21 fully customized pages** with modern UI components:
 
 ### Authentication Pages
 - ✅ **Login** - User authentication with username/email and password
@@ -50,6 +50,15 @@ This starter includes **14 fully customized pages** with modern UI components:
 - ✅ **Terms** - Terms and conditions acceptance
 - ✅ **Logout Confirm** - Logout confirmation dialog
 
+### Account Management Pages
+- ✅ **Account** - User account overview and profile management
+- ✅ **Applications** - Manage authorized OAuth applications and permissions
+- ✅ **Federated Identity** - Manage social identity provider connections
+- ✅ **Password** - Change account password
+- ✅ **Sessions** - View and manage active sessions
+- ✅ **TOTP** - Configure two-factor authentication with TOTP
+- ✅ **Log** - View account activity and security logs
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -63,8 +72,8 @@ This starter includes **14 fully customized pages** with modern UI components:
 
 ```bash
 # Clone the repository
-git clone https://github.com/keycloakify/keycloakify-starter
-cd keycloakify-starter
+git clone https://github.com/emirhannaneli/keycloak-shadcn
+cd keycloak-shadcn
 
 # Install dependencies
 yarn install

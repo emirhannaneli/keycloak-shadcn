@@ -1,6 +1,8 @@
 /* spell-checker: disable */
 const messages = {
     doLogIn: "Anmelden",
+    termsText: "",
+    emailLinkIdpTitleHtml: "Link {0}",
     doRegister: "Registrieren",
     doSubmit: "Absenden",
     doCancel: "Abbrechen",

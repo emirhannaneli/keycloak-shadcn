@@ -173,43 +173,45 @@ export default function RegisterPage({ kcContext }: { kcContext: Extract<KcConte
                         <Suspense>
                             <div className="space-y-4">
                                 <UserProfileFormFields
-                                    kcContext={kcContext}
-                                    i18n={i18n}
-                                    kcClsx={() => ""}
-                                    doMakeUserConfirmPassword={true}
-                                    onIsFormSubmittableValueChange={() => {}}
-                                    inputComponent={(props: any) => (
-                                        <KcInput
-                                            {...props}
-                                            kcContext={kcContext}
-                                            className={
-                                                messagesPerField.existsError(props.name)
-                                                    ? "border-destructive"
-                                                    : props.className
-                                            }
-                                        />
-                                    )}
-                                    BeforeField={({ attribute }: { attribute: any }) => (
-                                        <div className="space-y-2 mb-2">
-                                            <Label htmlFor={attribute.name}>
-                                                {attribute.displayName ?? ""}
-                                                {attribute.required && <span className="text-destructive">*</span>}
-                                            </Label>
-                                        </div>
-                                    )}
-                                    AfterField={({ attribute }: { attribute: any }) => {
-                                        const error = messagesPerField.existsError(attribute.name)
-                                            ? messagesPerField.getFirstError(attribute.name)
-                                            : undefined;
-
-                                        return (
-                                            <div className="mt-1">
-                                                {error && (
-                                                    <span className="text-sm text-destructive">{error}</span>
-                                                )}
+                                    {...({
+                                        kcContext,
+                                        i18n,
+                                        kcClsx: () => "",
+                                        doMakeUserConfirmPassword: true,
+                                        onIsFormSubmittableValueChange: () => {},
+                                        inputComponent: (props: any) => (
+                                            <KcInput
+                                                {...props}
+                                                kcContext={kcContext}
+                                                className={
+                                                    messagesPerField.existsError(props.name)
+                                                        ? "border-destructive"
+                                                        : props.className
+                                                }
+                                            />
+                                        ),
+                                        BeforeField: ({ attribute }: { attribute: any }) => (
+                                            <div className="space-y-2 mb-2">
+                                                <Label htmlFor={attribute.name}>
+                                                    {attribute.displayName ?? ""}
+                                                    {attribute.required && <span className="text-destructive">*</span>}
+                                                </Label>
                                             </div>
-                                        );
-                                    }}
+                                        ),
+                                        AfterField: ({ attribute }: { attribute: any }) => {
+                                            const error = messagesPerField.existsError(attribute.name)
+                                                ? messagesPerField.getFirstError(attribute.name)
+                                                : undefined;
+
+                                            return (
+                                                <div className="mt-1">
+                                                    {error && (
+                                                        <span className="text-sm text-destructive">{error}</span>
+                                                    )}
+                                                </div>
+                                            );
+                                        },
+                                    } as any)}
                                 />
                             </div>
                         </Suspense>

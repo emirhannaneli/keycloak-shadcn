@@ -28,31 +28,33 @@ import messagesZh_CN from "./messages/zh-CN";
 /** @see: https://docs.keycloakify.dev/features/i18n */
 const { useI18n, ofTypeI18n } = i18nBuilder
     .withThemeName<ThemeName>()
-    .withCustomTranslations({
-        en: messagesEn,
-        tr: messagesTr,
-        ar: messagesAr,
-        ca: messagesCa,
-        cs: messagesCs,
-        da: messagesDa,
-        de: messagesDe,
-        es: messagesEs,
-        fi: messagesFi,
-        fr: messagesFr,
-        hu: messagesHu,
-        it: messagesIt,
-        ja: messagesJa,
-        lt: messagesLt,
-        lv: messagesLv,
-        nl: messagesNl,
-        no: messagesNo,
-        pl: messagesPl,
-        "pt-BR": messagesPt_BR,
-        ru: messagesRu,
-        sk: messagesSk,
-        sv: messagesSv,
-        "zh-CN": messagesZh_CN,
-    })
+    .withCustomTranslations(
+        {
+            en: messagesEn,
+            tr: messagesTr,
+            ar: messagesAr,
+            ca: messagesCa,
+            cs: messagesCs,
+            da: messagesDa,
+            de: messagesDe,
+            es: messagesEs,
+            fi: messagesFi,
+            fr: messagesFr,
+            hu: messagesHu,
+            it: messagesIt,
+            ja: messagesJa,
+            lt: messagesLt,
+            lv: messagesLv,
+            nl: messagesNl,
+            no: messagesNo,
+            pl: messagesPl,
+            "pt-BR": messagesPt_BR,
+            ru: messagesRu,
+            sk: messagesSk,
+            sv: messagesSv,
+            "zh-CN": messagesZh_CN,
+        }
+    )
     .build();
 
 type I18n = typeof ofTypeI18n;

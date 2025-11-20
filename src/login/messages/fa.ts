@@ -1,6 +1,15 @@
 /* spell-checker: disable */
 const messages = {
     doLogIn: "ورود",
+    authenticateStrong: "Strong authentication required to continue",
+    termsText: "",
+    deleteCredentialTitle: "Delete {0}",
+    deleteCredentialMessage: "Do you want to delete {0}?",
+    emailLinkIdpTitleHtml: "Link {0}",
+    termsAcceptanceRequired: "You must agree to our terms and conditions.",
+    acceptTerms: "I agree to the terms and conditions",
+    hidePassword: "Hide password",
+    showPassword: "Show password",
     doRegister: "ثبت نام",
     doSubmit: "ارسال",
     doCancel: "لغو",

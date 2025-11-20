@@ -1,6 +1,14 @@
 /* spell-checker: disable */
 const messages = {
     doLogIn: "Connexion",
+    authenticateStrong: "Strong authentication required to continue",
+    termsText: "",
+    deleteCredentialTitle: "Delete {0}",
+    deleteCredentialMessage: "Do you want to delete {0}?",
+    emailLinkIdpTitleHtml: "Link {0}",
+    reauthenticate: "Please re-authenticate to continue",
+    hidePassword: "Hide password",
+    showPassword: "Show password",
     doRegister: "Enregistrement",
     doSubmit: "Soumettre",
     doCancel: "Annuler",

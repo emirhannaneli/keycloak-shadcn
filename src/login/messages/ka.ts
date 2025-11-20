@@ -1,6 +1,8 @@
 /* spell-checker: disable */
 const messages = {
     doLogIn: "შესვლა",
+    termsText: "",
+    emailLinkIdpTitleHtml: "Link {0}",
     doRegister: "რეგისტრაცია",
     doSubmit: "გადაცემა",
     doCancel: "გაუქმება",

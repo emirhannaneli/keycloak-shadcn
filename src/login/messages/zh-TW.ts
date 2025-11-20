@@ -1,6 +1,11 @@
 /* spell-checker: disable */
 const messages = {
     doLogIn: "登入",
+    authenticateStrong: "Strong authentication required to continue",
+    termsText: "",
+    deleteCredentialTitle: "Delete {0}",
+    deleteCredentialMessage: "Do you want to delete {0}?",
+    emailLinkIdpTitleHtml: "Link {0}",
     doRegister: "註冊",
     doSubmit: "送出",
     doCancel: "取消",
