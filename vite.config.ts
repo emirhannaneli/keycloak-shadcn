@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import { keycloakify } from "keycloakify/vite-plugin";
 import path from "path";
 import { fileURLToPath } from "url";
+import { keycloakThemeConfig, getKeycloakVersionTargets } from "./keycloak.config";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -12,15 +13,8 @@ export default defineConfig({
         react(),
         keycloakify({
             accountThemeImplementation: "Multi-Page",
-            artifactId: "keycloak-shadcn",
-            keycloakVersionTargets: {
-                "26.2-and-above": "keycloak-shadcn-26.2-and-above.jar",
-                "26.0-to-26.1": "keycloak-shadcn-26.0-to-26.1.jar",
-                "25": "keycloak-shadcn-25.jar",
-                "24": "keycloak-shadcn-24.jar",
-                "23": "keycloak-shadcn-23.jar",
-                "21-and-below": "keycloak-shadcn-21-and-below.jar",
-            }
+            artifactId: keycloakThemeConfig.themeName,
+            keycloakVersionTargets: getKeycloakVersionTargets(),
         })
     ],
     resolve: {
