@@ -161,6 +161,17 @@ export const keycloakThemeConfig = {
 } as const;
 ```
 
+3. **Important:** Also update the project name in `package.json` to match your theme name:
+
+```json
+{
+  "name": "my-custom-theme",
+  ...
+}
+```
+
+> **Note:** It's recommended to keep the `package.json` name and `src/config.ts` theme name consistent for better project organization.
+
 The JAR file names will automatically be generated based on this theme name. For example, with `themeName: "my-custom-theme"`, the generated files will be:
 - `my-custom-theme-26.2-and-above.jar`
 - `my-custom-theme-26.0-to-26.1.jar`
@@ -255,6 +266,44 @@ The theme generates multiple JAR files for different Keycloak versions. The JAR 
 - `keycloak-shadcn-21-and-below.jar` - For Keycloak 21 and below
 
 > **Note:** To customize the theme name and JAR file names, edit the `themeName` property in `src/config.ts`. See the [Theme Name Configuration](#theme-name-configuration) section above.
+
+### Important: After Changing Theme Name
+
+If you change the theme name in `src/config.ts` and the new theme name doesn't appear in Keycloak after deployment, follow these steps:
+
+1. **Clean build**: Delete the `dist` and `dist_keycloak` folders before rebuilding:
+   ```bash
+   rm -rf dist dist_keycloak
+   # or on Windows:
+   rmdir /s /q dist dist_keycloak
+   ```
+
+2. **Rebuild**: Run the build command again:
+   ```bash
+   yarn build-keycloak-theme
+   ```
+
+3. **Remove old JAR**: Remove the old JAR file from Keycloak's `providers/` directory before uploading the new one.
+
+4. **Restart Keycloak**: After uploading the new JAR file, restart Keycloak to clear the theme cache:
+   ```bash
+   # Stop Keycloak
+   bin/kc.sh stop
+   # Start Keycloak
+   bin/kc.sh start
+   ```
+
+5. **Clear theme cache** (optional): If the theme still doesn't update, clear Keycloak's theme cache:
+   ```bash
+   # Delete the cache directory
+   rm -rf data/tmp/kc-gzip-cache
+   # or start Keycloak with cache disabled:
+   bin/kc.sh start --spi-theme-cache-themes=false --spi-theme-cache-templates=false
+   ```
+
+6. **Select the theme**: In Keycloak Admin Console, go to your realm's settings and select the new theme name from the theme dropdown.
+
+The `artifactId` parameter in `vite.config.ts` uses the theme name from `src/config.ts` and sets both the JAR file name and the theme name inside the JAR file. If the theme name doesn't change, it's usually due to caching or an incomplete rebuild.
 
 For more information about Keycloak version targets, see the [Keycloak version targets documentation](https://docs.keycloakify.dev/features/compiler-options/keycloakversiontargets).
 
