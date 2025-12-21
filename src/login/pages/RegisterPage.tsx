@@ -8,6 +8,7 @@ import {
     type LucideIcon
 } from "lucide-react";
 import React from "react";
+import { keycloakThemeConfig } from "config";
 
 const UserProfileFormFields = lazy(
     () => import("keycloakify/login/UserProfileFormFields")
@@ -143,10 +144,11 @@ export default function RegisterPage({ kcContext }: { kcContext: Extract<KcConte
         // url.resourcesPath muhtemelen /resources/{realm-id}/login/{theme-name} formatında
         // Dosyalar dist/ klasörü altında olmalı
         let resourcesPath = (url as any).resourcesPath;
+        const defaultThemeName = themeName || keycloakThemeConfig.themeName;
         if (!resourcesPath) {
             // url.resourcesPath yoksa, favicon path'inden yola çıkarak oluştur
             // Ancak realm-id'yi bilmiyoruz, bu yüzden geçici olarak theme name ile oluştur
-            resourcesPath = `/resources/${themeName || 'keycloak-shadcn'}`;
+            resourcesPath = `/resources/${defaultThemeName}`;
         }
         // Path yapısı: /resources/{realm-id}/login/{theme-name}/dist/img/...
         // Eğer resourcesPath zaten /login/{theme-name} içeriyorsa, sadece /dist ekle
@@ -154,7 +156,7 @@ export default function RegisterPage({ kcContext }: { kcContext: Extract<KcConte
         if (resourcesPath.includes('/login/')) {
             return `${resourcesPath}/dist/${path}`;
         }
-        return `${resourcesPath}/login/${themeName || 'keycloak-shadcn'}/dist/${path}`;
+        return `${resourcesPath}/login/${defaultThemeName}/dist/${path}`;
     };
 
     return (

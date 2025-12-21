@@ -17,7 +17,8 @@
         /* Path Aliases */
         "baseUrl": ".",
         "paths": {
-            "@/*": ["./src/*"]
+            "@/*": ["./src/*"],
+            "config": ["./src/config.ts"]
         },
 
         /* Linting */

@@ -7,11 +7,12 @@
 
 // noinspection JSUnusedGlobalSymbols
 
-import { lazy, Suspense, type ReactNode } from "react";
+import {lazy, type ReactNode, Suspense} from "react";
+import {keycloakThemeConfig} from "config";
 
-export type ThemeName = "keycloak-shadcn";
+export type ThemeName = typeof keycloakThemeConfig.themeName;
 
-export const themeNames: ThemeName[] = ["keycloak-shadcn"];
+export const themeNames: ThemeName[] = [keycloakThemeConfig.themeName];
 
 export type KcEnvName = never;
 
@@ -38,15 +39,15 @@ export const KcLoginPage = lazy(() => import("./login/KcPage"));
 export const KcAccountPage = lazy(() => import("./account/KcPage"));
 
 export function KcPage(props: { kcContext: KcContext; fallback?: ReactNode }) {
-    const { kcContext, fallback } = props;
+    const {kcContext, fallback} = props;
     return (
         <Suspense fallback={fallback}>
             {(() => {
                 switch (kcContext.themeType) {
                     case "login":
-                        return <KcLoginPage kcContext={kcContext} />;
+                        return <KcLoginPage kcContext={kcContext}/>;
                     case "account":
-                        return <KcAccountPage kcContext={kcContext} />;
+                        return <KcAccountPage kcContext={kcContext}/>;
                 }
             })()}
         </Suspense>
@@ -58,4 +59,4 @@ export const BASE_URL = import.meta.env.BASE_URL;
 
 // NOTE: This is only exported here because you're supposed to import type from different packages
 // Depending of if you are using Vite, Webpack, ect...
-export type { Meta, StoryObj } from "@storybook/react-vite";
+export type {Meta, StoryObj} from "@storybook/react-vite";

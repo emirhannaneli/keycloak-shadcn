@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import { keycloakify } from "keycloakify/vite-plugin";
 import path from "path";
 import { fileURLToPath } from "url";
-import { keycloakThemeConfig, getKeycloakVersionTargets } from "./keycloak.config";
+import { keycloakThemeConfig, getKeycloakVersionTargets } from "./src/config";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -22,6 +22,10 @@ export default defineConfig({
             {
                 find: "@",
                 replacement: path.resolve(__dirname, "./src"),
+            },
+            {
+                find: "config",
+                replacement: path.resolve(__dirname, "./src/config.ts"),
             },
         ],
     },

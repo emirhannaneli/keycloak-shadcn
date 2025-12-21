@@ -146,13 +146,13 @@ Storybook will be available at `http://localhost:6006`.
 
 ### Theme Name Configuration
 
-The theme name can be customized in `keycloak.config.ts`. This name will be used for:
+The theme name can be customized in `src/config.ts`. This name will be used for:
 - The artifact ID in the generated JAR files
 - The JAR file names for different Keycloak versions
 
 To customize the theme name:
 
-1. Open `keycloak.config.ts`
+1. Open `src/config.ts`
 2. Update the `themeName` property:
 
 ```typescript
@@ -245,7 +245,7 @@ This command will:
 1. Build the React application
 2. Generate Keycloak theme JAR files in `dist_keycloak/`
 
-The theme generates multiple JAR files for different Keycloak versions. The JAR file names are automatically generated based on the theme name configured in `keycloak.config.ts`. By default, the following JAR files are generated:
+The theme generates multiple JAR files for different Keycloak versions. The JAR file names are automatically generated based on the theme name configured in `src/config.ts`. By default, the following JAR files are generated:
 
 - `keycloak-shadcn-26.2-and-above.jar` - For Keycloak 26.2 and above
 - `keycloak-shadcn-26.0-to-26.1.jar` - For Keycloak 26.0 to 26.1
@@ -254,7 +254,7 @@ The theme generates multiple JAR files for different Keycloak versions. The JAR 
 - `keycloak-shadcn-23.jar` - For Keycloak 23
 - `keycloak-shadcn-21-and-below.jar` - For Keycloak 21 and below
 
-> **Note:** To customize the theme name and JAR file names, edit the `themeName` property in `keycloak.config.ts`. See the [Theme Name Configuration](#theme-name-configuration) section above.
+> **Note:** To customize the theme name and JAR file names, edit the `themeName` property in `src/config.ts`. See the [Theme Name Configuration](#theme-name-configuration) section above.
 
 For more information about Keycloak version targets, see the [Keycloak version targets documentation](https://docs.keycloakify.dev/features/compiler-options/keycloakversiontargets).
 

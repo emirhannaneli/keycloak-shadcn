@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { createKcPageStory } from "../KcPageStory";
+import { keycloakThemeConfig } from "config";
 
 const { KcPageStory } = createKcPageStory({ pageId: "totp.ftl" });
 
@@ -41,7 +42,7 @@ export const Default: Story = {
                 keycloakifyVersion: "9.6.1",
                 themeVersion: "1.0.10",
                 themeType: "account",
-                themeName: "keycloak-shadcn",
+                themeName: keycloakThemeConfig.themeName,
                 pageId: "totp.ftl"
             }}
         />
@@ -88,7 +89,7 @@ export const WithTotpEnabled: Story = {
                 keycloakifyVersion: "9.6.1",
                 themeVersion: "1.0.10",
                 themeType: "account",
-                themeName: "keycloak-shadcn",
+                themeName: keycloakThemeConfig.themeName,
                 pageId: "totp.ftl"
             }}
         />
@@ -126,7 +127,7 @@ export const WithManualMode: Story = {
                 keycloakifyVersion: "9.6.1",
                 themeVersion: "1.0.10",
                 themeType: "account",
-                themeName: "keycloak-shadcn",
+                themeName: keycloakThemeConfig.themeName,
                 pageId: "totp.ftl"
             }}
         />
@@ -173,7 +174,7 @@ export const MoreThanOneTotpProviders: Story = {
                 keycloakifyVersion: "9.6.1",
                 themeVersion: "1.0.10",
                 themeType: "account",
-                themeName: "keycloak-shadcn",
+                themeName: keycloakThemeConfig.themeName,
                 pageId: "totp.ftl"
             }}
         />
