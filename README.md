@@ -144,6 +144,29 @@ Storybook will be available at `http://localhost:6006`.
 
 ## 🎨 Customization
 
+### Theme Name Configuration
+
+The theme name can be customized in `keycloak.config.ts`. This name will be used for:
+- The artifact ID in the generated JAR files
+- The JAR file names for different Keycloak versions
+
+To customize the theme name:
+
+1. Open `keycloak.config.ts`
+2. Update the `themeName` property:
+
+```typescript
+export const keycloakThemeConfig = {
+    themeName: "my-custom-theme", // Change this to your desired theme name
+} as const;
+```
+
+The JAR file names will automatically be generated based on this theme name. For example, with `themeName: "my-custom-theme"`, the generated files will be:
+- `my-custom-theme-26.2-and-above.jar`
+- `my-custom-theme-26.0-to-26.1.jar`
+- `my-custom-theme-25.jar`
+- And so on...
+
 ### UI Components
 
 This starter uses **shadcn/ui** components built on **Radix UI** primitives. All components are located in `src/components/ui/` and can be customized to match your brand.
@@ -222,11 +245,18 @@ This command will:
 1. Build the React application
 2. Generate Keycloak theme JAR files in `dist_keycloak/`
 
-By default, Keycloakify generates multiple JAR files for different Keycloak versions:
-- `keycloak-theme-for-kc-22-to-25.jar` - For Keycloak 22-25
-- `keycloak-theme-for-kc-all-other-versions.jar` - For other versions
+The theme generates multiple JAR files for different Keycloak versions. The JAR file names are automatically generated based on the theme name configured in `keycloak.config.ts`. By default, the following JAR files are generated:
 
-You can customize this behavior. See the [Keycloak version targets documentation](https://docs.keycloakify.dev/features/compiler-options/keycloakversiontargets).
+- `keycloak-shadcn-26.2-and-above.jar` - For Keycloak 26.2 and above
+- `keycloak-shadcn-26.0-to-26.1.jar` - For Keycloak 26.0 to 26.1
+- `keycloak-shadcn-25.jar` - For Keycloak 25
+- `keycloak-shadcn-24.jar` - For Keycloak 24
+- `keycloak-shadcn-23.jar` - For Keycloak 23
+- `keycloak-shadcn-21-and-below.jar` - For Keycloak 21 and below
+
+> **Note:** To customize the theme name and JAR file names, edit the `themeName` property in `keycloak.config.ts`. See the [Theme Name Configuration](#theme-name-configuration) section above.
+
+For more information about Keycloak version targets, see the [Keycloak version targets documentation](https://docs.keycloakify.dev/features/compiler-options/keycloakversiontargets).
 
 ## 🔧 Additional Themes
 
