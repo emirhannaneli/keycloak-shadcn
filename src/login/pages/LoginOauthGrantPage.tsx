@@ -99,7 +99,6 @@ export default function LoginOauthGrantPage({
                 )}
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.oauthAction}
                     method="post"
                     id="kc-oauth-grant-form"

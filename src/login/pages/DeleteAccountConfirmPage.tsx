@@ -42,7 +42,6 @@ export default function DeleteAccountConfirmPage({
                 </div>
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-delete-account-confirm-form"

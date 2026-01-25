@@ -41,7 +41,6 @@ export default function TermsPage({
                 <Separator className="my-4" />
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-tos-form"

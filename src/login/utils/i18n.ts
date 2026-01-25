@@ -116,7 +116,9 @@ export function i18nToString(
         // Eğer zaten string ise direkt döndür
         if (typeof result === "string") {
             // Eğer key'in kendisi dönüyorsa (çevrilmemişse), boş string döndür
-            if (result === String(key)) {
+            // Ancak Keycloak realm localization'dan gelen mesajlar da string olarak dönebilir
+            // Bu yüzden key ile tam eşleşme kontrolü yapıyoruz
+            if (result === String(key) || result.trim() === "") {
                 return "";
             }
             return result;

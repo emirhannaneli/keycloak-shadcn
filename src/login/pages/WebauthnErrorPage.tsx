@@ -39,7 +39,6 @@ export default function WebauthnErrorPage({
                 </div>
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-webauthn-error-form"

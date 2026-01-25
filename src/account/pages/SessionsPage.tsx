@@ -103,7 +103,6 @@ export default function SessionsPage({
 
                         {url.sessionsUrl && (
                             <KcForm
-                                kcContext={kcContext}
                                 action={url.sessionsUrl}
                                 method="post"
                                 className="mt-6"

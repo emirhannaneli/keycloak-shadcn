@@ -61,7 +61,6 @@ export default function FederatedIdentityPage({
                                     {identity.connected ? (
                                         federatedIdentity.removeLinkPossible && (
                                             <KcForm
-                                                kcContext={kcContext}
                                                 action={url.socialUrl}
                                                 method="post"
                                             >

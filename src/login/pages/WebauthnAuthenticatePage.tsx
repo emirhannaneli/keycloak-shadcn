@@ -42,7 +42,6 @@ export default function WebauthnAuthenticatePage({
 
                         {authenticatorList.length > 1 && (
                             <KcForm
-                                kcContext={kcContext}
                                 action={url.loginAction}
                                 method="post"
                                 id="kc-webauthn-authenticate-form"

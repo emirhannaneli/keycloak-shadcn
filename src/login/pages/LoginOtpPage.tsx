@@ -40,7 +40,6 @@ export default function LoginOtpPage({
                 {message && <KcAlert message={message} className="mb-4" />}
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-otp-login-form"

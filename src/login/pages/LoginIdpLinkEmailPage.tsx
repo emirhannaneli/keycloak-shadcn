@@ -53,7 +53,6 @@ export default function LoginIdpLinkEmailPage({
                 </div>
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-idp-link-email-form"

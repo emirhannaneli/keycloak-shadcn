@@ -54,7 +54,6 @@ export default function LoginX509InfoPage({
 
                 {isUserEnabled && (
                     <KcForm
-                        kcContext={kcContext}
                         action={url.loginAction}
                         method="post"
                         id="kc-x509-info-form"

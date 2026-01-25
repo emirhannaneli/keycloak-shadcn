@@ -36,7 +36,6 @@ export default function LoginIdpLinkConfirmPage({
                 </div>
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-idp-link-confirm-form"

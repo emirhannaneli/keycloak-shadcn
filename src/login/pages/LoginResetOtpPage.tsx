@@ -38,7 +38,6 @@ export default function LoginResetOtpPage({
                 </div>
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-reset-otp-form"

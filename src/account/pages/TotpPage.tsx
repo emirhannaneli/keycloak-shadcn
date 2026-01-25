@@ -90,7 +90,6 @@ export default function TotpPage({
                                 <span>{credential.userLabel || i18nToString(i18n, "authenticator") || "Authenticator"}</span>
                                 {url.totpUrl && (
                                 <KcForm
-                                    kcContext={kcContext}
                                     action={url.totpUrl}
                                     method="post"
                                 >
@@ -212,7 +211,6 @@ export default function TotpPage({
                         {/* TOTP Form */}
                         {url.totpUrl && (
                         <KcForm
-                            kcContext={kcContext}
                             action={url.totpUrl}
                             method="post"
                             id="kc-totp-settings-form"

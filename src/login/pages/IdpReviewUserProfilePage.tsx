@@ -82,7 +82,6 @@ export default function IdpReviewUserProfilePage({
                 </div>
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-idp-review-user-profile-form"

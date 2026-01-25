@@ -29,7 +29,6 @@ export default function ResetPasswordPage({ kcContext }: { kcContext: Extract<Kc
                     {message && <KcAlert message={message} className="mb-4" />}
 
                     <KcForm
-                        kcContext={kcContext}
                         action={url.loginRestartFlowUrl}
                         method="post"
                         id="kc-reset-password-form"

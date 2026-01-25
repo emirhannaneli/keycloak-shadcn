@@ -33,7 +33,6 @@ export default function LoginPasswordPage({
                 {message && <KcAlert message={message} className="mb-4" />}
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-form-login"

@@ -34,7 +34,6 @@ export default function LoginOauth2DeviceVerifyUserCodePage({
                 </div>
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.oauth2DeviceVerificationAction}
                     method="post"
                     id="kc-oauth2-device-verify-user-code-form"

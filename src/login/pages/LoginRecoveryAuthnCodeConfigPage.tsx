@@ -33,7 +33,6 @@ export default function LoginRecoveryAuthnCodeConfigPage({
                 </div>
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-recovery-authn-code-config-form"

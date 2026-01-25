@@ -34,7 +34,6 @@ export default function SelectOrganizationPage({
                     </div>
                 ) : (
                     <KcForm
-                        kcContext={kcContext}
                         action={url.loginAction}
                         method="post"
                         id="kc-select-organization-form"

@@ -41,7 +41,6 @@ export default function LoginPageExpiredPage({
                 <div className="space-y-3">
                     {url.loginRestartFlowUrl && (
                         <KcForm
-                            kcContext={kcContext}
                             action={url.loginRestartFlowUrl}
                             method="post"
                         >
@@ -57,7 +56,6 @@ export default function LoginPageExpiredPage({
 
                     {url.loginAction && (
                         <KcForm
-                            kcContext={kcContext}
                             action={url.loginAction}
                             method="post"
                         >

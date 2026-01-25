@@ -35,7 +35,6 @@ export default function LoginConfigTotpPage({
                 {message && <KcAlert message={message} className="mb-4" />}
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-totp-settings-form"

@@ -34,7 +34,6 @@ export default function LoginRecoveryAuthnCodeInputPage({
                 </div>
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-recovery-authn-code-input-form"

@@ -3,58 +3,56 @@ import { i18nBuilder } from "keycloakify/account";
 import type { ThemeName } from "../kc.gen";
 import messagesEn from "./messages/en";
 import messagesTr from "./messages/tr";
-import messagesAr from "./messages/ar";
-import messagesCa from "./messages/ca";
-import messagesCs from "./messages/cs";
-import messagesDa from "./messages/da";
-import messagesDe from "./messages/de";
-import messagesEs from "./messages/es";
-import messagesFi from "./messages/fi";
-import messagesFr from "./messages/fr";
-import messagesHu from "./messages/hu";
-import messagesIt from "./messages/it";
-import messagesJa from "./messages/ja";
-import messagesLt from "./messages/lt";
-import messagesLv from "./messages/lv";
-import messagesNl from "./messages/nl";
-import messagesNo from "./messages/no";
-import messagesPl from "./messages/pl";
-import messagesPt_BR from "./messages/pt-BR";
-import messagesRu from "./messages/ru";
-import messagesSk from "./messages/sk";
-import messagesSv from "./messages/sv";
-import messagesZh_CN from "./messages/zh-CN";
+import messagesar from "./messages/ar";
+import messagesca from "./messages/ca";
+import messagescs from "./messages/cs";
+import messagesda from "./messages/da";
+import messagesde from "./messages/de";
+import messageses from "./messages/es";
+import messagesfi from "./messages/fi";
+import messagesfr from "./messages/fr";
+import messageshu from "./messages/hu";
+import messagesit from "./messages/it";
+import messagesja from "./messages/ja";
+import messageslt from "./messages/lt";
+import messageslv from "./messages/lv";
+import messagesnl from "./messages/nl";
+import messagesno from "./messages/no";
+import messagespl from "./messages/pl";
+import messagespt_BR from "./messages/pt-BR";
+import messagesru from "./messages/ru";
+import messagessk from "./messages/sk";
+import messagessv from "./messages/sv";
+import messageszh_CN from "./messages/zh-CN";
 
 /** @see: https://docs.keycloakify.dev/features/i18n */
 const { useI18n, ofTypeI18n } = i18nBuilder
     .withThemeName<ThemeName>()
-    .withCustomTranslations(
-        {
-            en: messagesEn,
-            tr: messagesTr,
-            ar: messagesAr,
-            ca: messagesCa,
-            cs: messagesCs,
-            da: messagesDa,
-            de: messagesDe,
-            es: messagesEs,
-            fi: messagesFi,
-            fr: messagesFr,
-            hu: messagesHu,
-            it: messagesIt,
-            ja: messagesJa,
-            lt: messagesLt,
-            lv: messagesLv,
-            nl: messagesNl,
-            no: messagesNo,
-            pl: messagesPl,
-            "pt-BR": messagesPt_BR,
-            ru: messagesRu,
-            sk: messagesSk,
-            sv: messagesSv,
-            "zh-CN": messagesZh_CN,
-        }
-    )
+    .withCustomTranslations({
+        en: messagesEn,
+        tr: messagesTr,
+        ar: messagesar,
+        ca: messagesca,
+        cs: messagescs,
+        da: messagesda,
+        de: messagesde,
+        es: messageses,
+        fi: messagesfi,
+        fr: messagesfr,
+        hu: messageshu,
+        it: messagesit,
+        ja: messagesja,
+        lt: messageslt,
+        lv: messageslv,
+        nl: messagesnl,
+        no: messagesno,
+        pl: messagespl,
+        "pt-BR": messagespt_BR,
+        ru: messagesru,
+        sk: messagessk,
+        sv: messagessv,
+        "zh-CN": messageszh_CN,
+    })
     .build();
 
 type I18n = typeof ofTypeI18n;

@@ -33,7 +33,6 @@ export default function LoginPasskeysConditionalAuthenticatePage({
                 </div>
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-passkeys-conditional-authenticate-form"

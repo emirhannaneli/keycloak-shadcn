@@ -82,7 +82,6 @@ export default function LoginUpdateProfilePage({
                 {message && <KcAlert message={message} className="mb-4" />}
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-update-profile-form"

@@ -222,7 +222,6 @@ export default function RegisterPage({ kcContext }: { kcContext: Extract<KcConte
                     {message && <KcAlert message={message} className="mb-4" />}
 
                     <KcForm
-                        kcContext={kcContext}
                         action={url.registrationAction}
                         method="post"
                         id="kc-register-form"

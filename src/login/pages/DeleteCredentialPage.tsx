@@ -47,7 +47,6 @@ export default function DeleteCredentialPage({
                 </div>
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-delete-credential-form"

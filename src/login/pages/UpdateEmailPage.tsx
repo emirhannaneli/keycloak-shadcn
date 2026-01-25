@@ -39,7 +39,6 @@ export default function UpdateEmailPage({
                 </div>
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-update-email-form"

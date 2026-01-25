@@ -43,7 +43,6 @@ export default function LogoutConfirmPage({
                 </div>
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.logoutConfirmAction}
                     method="post"
                     id="kc-logout-confirm-form"

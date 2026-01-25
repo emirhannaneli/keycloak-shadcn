@@ -48,7 +48,6 @@ export default function CodePage({
                 )}
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.loginAction}
                     method="post"
                     id="kc-code-form"

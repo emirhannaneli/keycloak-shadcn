@@ -233,7 +233,6 @@ export default function AccountPage({
                 </div>
 
                 <KcForm
-                    kcContext={kcContext}
                     action={url.accountUrl}
                     method="post"
                     id="kc-account-form"

@@ -1,47 +1,42 @@
 import type { I18n } from "../i18n";
-import { i18nToString } from "./i18n";
 
 /**
- * Login sayfası için logo URL'ini dinamik olarak alır.
+ * Login sayfası için logo URL'ini dinamik olarak belirler.
  * 
- * Keycloak Admin Console -> Realm Settings -> Localization üzerinden
- * `loginLogoUrl` mesaj anahtarı ile logo URL'i veya Base64 string'i tanımlanabilir.
+ * Öncelik Sırası:
+ * 1. Admin Panel -> Realm Settings -> Localization -> "loginLogoUrl" değeri
+ * 2. Kod içinde belirtilen varsayılan logo (defaultLogoPath)
  * 
- * @param i18n - i18n instance
- * @param defaultLogoPath - Varsayılan logo path'i (örn: "img/keycloak-logo-text.png")
- * @param getResourcePath - Resource path oluşturma fonksiyonu
- * @returns Logo URL'i veya Base64 string'i. Eğer tanımlanmamışsa varsayılan logo path'i.
- * 
- * @example
- * // Admin panelde tanımlanmamışsa:
- * getLoginLogoUrl(i18n, "img/keycloak-logo-text.png", getResourcePath)
- * // -> "/resources/.../img/keycloak-logo-text.png"
- * 
- * @example
- * // Admin panelde URL tanımlanmışsa:
- * // loginLogoUrl = "https://example.com/logo.png"
- * getLoginLogoUrl(i18n, "img/keycloak-logo-text.png", getResourcePath)
- * // -> "https://example.com/logo.png"
- * 
- * @example
- * // Admin panelde Base64 tanımlanmışsa:
- * // loginLogoUrl = "data:image/png;base64,iVBORw0KG..."
- * getLoginLogoUrl(i18n, "img/keycloak-logo-text.png", getResourcePath)
- * // -> "data:image/png;base64,iVBORw0KG..."
+ * @param i18n - Keycloakify i18n nesnesi
+ * @param defaultLogoPath - Varsayılan logo yolu (örn: "img/logo.png")
+ * @param getResourcePath - Resource path oluşturucu fonksiyon
  */
 export function getLoginLogoUrl(
     i18n: I18n,
     defaultLogoPath: string,
     getResourcePath: (path: string) => string
 ): string {
-    // loginLogoUrl mesaj anahtarını kontrol et
-    const logoUrl = i18nToString(i18n, "loginLogoUrl" as any);
-    
-    // Eğer logoUrl tanımlanmışsa (boş string değilse ve key'in kendisi değilse), kullan
-    if (logoUrl && logoUrl.trim() !== "" && logoUrl !== "loginLogoUrl") {
-        return logoUrl.trim();
+    const KEY_LOGIN_LOGO_URL = "loginLogoUrl";
+
+    // advancedMsgStr kullan - key bulunamazsa key'in kendisini döndürür, hata fırlatmaz
+    const result = i18n.advancedMsgStr(KEY_LOGIN_LOGO_URL).trim();
+
+    // Geçerli bir URL mi kontrol et
+    // - Boş olmamalı
+    // - Key'in kendisi olmamalı (bulunamadı demek)
+    // - URL benzeri olmalı (http/https ile başlamalı veya data: ile başlamalı veya / ile başlamalı)
+    const isValidUrl = 
+        result !== "" &&
+        result !== KEY_LOGIN_LOGO_URL &&
+        (result.startsWith("http://") || 
+         result.startsWith("https://") || 
+         result.startsWith("data:") ||
+         result.startsWith("/"));
+
+    if (isValidUrl) {
+        return result;
     }
-    
-    // Eğer tanımlanmamışsa, varsayılan logo path'ini kullan
+
+    // Geçerli URL bulunamazsa varsayılan logo
     return getResourcePath(defaultLogoPath);
 }
