@@ -16,7 +16,7 @@ export default function WebauthnRegisterPage({
 
     const title = i18nToString(i18n, "doRegisterSecurityKey");
 
-    // Document title'ı ayarla
+    // Set document title
     useEffect(() => {
         const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
         document.title = titleText || "Register Security Key";

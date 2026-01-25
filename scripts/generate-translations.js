@@ -7,12 +7,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const require = createRequire(import.meta.url);
 
-// Account için key'ler
+// Keys for Account
 const accountEnContent = fs.readFileSync(path.join(__dirname, '../src/account/messages/en.ts'), 'utf8');
 const accountKeysMatch = accountEnContent.match(/const messages = \{([\s\S]*?)\};/);
 const accountKeys = accountKeysMatch ? accountEnContent.match(/(\w+|"[^"]+"):/g).map(k => k.replace(/[":]/g, '')) : [];
 
-// Login için key'ler
+// Keys for Login
 const loginEnContent = fs.readFileSync(path.join(__dirname, '../src/login/messages/en.ts'), 'utf8');
 const loginKeysMatch = loginEnContent.match(/const messages = \{([\s\S]*?)\};/);
 const loginKeys = loginKeysMatch ? loginEnContent.match(/(\w+|"[^"]+"):/g).map(k => k.replace(/[":]/g, '')) : [];
@@ -52,7 +52,7 @@ function parseTypeScriptMessages(filePath) {
     const messagesStr = messagesMatch[1];
     const messages = {};
     
-    // Tüm satırları al
+    // Get all lines
     const lines = messagesStr.split('\n');
     let currentKey = null;
     let currentValue = '';
@@ -64,10 +64,10 @@ function parseTypeScriptMessages(filePath) {
         let line = lines[i].trim();
         if (!line || line.startsWith('//')) continue;
         
-        // Key bulma: key: veya "key": formatında
+        // Key finding: in format key: or "key":
         const keyMatch = line.match(/^([\w-]+|"[^"]+"):\s*(.*)$/);
         if (keyMatch && !inString) {
-            // Önceki key'i kaydet
+            // Save previous key
             if (currentKey) {
                 messages[currentKey] = currentValue.trim().replace(/^["']|["']$/g, '').replace(/,$/, '');
             }
@@ -75,7 +75,7 @@ function parseTypeScriptMessages(filePath) {
             currentKey = keyMatch[1].replace(/["']/g, '');
             const rest = keyMatch[2];
             
-            // Eğer value aynı satırda bitiyorsa
+            // If value ends on the same line
             if (rest.match(/^"[^"]*",?\s*$/)) {
                 messages[currentKey] = rest.replace(/^["']|["']$/g, '').replace(/,$/, '');
                 currentKey = null;
@@ -88,7 +88,7 @@ function parseTypeScriptMessages(filePath) {
                 currentValue = rest;
             }
         } else if (currentKey) {
-            // Value devam ediyor
+            // Value continues
             if (inString) {
                 if (line.includes(stringDelimiter)) {
                     const endIndex = line.indexOf(stringDelimiter);
@@ -113,7 +113,7 @@ function parseTypeScriptMessages(filePath) {
         }
     }
     
-    // Son key'i kaydet
+    // Save last key
     if (currentKey) {
         messages[currentKey] = currentValue.trim().replace(/^["']|["']$/g, '').replace(/,$/, '');
     }
@@ -169,7 +169,7 @@ export default messages;
     }
 }
 
-// Çalıştır
+// Run
 generateAccountTranslations();
 generateLoginTranslations();
 console.log('Done!');

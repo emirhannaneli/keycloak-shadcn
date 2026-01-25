@@ -38,7 +38,7 @@ export function ThemeSwitcher() {
             setTheme(stored);
             updateTheme(stored);
         } else {
-            // Sistem temasını kontrol et
+            // Check system theme
             const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
             setTheme("system");
             updateTheme("system", prefersDark);

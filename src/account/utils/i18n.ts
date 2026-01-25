@@ -2,7 +2,7 @@ import type { I18n } from "../i18n";
 import { ReactElement, isValidElement } from "react";
 
 /**
- * ReactElement'den text content'ini recursive olarak çıkarır
+ * Recursively extracts text content from ReactElement
  */
 function extractTextFromReactElement(element: any): string {
     if (typeof element === "string") {
@@ -21,11 +21,11 @@ function extractTextFromReactElement(element: any): string {
         return element.map(extractTextFromReactElement).filter(Boolean).join("");
     }
     
-    // Önce dangerouslySetInnerHTML'i kontrol et (HTML içerik için)
+    // First check dangerouslySetInnerHTML (for HTML content)
     if (element && typeof element === "object") {
         if ("props" in element && element.props?.dangerouslySetInnerHTML) {
             const html = element.props.dangerouslySetInnerHTML.__html || "";
-            // HTML'den text çıkar (basit regex ile)
+            // Extract text from HTML (using simple regex)
             if (html) {
                 return html.replace(/<[^>]*>/g, "").trim();
             }
@@ -35,14 +35,14 @@ function extractTextFromReactElement(element: any): string {
     if (isValidElement(element)) {
         const reactElement = element as ReactElement;
         if (reactElement.props) {
-            // dangerouslySetInnerHTML varsa onu kullan
+            // Use dangerouslySetInnerHTML if it exists
             if (reactElement.props.dangerouslySetInnerHTML) {
                 const html = reactElement.props.dangerouslySetInnerHTML.__html || "";
                 if (html) {
                     return html.replace(/<[^>]*>/g, "").trim();
                 }
             }
-            // children varsa onu çıkar
+            // Extract children if they exist
             if ("children" in reactElement.props && reactElement.props.children !== undefined) {
                 const childrenText = extractTextFromReactElement(reactElement.props.children);
                 if (childrenText) {
@@ -53,7 +53,7 @@ function extractTextFromReactElement(element: any): string {
         return "";
     }
     
-    // Eğer obje ise ve toString metodu varsa kullan
+    // If it's an object and has toString method, use it
     if (typeof element === "object" && element !== null) {
         if (typeof element.toString === "function") {
             const stringValue = element.toString();
@@ -63,18 +63,18 @@ function extractTextFromReactElement(element: any): string {
         }
     }
     
-    // Son çare: boş string döndür
+    // Last resort: return empty string
     return "";
 }
 
 /**
- * i18n.msg() ReactElement döndürür, string'e çevirmek için bu helper kullanılmalı
- * Parametreler de desteklenir: 
- * - i18nToString(i18n, "key", { 0: value }) - Keycloak formatı
- * - i18nToString(i18n, "key", value) - Tek parametre için kısayol
+ * i18n.msg() returns ReactElement, this helper should be used to convert to string
+ * Parameters are also supported:
+ * - i18nToString(i18n, "key", { 0: value }) - Keycloak format
+ * - i18nToString(i18n, "key", value) - Shortcut for single parameter
  * 
- * Eğer sonuçta {0}, {1}, {2} gibi placeholder'lar varsa ve realm bilgisi verilmişse,
- * otomatik olarak realm adıyla değiştirilir.
+ * If the result contains placeholders like {0}, {1}, {2} and realm info is provided,
+ * they are automatically replaced with the realm name.
  */
 export function i18nToString(
     i18n: I18n, 
@@ -83,58 +83,58 @@ export function i18nToString(
     realmName?: string
 ): string {
     try {
-        // Keycloak'ta parametreli mesajlar obje formatında geçilir: { 0: value }
-        // Eğer string veya number geçilirse, { 0: value } formatına çevir
+        // In Keycloak, parameterized messages are passed in object format: { 0: value }
+        // If string or number is passed, convert to { 0: value } format
         let paramObj: { [key: number]: any } | undefined = undefined;
         if (params !== undefined) {
             if (typeof params === "object" && !Array.isArray(params) && params !== null) {
-                // Zaten obje formatında
+                // Already in object format
                 paramObj = params as { [key: number]: any };
             } else {
-                // String veya number ise { 0: value } formatına çevir
+                // If string or number, convert to { 0: value } format
                 paramObj = { 0: params };
             }
         }
         
-        // i18n.msg() parametreleri obje formatında alır
+        // i18n.msg() accepts parameters in object format
         const result = paramObj !== undefined 
             ? (i18n.msg as any)(key, paramObj)
             : (i18n.msg as any)(key);
         
-        // Eğer zaten string ise direkt döndür
+        // If already a string, return directly
         if (typeof result === "string") {
-            // Eğer key'in kendisi dönüyorsa (çevrilmemişse), boş string döndür
+            // If the key itself is returned (not translated), return empty string
             if (result === String(key) || result.trim() === "") {
                 return "";
             }
-            // Eğer sonuçta {0} placeholder'ı varsa ve realm adı verilmişse, değiştir
+            // If result contains {0} placeholder and realm name is provided, replace it
             if (realmName && result.includes("{0}")) {
                 return result.replace(/\{0\}/g, realmName);
             }
             return result;
         }
         
-        // Eğer result null veya undefined ise boş string döndür
+        // If result is null or undefined, return empty string
         if (result == null) {
             return "";
         }
         
-        // ReactElement veya başka bir obje ise, text content'ini çıkar
+        // If ReactElement or another object, extract text content
         const extracted = extractTextFromReactElement(result);
         
-        // Eğer hala "[object Object]" veya boş ise, key'in kendisi dönüyorsa boş string döndür
+        // If still "[object Object]" or empty, or key itself is returned, return empty string
         if (extracted === "[object Object]" || extracted === "" || extracted === String(key)) {
             return "";
         }
         
-        // Eğer sonuçta {0} placeholder'ı varsa ve realm adı verilmişse, değiştir
+        // If result contains {0} placeholder and realm name is provided, replace it
         if (realmName && extracted.includes("{0}")) {
             return extracted.replace(/\{0\}/g, realmName);
         }
         
         return extracted;
     } catch (error) {
-        // Hata durumunda boş string döndür (fallback'e izin ver)
+        // In case of error, return empty string (allow fallback)
         console.warn(`i18nToString error for key "${key}":`, error);
         return "";
     }

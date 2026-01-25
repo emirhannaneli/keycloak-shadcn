@@ -17,7 +17,7 @@ export default function CodePage({
     const realmName = realm?.displayName || realm?.name || "";
     const title = code?.success ? i18nToString(i18n, "codeSuccessTitle") : code?.error ? i18nToString(i18n, "codeErrorTitle", code.error ? { 0: code.error } : undefined, code.error) : i18nToString(i18n, "loginTitle", undefined, realmName);
 
-    // Document title'ı ayarla
+    // Set document title
     useEffect(() => {
         const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
         document.title = titleText || "Code";

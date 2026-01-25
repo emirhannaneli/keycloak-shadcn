@@ -16,7 +16,7 @@ export default function PasswordPage({
 
     const title = i18nToString(i18n, "passwordTitleHtml" as any) || i18nToString(i18n, "passwordTitle" as any) || "Password";
 
-    // Document title'ı ayarla
+    // Set document title
     useEffect(() => {
         const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
         document.title = titleText || "Password";

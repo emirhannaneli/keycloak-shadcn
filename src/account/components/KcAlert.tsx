@@ -20,8 +20,8 @@ interface KcAlertProps {
 export function KcAlert({ kcContext, message, className }: KcAlertProps) {
     if (!message) return null;
 
-    // realm undefined olabilir, bu yüzden güvenli bir şekilde kontrol ediyoruz
-    // Mevcut realm objesini koruyarak sadece eksik özelliği ekliyoruz
+    // realm can be undefined, so we check safely
+    // Preserve the existing realm object and only add the missing property
     const safeKcContext = kcContext ? {
         ...kcContext,
         realm: kcContext.realm ? {
@@ -46,7 +46,7 @@ export function KcAlert({ kcContext, message, className }: KcAlertProps) {
 
     const Icon = iconMap[message.type] || Info;
 
-    // i18n çevirileri
+    // i18n translations
     const titleMap: Record<string, string> = {
         error: i18n ? i18nToString(i18n, "alert.error" as any) || "Error" : "Error",
         warning: i18n ? i18nToString(i18n, "alert.warning" as any) || "Warning" : "Warning",

@@ -28,7 +28,7 @@ export function KcCard({
     const realm = kcContext?.realm;
     const realmName = realm?.displayName || realm?.name;
 
-    // Title'ın HTML içerik olup olmadığını kontrol et
+    // Check if title is HTML content
     const isHtmlTitle = typeof title === 'string' && (title.includes('<') || title.includes('&'));
 
     return (

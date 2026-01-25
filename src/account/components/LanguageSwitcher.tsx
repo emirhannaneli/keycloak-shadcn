@@ -29,13 +29,13 @@ export function LanguageSwitcher({ kcContext }: LanguageSwitcherProps) {
     const currentLanguage = kcContext.locale?.currentLanguageTag || "en";
 
     const handleLanguageChange = (langCode: string) => {
-        // Keycloak locale URL formatı: /auth/realms/{realm}/account?kc_locale={lang}
+        // Keycloak locale URL format: /auth/realms/{realm}/account?kc_locale={lang}
         const currentUrl = new URL(window.location.href);
         
-        // Mevcut tüm query parametrelerini koru, sadece kc_locale'i güncelle
+        // Preserve all existing query parameters, only update kc_locale
         currentUrl.searchParams.set("kc_locale", langCode);
         
-        // Sayfayı yeniden yükle
+        // Reload the page
         window.location.href = currentUrl.toString();
     };
 

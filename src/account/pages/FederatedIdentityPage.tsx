@@ -16,7 +16,7 @@ export default function FederatedIdentityPage({
 
     const title = i18nToString(i18n, "federatedIdentityTitleHtml" as any) || i18nToString(i18n, "federatedIdentityTitle" as any) || "Federated Identity";
 
-    // Document title'ı ayarla
+    // Set document title
     useEffect(() => {
         const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
         document.title = titleText || "Connected Accounts";

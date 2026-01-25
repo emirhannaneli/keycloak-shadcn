@@ -17,13 +17,13 @@ export default function TotpPage({
 
     const title = i18nToString(i18n, "authenticatorTitleHtml" as any) || i18nToString(i18n, "authenticatorTitle" as any) || "Authenticator";
 
-    // Document title'ı ayarla
+    // Set document title
     useEffect(() => {
         const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
         document.title = titleText || "Authenticator";
     }, [title]);
 
-    // URL'den referrer parametrelerini al
+    // Get referrer parameters from URL
     const [referrerParams, setReferrerParams] = useState<{ referrer?: string; referrer_uri?: string }>({});
     
     useEffect(() => {
@@ -38,10 +38,10 @@ export default function TotpPage({
         setReferrerParams(params);
     }, []);
 
-    // Totp objesi yoksa bilgi mesajı göster ama sayfa açılsın
-    // Form gösterilmez çünkü totp objesi olmadan form çalışmaz
+    // If Totp object doesn't exist, show info message but page should open
+    // Form is not shown because form doesn't work without totp object
 
-    // Totp objesi yoksa sadece bilgi mesajı göster
+    // If Totp object doesn't exist, only show info message
     if (!totp) {
         return (
             <KcCard
@@ -62,7 +62,7 @@ export default function TotpPage({
     const supportedApplications = totp.supportedApplications || [];
     const policy = totp.policy || {};
 
-    // Mesajı filtrele: TOTP ayarlaması yapılmamışsa "removed" mesajlarını gösterme
+    // Filter message: don't show "removed" messages if TOTP setup hasn't been done
     const shouldShowMessage = message && (
         isTotpEnabled || 
         !message.summary?.toLowerCase().includes("removed")
@@ -76,7 +76,7 @@ export default function TotpPage({
             >
                 {shouldShowMessage && <KcAlert message={message} className="mb-4" />}
 
-                {/* Mevcut TOTP Credentials Listesi */}
+                {/* Current TOTP Credentials List */}
                 {isTotpEnabled && hasCredentials && (
                     <div className="mb-6 space-y-4">
                         <h3 className="text-lg font-semibold">
@@ -118,10 +118,10 @@ export default function TotpPage({
                     </div>
                 )}
 
-                {/* TOTP Yapılandırma Bölümü */}
+                {/* TOTP Configuration Section */}
                 {!isTotpEnabled && (
                     <div className="space-y-6">
-                        {/* Desteklenen Uygulamalar Listesi */}
+                        {/* Supported Applications List */}
                         {supportedApplications.length > 0 && (
                             <div className="space-y-2">
                                 <Label className="text-base font-semibold">
@@ -137,7 +137,7 @@ export default function TotpPage({
                             </div>
                         )}
 
-                        {/* Policy Bilgileri */}
+                        {/* Policy Information */}
                         {policy.type && (
                             <div className="space-y-2">
                                 <Label className="text-base font-semibold">

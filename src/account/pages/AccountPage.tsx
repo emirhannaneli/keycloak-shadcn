@@ -24,11 +24,11 @@ export default function AccountPage({
     const showUsername = !realm?.registrationEmailAsUsername;
     const canEditUsername = realm?.editUsernameAllowed ?? false;
 
-    // Dinamik attribute'ları filtrele - standart alanları hariç tut
-    // Account context'inde attribute'lar account.profile.attributes altında olabilir
+    // Filter dynamic attributes - exclude standard fields
+    // In Account context, attributes may be under account.profile.attributes
     const standardFields = ["username", "email", "firstName", "lastName"];
     const dynamicAttributes = useMemo(() => {
-        // Account context'inde profile bilgisi account.profile altında olabilir
+        // In Account context, profile info may be under account.profile
         const profileData = (account as any)?.profile;
         if (!profileData?.attributes) return [];
         return profileData.attributes.filter(
@@ -42,23 +42,23 @@ export default function AccountPage({
     const titlePlain = i18nToString(i18n, "accountTitle" as any, realmName ? { 0: realmName } : undefined, realmName);
     const title = titleHtml || titlePlain || "Account";
 
-    // Document title'ı ayarla
+    // Set document title
     useEffect(() => {
         const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
         document.title = titleText || "Account";
     }, [title]);
 
-    // İstatistikler için state
+    // State for statistics
     const [activeSessionsCount, setActiveSessionsCount] = useState<number>(0);
     const [applicationsCount, setApplicationsCount] = useState<number>(0);
     const [federatedIdentitiesCount, setFederatedIdentitiesCount] = useState<number>(0);
 
-    // Email verified durumu - account objesinden veya kcContext'ten al
+    // Email verified status - get from account object or kcContext
     const emailVerified: boolean = (account as any)?.emailVerified ?? (kcContext as any)?.account?.emailVerified ?? false;
 
-    // Verileri kcContext'ten al
+    // Get data from kcContext
     useEffect(() => {
-        // kcContext'te direkt veriler varsa onları kullan
+        // If there are direct data in kcContext, use them
         const contextSessions = (kcContext as any).sessions;
         const contextApplications = (kcContext as any).applications;
         const contextFederatedIdentity = (kcContext as any).federatedIdentity;
@@ -74,7 +74,7 @@ export default function AccountPage({
         }
     }, [kcContext]);
 
-    // Hızlı erişim linkleri
+    // Quick access links
     const quickLinks = [
         {
             id: "password",
@@ -108,7 +108,7 @@ export default function AccountPage({
 
     return (
         <div className="space-y-6 w-full">
-            {/* Özet Kartları */}
+            {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -184,7 +184,7 @@ export default function AccountPage({
                 </Card>
             </div>
 
-            {/* Hızlı Erişim */}
+            {/* Quick Access */}
             <Card>
                 <CardHeader>
                     <CardTitle>{i18nToString(i18n, "quickAccess" as any) || "Quick Access"}</CardTitle>
@@ -220,7 +220,7 @@ export default function AccountPage({
                 </CardContent>
             </Card>
 
-            {/* Hesap Bilgileri Formu */}
+            {/* Account Information Form */}
             <KcCard
                 kcContext={kcContext}
                 title={title}
@@ -241,7 +241,7 @@ export default function AccountPage({
                     <input type="hidden" name="stateChecker" value={kcContext.stateChecker} />
 
                     <div className="space-y-4 w-full">
-                        {/* Standart Alanlar */}
+                        {/* Standard Fields */}
                         {showUsername && (
                             <div className="space-y-2">
                                 <Label htmlFor="username">
@@ -370,7 +370,7 @@ export default function AccountPage({
                             )}
                         </div>
 
-                        {/* Dinamik Attribute'lar */}
+                        {/* Dynamic Attributes */}
                         {dynamicAttributes.map((attribute: any) => {
                             const fieldName = `user.attributes.${attribute.name}`;
                             const hasError = messagesPerField.existsError(fieldName);
@@ -379,12 +379,12 @@ export default function AccountPage({
                                 ? attribute.value[0] || "" 
                                 : attribute.value || "";
                             
-                            // Attribute tipine göre input tipi belirle
+                            // Determine input type based on attribute type
                             const inputType = attribute.annotations?.["inputType"] || 
                                            attribute.annotations?.["input-type"] || 
                                            "text";
                             
-                            // Select için options
+                            // Options for Select
                             const options = attribute.validators?.options?.options || 
                                           attribute.annotations?.["options"] || 
                                           [];

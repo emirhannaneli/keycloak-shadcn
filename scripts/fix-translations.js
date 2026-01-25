@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const require = createRequire(import.meta.url);
 
-// Account için key'ler
+// Keys for Account
 const accountEnFile = path.join(__dirname, '../src/account/messages/en.ts');
 const accountEnContent = fs.readFileSync(accountEnFile, 'utf8');
 const accountKeys = [];
@@ -17,7 +17,7 @@ while ((match = accountKeyRegex.exec(accountEnContent)) !== null) {
     accountKeys.push(match[1].replace(/["']/g, ''));
 }
 
-// Login için key'ler
+// Keys for Login
 const loginEnFile = path.join(__dirname, '../src/login/messages/en.ts');
 const loginEnContent = fs.readFileSync(loginEnFile, 'utf8');
 const loginKeys = [];
@@ -29,10 +29,10 @@ while ((match = loginKeyRegex.exec(loginEnContent)) !== null) {
 console.log(`Account keys: ${accountKeys.length}`);
 console.log(`Login keys: ${loginKeys.length}`);
 
-// Account dilleri
+// Account languages
 const accountLangs = ['ar', 'ca', 'cs', 'da', 'de', 'es', 'fi', 'fr', 'hu', 'it', 'ja', 'lt', 'lv', 'nl', 'no', 'pl', 'pt-BR', 'ru', 'sk', 'sv', 'zh-CN'];
 
-// Login dilleri
+// Login languages
 const loginLangs = ['ar', 'ca', 'cs', 'da', 'de', 'el', 'es', 'fa', 'fi', 'fr', 'hu', 'it', 'ja', 'ka', 'lt', 'lv', 'nl', 'no', 'pl', 'pt', 'pt-BR', 'ru', 'sk', 'sv', 'th', 'uk', 'zh-CN', 'zh-TW'];
 
 function extractValueFromLine(line) {
@@ -45,11 +45,11 @@ function extractValueFromLine(line) {
 
 function parseMessagesFile(filePath, requiredKeys) {
     try {
-        // Önce require ile dene
+        // Try with require first
         const require = createRequire(import.meta.url);
         try {
             const messages = require(filePath).default;
-            // Eksik key'leri en'den ekle
+            // Add missing keys from en
             const enMessages = require('../src/account/messages/en.ts').default;
             for (const key of requiredKeys) {
                 if (!messages[key] && enMessages[key]) {
@@ -58,26 +58,26 @@ function parseMessagesFile(filePath, requiredKeys) {
             }
             return messages;
         } catch {
-            // require çalışmazsa dosyayı parse et
+            // If require doesn't work, parse the file
         }
     } catch {}
     
     const content = fs.readFileSync(filePath, 'utf8');
     const messages = {};
     
-    // Regex ile tüm key-value çiftlerini bul
+    // Find all key-value pairs with regex
     const keyValuePattern = /(?:^|\n)\s*([\w-]+|"[^"]+"):\s*"((?:[^"\\]|\\.|\\n)*)"\s*,?\s*(?:\n|$)/gm;
     let match;
     
     while ((match = keyValuePattern.exec(content)) !== null) {
         const key = match[1].replace(/["']/g, '');
         let value = match[2];
-        // Escape karakterlerini düzelt
+        // Fix escape characters
         value = value.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
         messages[key] = value;
     }
     
-    // Çok satırlı string'ler için alternatif pattern
+    // Alternative pattern for multiline strings
     const multilinePattern = /(?:^|\n)\s*([\w-]+|"[^"]+"):\s*"((?:[^"\\]|\\.|\\n)*)"\s*,?\s*(?:\n|$)/gm;
     while ((match = multilinePattern.exec(content)) !== null) {
         const key = match[1].replace(/["']/g, '');
@@ -88,7 +88,7 @@ function parseMessagesFile(filePath, requiredKeys) {
         }
     }
     
-    // Eksik key'leri en'den ekle
+    // Add missing keys from en
     try {
         const require = createRequire(import.meta.url);
         const enMessages = require('../src/account/messages/en.ts').default;
@@ -122,7 +122,7 @@ function fixAccountTranslations() {
             const defaultPath = path.join(__dirname, `../node_modules/keycloakify/src/account/i18n/messages_defaultSet/${lang}.ts`);
             const defaultMessages = parseMessagesFile(defaultPath, accountKeys);
             
-            // Sadece gerekli key'leri al
+            // Only get required keys
             const extracted = {};
             for (const key of accountKeys) {
                 if (defaultMessages[key]) {
@@ -148,11 +148,11 @@ export default messages;
 
 function parseLoginMessagesFile(filePath, requiredKeys) {
     try {
-        // Önce require ile dene
+        // Try with require first
         const require = createRequire(import.meta.url);
         try {
             const messages = require(filePath).default;
-            // Eksik key'leri en'den ekle
+            // Add missing keys from en
             const enMessages = require('../src/login/messages/en.ts').default;
             for (const key of requiredKeys) {
                 if (!messages[key] && enMessages[key]) {
@@ -161,26 +161,26 @@ function parseLoginMessagesFile(filePath, requiredKeys) {
             }
             return messages;
         } catch {
-            // require çalışmazsa dosyayı parse et
+            // If require doesn't work, parse the file
         }
     } catch {}
     
     const content = fs.readFileSync(filePath, 'utf8');
     const messages = {};
     
-    // Regex ile tüm key-value çiftlerini bul
+    // Find all key-value pairs with regex
     const keyValuePattern = /(?:^|\n)\s*([\w-]+|"[^"]+"):\s*"((?:[^"\\]|\\.|\\n)*)"\s*,?\s*(?:\n|$)/gm;
     let match;
     
     while ((match = keyValuePattern.exec(content)) !== null) {
         const key = match[1].replace(/["']/g, '');
         let value = match[2];
-        // Escape karakterlerini düzelt
+        // Fix escape characters
         value = value.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
         messages[key] = value;
     }
     
-    // Eksik key'leri en'den ekle
+    // Add missing keys from en
     try {
         const require = createRequire(import.meta.url);
         const enMessages = require('../src/login/messages/en.ts').default;
@@ -201,7 +201,7 @@ function fixLoginTranslations() {
             const defaultPath = path.join(__dirname, `../node_modules/keycloakify/src/login/i18n/messages_defaultSet/${lang}.ts`);
             const defaultMessages = parseLoginMessagesFile(defaultPath, loginKeys);
             
-            // Sadece gerekli key'leri al
+            // Only get required keys
             const extracted = {};
             for (const key of loginKeys) {
                 if (defaultMessages[key]) {

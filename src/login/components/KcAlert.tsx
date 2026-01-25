@@ -33,7 +33,7 @@ export function KcAlert({ kcContext, message, className }: KcAlertProps) {
 
     const Icon = iconMap[message.type] || Info;
 
-    // i18n çevirileri
+    // i18n translations
     const titleMap: Record<string, string> = {
         error: i18n ? i18nToString(i18n, "alert.error" as any) || "Error" : "Error",
         warning: i18n ? i18nToString(i18n, "alert.warning" as any) || "Warning" : "Warning",

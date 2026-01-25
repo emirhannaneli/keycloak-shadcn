@@ -17,7 +17,7 @@ export default function LoginIdpLinkEmailPage({
 
     const title = i18nToString(i18n, "emailLinkIdpTitle", idpAlias ? { 0: idpAlias } : undefined, idpAlias || "");
 
-    // Document title'ı ayarla
+    // Set document title
     useEffect(() => {
         const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
         document.title = titleText || "Link Account";

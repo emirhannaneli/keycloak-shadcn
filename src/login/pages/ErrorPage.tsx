@@ -12,7 +12,7 @@ export default function ErrorPage({ kcContext }: { kcContext: Extract<KcContext,
 
     const title = i18nToString(i18n, "errorTitle");
 
-    // Document title'ı ayarla
+    // Set document title
     useEffect(() => {
         const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
         document.title = titleText || "Error";

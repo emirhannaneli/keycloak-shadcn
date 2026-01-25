@@ -24,7 +24,7 @@ export default function IdpReviewUserProfilePage({
     // inputComponent'i memoize et
     const inputComponent = useMemo(() => {
         return (props: any) => {
-            // UserProfileFormFields'den gelen tüm props'ları al
+            // Get all props from UserProfileFormFields
             const { 
                 value, 
                 defaultValue, 

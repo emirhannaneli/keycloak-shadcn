@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const require = createRequire(import.meta.url);
 
-// Account için key'ler
+// Keys for Account
 const accountEnFile = path.join(__dirname, '../src/account/messages/en.ts');
 const accountEnContent = fs.readFileSync(accountEnFile, 'utf8');
 const accountKeys = [];
@@ -17,7 +17,7 @@ while ((match = accountKeyRegex.exec(accountEnContent)) !== null) {
     accountKeys.push(match[1].replace(/["']/g, ''));
 }
 
-// Login için key'ler
+// Keys for Login
 const loginEnFile = path.join(__dirname, '../src/login/messages/en.ts');
 const loginEnContent = fs.readFileSync(loginEnFile, 'utf8');
 const loginKeys = [];
@@ -26,14 +26,14 @@ while ((match = loginKeyRegex.exec(loginEnContent)) !== null) {
     loginKeys.push(match[1].replace(/["']/g, ''));
 }
 
-console.log(`\n📊 Çeviri Kontrol Raporu\n`);
-console.log(`Account için toplam key sayısı: ${accountKeys.length}`);
-console.log(`Login için toplam key sayısı: ${loginKeys.length}\n`);
+console.log(`\n📊 Translation Check Report\n`);
+console.log(`Total key count for Account: ${accountKeys.length}`);
+console.log(`Total key count for Login: ${loginKeys.length}\n`);
 
-// Account dilleri
+// Account languages
 const accountLangs = ['tr', 'ar', 'ca', 'cs', 'da', 'de', 'es', 'fi', 'fr', 'hu', 'it', 'ja', 'lt', 'lv', 'nl', 'no', 'pl', 'pt-BR', 'ru', 'sk', 'sv', 'zh-CN'];
 
-// Login dilleri
+// Login languages
 const loginLangs = ['tr', 'ar', 'ca', 'cs', 'da', 'de', 'el', 'es', 'fa', 'fi', 'fr', 'hu', 'it', 'ja', 'ka', 'lt', 'lv', 'nl', 'no', 'pl', 'pt', 'pt-BR', 'ru', 'sk', 'sv', 'th', 'uk', 'zh-CN', 'zh-TW'];
 
 function extractKeysFromFile(filePath) {
@@ -52,13 +52,13 @@ function extractKeysFromFile(filePath) {
 }
 
 function checkAccountTranslations() {
-    console.log('🔍 Account Çevirileri Kontrol Ediliyor...\n');
+    console.log('🔍 Checking Account Translations...\n');
     let hasErrors = false;
     
     for (const lang of accountLangs) {
         const filePath = path.join(__dirname, '../src/account/messages', `${lang}.ts`);
         if (!fs.existsSync(filePath)) {
-            console.log(`❌ ${lang}: Dosya bulunamadı`);
+            console.log(`❌ ${lang}: File not found`);
             hasErrors = true;
             continue;
         }
@@ -70,14 +70,14 @@ function checkAccountTranslations() {
         if (missingKeys.length > 0 || extraKeys.length > 0) {
             console.log(`⚠️  ${lang}: ${keys.length}/${accountKeys.length} key`);
             if (missingKeys.length > 0) {
-                console.log(`   Eksik key'ler: ${missingKeys.join(', ')}`);
+                console.log(`   Missing keys: ${missingKeys.join(', ')}`);
             }
             if (extraKeys.length > 0) {
-                console.log(`   Fazla key'ler: ${extraKeys.join(', ')}`);
+                console.log(`   Extra keys: ${extraKeys.join(', ')}`);
             }
             hasErrors = true;
         } else {
-            console.log(`✅ ${lang}: Tüm key'ler mevcut (${keys.length}/${accountKeys.length})`);
+            console.log(`✅ ${lang}: All keys present (${keys.length}/${accountKeys.length})`);
         }
     }
     
@@ -85,13 +85,13 @@ function checkAccountTranslations() {
 }
 
 function checkLoginTranslations() {
-    console.log('\n🔍 Login Çevirileri Kontrol Ediliyor...\n');
+    console.log('\n🔍 Checking Login Translations...\n');
     let hasErrors = false;
     
     for (const lang of loginLangs) {
         const filePath = path.join(__dirname, '../src/login/messages', `${lang}.ts`);
         if (!fs.existsSync(filePath)) {
-            console.log(`❌ ${lang}: Dosya bulunamadı`);
+            console.log(`❌ ${lang}: File not found`);
             hasErrors = true;
             continue;
         }
@@ -103,14 +103,14 @@ function checkLoginTranslations() {
         if (missingKeys.length > 0 || extraKeys.length > 0) {
             console.log(`⚠️  ${lang}: ${keys.length}/${loginKeys.length} key`);
             if (missingKeys.length > 0) {
-                console.log(`   Eksik key'ler: ${missingKeys.join(', ')}`);
+                console.log(`   Missing keys: ${missingKeys.join(', ')}`);
             }
             if (extraKeys.length > 0) {
-                console.log(`   Fazla key'ler: ${extraKeys.join(', ')}`);
+                console.log(`   Extra keys: ${extraKeys.join(', ')}`);
             }
             hasErrors = true;
         } else {
-            console.log(`✅ ${lang}: Tüm key'ler mevcut (${keys.length}/${loginKeys.length})`);
+            console.log(`✅ ${lang}: All keys present (${keys.length}/${loginKeys.length})`);
         }
     }
     
@@ -122,10 +122,10 @@ const loginErrors = checkLoginTranslations();
 
 console.log('\n' + '='.repeat(50));
 if (accountErrors || loginErrors) {
-    console.log('\n❌ Bazı çevirilerde sorunlar bulundu!');
-    console.log('💡 Çevirileri düzeltmek için: node scripts/fix-translations.js\n');
+    console.log('\n❌ Issues found in some translations!');
+    console.log('💡 To fix translations: node scripts/fix-translations.js\n');
     process.exit(1);
 } else {
-    console.log('\n✅ Tüm çeviriler doğru ve eksiksiz!\n');
+    console.log('\n✅ All translations are correct and complete!\n');
     process.exit(0);
 }

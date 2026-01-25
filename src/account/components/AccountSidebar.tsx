@@ -26,8 +26,8 @@ interface AccountSidebarProps {
 }
 
 export function AccountSidebar({ kcContext, currentPageId, onItemClick }: AccountSidebarProps) {
-    // realm undefined olabilir, bu yüzden güvenli bir şekilde kontrol ediyoruz
-    // Mevcut realm objesini koruyarak sadece eksik özelliği ekliyoruz
+    // realm can be undefined, so we check safely
+    // Preserve the existing realm object and only add the missing property
     const safeKcContext = {
         ...kcContext,
         realm: kcContext.realm ? {
@@ -42,8 +42,8 @@ export function AccountSidebar({ kcContext, currentPageId, onItemClick }: Accoun
     const { i18n } = useI18n({ kcContext: safeKcContext as any });
     const { url } = kcContext;
 
-    // Totp ve Log özelliklerinin açık olup olmadığını kontrol et
-    // url.totpUrl varsa TOTP menü öğesini göster (totp objesi olmasa bile sayfa açılabilir)
+    // Check if Totp and Log features are enabled
+    // Show TOTP menu item if url.totpUrl exists (page can open even without totp object)
     const isTotpEnabled = url.totpUrl !== undefined;
     const isLogEnabled = url.logUrl !== undefined;
 
@@ -60,7 +60,7 @@ export function AccountSidebar({ kcContext, currentPageId, onItemClick }: Accoun
             icon: Lock,
             href: url.passwordUrl,
         },
-        // Totp özelliği açıksa göster
+        // Show if Totp feature is enabled
         ...(isTotpEnabled ? [{
             id: "totp.ftl",
             label: i18nToString(i18n, "authenticatorTitleHtml" as any) || i18nToString(i18n, "authenticatorTitle" as any) || "Authenticator",
@@ -85,7 +85,7 @@ export function AccountSidebar({ kcContext, currentPageId, onItemClick }: Accoun
             icon: Grid,
             href: url.applicationsUrl,
         },
-        // Log özelliği açıksa göster
+        // Show if Log feature is enabled
         ...(isLogEnabled ? [{
             id: "log.ftl",
             label: i18nToString(i18n, "accountLogTitleHtml" as any) || i18nToString(i18n, "accountLogTitle" as any) || "Log",

@@ -16,8 +16,8 @@ import LogPage from "./pages/LogPage";
 export default function KcPage(props: { kcContext: KcContext }) {
     const { kcContext } = props;
 
-    // realm undefined olabilir, bu yüzden güvenli bir şekilde kontrol ediyoruz
-    // Mevcut realm objesini koruyarak sadece eksik özelliği ekliyoruz
+    // realm can be undefined, so we check safely
+    // Preserve the existing realm object and only add the missing property
     const safeKcContext = {
         ...kcContext,
         realm: kcContext.realm ? {

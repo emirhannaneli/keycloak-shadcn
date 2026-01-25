@@ -23,7 +23,7 @@ export default function LoginOauthGrantPage({
     const oauthTitleHtml = i18nToString(i18n, "oauthGrantTitleHtml", clientName ? { 0: clientName } : undefined, clientName);
     const title = oauthTitleHtml || oauthTitle || i18nToString(i18n, "loginTitle", undefined, realmName);
 
-    // Document title'ı ayarla
+    // Set document title
     useEffect(() => {
         const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
         document.title = titleText || "Grant Access";

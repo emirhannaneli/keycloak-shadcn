@@ -17,7 +17,7 @@ export default function LogPage({
 
     const title = i18nToString(i18n, "accountLogTitleHtml" as any) || i18nToString(i18n, "accountLogTitle" as any) || "Account Log";
 
-    // Document title'ı ayarla
+    // Set document title
     useEffect(() => {
         const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
         document.title = titleText || "Account Log";
@@ -32,7 +32,7 @@ export default function LogPage({
         }
     };
 
-    // Güvenli kontrol - log undefined veya events yoksa boş durumu göster
+    // Safe check - show empty state if log is undefined or has no events
     if (!log || !log.events || log.events.length === 0) {
         return (
             <KcCard

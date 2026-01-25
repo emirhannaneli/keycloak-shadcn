@@ -1,24 +1,24 @@
 /**
- * Keycloak tema yapılandırması
+ * Keycloak theme configuration
  * 
- * Bu dosyada tema adını özelleştirebilirsiniz.
- * Tema adı, oluşturulacak JAR dosyalarının isimlerinde kullanılacaktır.
+ * You can customize the theme name in this file.
+ * The theme name will be used in the names of the generated JAR files.
  */
 
 export const keycloakThemeConfig = {
     /**
-     * Tema adı
-     * Örnek: "keycloak-shadcn", "my-custom-theme", "company-theme" vb.
+     * Theme name
+     * Examples: "keycloak-shadcn", "my-custom-theme", "company-theme", etc.
      */
     themeName: "keycloak-shadcn",
 } as const;
 
 /**
- * Keycloak versiyon hedefleri için JAR dosya isimlerini oluşturur
+ * Generates JAR file names for Keycloak version targets
  */
 export function getKeycloakVersionTargets() {
     const { themeName } = keycloakThemeConfig;
-    
+
     return {
         "26.2-and-above": `${themeName}-26.2-and-above.jar`,
         "26.0-to-26.1": `${themeName}-26.0-to-26.1.jar`,

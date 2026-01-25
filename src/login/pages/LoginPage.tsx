@@ -78,7 +78,7 @@ const OpenShiftIcon = ({ className, resourcePath }: { className?: string; resour
     <img src={resourcePath("img/social/openshift.svg")} alt="OpenShift" className={className} />
 );
 
-// Provider ID'ye göre ikon eşleştirmesi
+// Icon mapping by Provider ID
 function getProviderIcon(providerId: string | undefined, resourcePath: (path: string) => string): React.ComponentType<{ className?: string }> | LucideIcon | null {
     if (!providerId) return null;
     
@@ -101,7 +101,7 @@ function getProviderIcon(providerId: string | undefined, resourcePath: (path: st
     const IconComponent = iconMap[normalizedId];
     if (!IconComponent) return null;
     
-    // IconComponent bir function ise resourcePath ile wrap et
+    // If IconComponent is a function, wrap it with resourcePath
     if (typeof IconComponent === 'function') {
         return (props: { className?: string }) => <IconComponent {...props} resourcePath={resourcePath} />;
     }
@@ -124,7 +124,7 @@ export default function LoginPage({ kcContext }: { kcContext: Extract<KcContext,
         themeName,
     } = kcContext;
 
-    // Başlık hesaplama
+    // Calculate title
     const realmName = realm.displayName || realm.name || "";
     const htmlTitle = (i18nToString as any)(i18n, "loginTitleHtml", { 0: realmName }, realmName);
     const baseTitle = i18nToString(i18n, "loginTitle");
@@ -134,33 +134,33 @@ export default function LoginPage({ kcContext }: { kcContext: Extract<KcContext,
         ? baseTitle.replace("{0}", realmName)
         : realmName ? `${baseTitle} ${realmName}` : baseTitle;
 
-    // Document title'ı ayarla
+    // Set document title
     useEffect(() => {
         const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
         document.title = titleText || "Sign In";
     }, [title]);
 
-    // Keycloakify'da production build'de static dosyalar için path
+    // Path for static files in production build with Keycloakify
     const getResourcePath = (path: string) => {
-        // Development'ta keycloakify-dev-resources
+        // In development, use keycloakify-dev-resources
         if (import.meta.env.DEV) {
             return `/keycloakify-dev-resources/login/${path}`;
         }
-        // Production'da Keycloak'ın resources path'i
-        // Favicon path'inden yola çıkarak: /resources/6k3sb/login/keycloak-shadcn/dist/favicon-32x32.png
-        // Yani path yapısı: /resources/{realm-id}/login/{theme-name}/dist/...
-        // url.resourcesPath muhtemelen /resources/{realm-id}/login/{theme-name} formatında
-        // Dosyalar dist/ klasörü altında olmalı
+        // In production, Keycloak's resources path
+        // Based on favicon path: /resources/6k3sb/login/keycloak-shadcn/dist/favicon-32x32.png
+        // So path structure: /resources/{realm-id}/login/{theme-name}/dist/...
+        // url.resourcesPath is probably in format: /resources/{realm-id}/login/{theme-name}
+        // Files should be under dist/ folder
         let resourcesPath = (url as any).resourcesPath;
         const defaultThemeName = themeName || keycloakThemeConfig.themeName;
         if (!resourcesPath) {
-            // url.resourcesPath yoksa, favicon path'inden yola çıkarak oluştur
-            // Ancak realm-id'yi bilmiyoruz, bu yüzden geçici olarak theme name ile oluştur
+            // If url.resourcesPath doesn't exist, create it based on favicon path
+            // However, we don't know realm-id, so create temporarily with theme name
             resourcesPath = `/resources/${defaultThemeName}`;
         }
-        // Path yapısı: /resources/{realm-id}/login/{theme-name}/dist/img/...
-        // Eğer resourcesPath zaten /login/{theme-name} içeriyorsa, sadece /dist ekle
-        // Eğer içermiyorsa, /login/{theme-name}/dist ekle
+        // Path structure: /resources/{realm-id}/login/{theme-name}/dist/img/...
+        // If resourcesPath already contains /login/{theme-name}, just add /dist
+        // If it doesn't, add /login/{theme-name}/dist
         if (resourcesPath.includes('/login/')) {
             return `${resourcesPath}/dist/${path}`;
         }
@@ -170,7 +170,7 @@ export default function LoginPage({ kcContext }: { kcContext: Extract<KcContext,
     return (
         <div className="flex min-h-screen items-center justify-center p-4">
             <div className="w-full max-w-md space-y-6">
-                {/* Sistem Logosu */}
+                {/* System Logo */}
                 <div className="flex justify-center">
                     <img 
                         src={getLoginLogoUrl(i18n, "img/keycloak-logo-text.png", getResourcePath)} 

@@ -19,7 +19,7 @@ export default function UpdateEmailPage({
 
     const title = i18nToString(i18n, "updateEmailTitle") || i18nToString(i18n, "loginTitle", undefined, realm?.displayName || realm?.name || "");
 
-    // Document title'ı ayarla
+    // Set document title
     useEffect(() => {
         const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
         document.title = titleText || "Update Email";

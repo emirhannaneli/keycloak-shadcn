@@ -10,7 +10,7 @@ interface PageWrapperProps {
 type Theme = "light" | "dark" | "system";
 
 export function PageWrapper({ kcContext, children }: PageWrapperProps) {
-    // Sayfa geçişlerinde tema durumunun korunması için
+    // Preserve theme state during page transitions
     useEffect(() => {
         const applyTheme = () => {
             const stored = localStorage.getItem("theme") as Theme | null;
@@ -21,7 +21,7 @@ export function PageWrapper({ kcContext, children }: PageWrapperProps) {
             } else if (stored === "light") {
                 root.classList.remove("dark");
             } else {
-                // Sistem teması
+                // System theme
                 const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
                 if (prefersDark) {
                     root.classList.add("dark");
@@ -33,7 +33,7 @@ export function PageWrapper({ kcContext, children }: PageWrapperProps) {
 
         applyTheme();
 
-        // Sistem teması değişikliklerini dinle
+        // Listen to system theme changes
         const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
         const handleChange = () => {
             const stored = localStorage.getItem("theme") as Theme | null;
@@ -44,7 +44,7 @@ export function PageWrapper({ kcContext, children }: PageWrapperProps) {
 
         mediaQuery.addEventListener("change", handleChange);
         return () => mediaQuery.removeEventListener("change", handleChange);
-    }, [kcContext.pageId]); // Sayfa değiştiğinde tema durumunu kontrol et
+    }, [kcContext.pageId]); // Check theme state when page changes
 
     return (
         <>

@@ -10,7 +10,7 @@ import { getKcContextMock } from "./account/KcPageStory";
 
 if (import.meta.env.DEV) {
     window.kcContext = getKcContextMock({
-        pageId: "log.ftl", // veya "totp.ftl" test etmek için
+        pageId: "log.ftl", // or "totp.ftl" to test
         overrides: {
             realm: {
                 userManagedAccessAllowed: true,
@@ -21,11 +21,11 @@ if (import.meta.env.DEV) {
 }
 */
 
-// realm undefined olabilir, bu yüzden güvenli bir şekilde kontrol ediyoruz
-// Mevcut realm objesini koruyarak sadece eksik özelliği ekliyoruz
+// realm can be undefined, so we check safely
+// Preserve the existing realm object and only add the missing property
 const safeKcContext = window.kcContext ? {
     ...window.kcContext,
-    themeType: window.kcContext.themeType || "account", // themeType eksikse account olarak ayarla
+    themeType: window.kcContext.themeType || "account", // Set to account if themeType is missing
     realm: window.kcContext.realm ? {
         ...window.kcContext.realm,
         internationalizationEnabled: window.kcContext.realm.internationalizationEnabled ?? false

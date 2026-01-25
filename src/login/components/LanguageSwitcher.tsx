@@ -29,20 +29,20 @@ export function LanguageSwitcher({ kcContext }: LanguageSwitcherProps) {
     const currentLanguage = kcContext.locale?.currentLanguageTag || "en";
 
     const handleLanguageChange = (langCode: string) => {
-        // Keycloak login sayfalarında dil değiştirme için kc_locale parametresini kullan
-        // Mevcut URL'yi al ve kc_locale parametresini ekle/güncelle
+        // Use kc_locale parameter for language change in Keycloak login pages
+        // Get current URL and add/update kc_locale parameter
         try {
             const currentUrl = new URL(window.location.href);
             
-            // Mevcut tüm query parametrelerini koru, sadece kc_locale'i güncelle
+            // Preserve all existing query parameters, only update kc_locale
             currentUrl.searchParams.set("kc_locale", langCode);
             
-            // Sayfayı yeniden yükle
+            // Reload the page
             window.location.href = currentUrl.toString();
         } catch (e) {
-            // URL parse hatası durumunda basit bir yaklaşım dene
+            // Try a simple approach in case of URL parse error
             console.warn("Failed to parse URL:", e);
-            // Mevcut URL'de zaten kc_locale varsa, onu değiştir
+            // If kc_locale already exists in current URL, replace it
             const urlWithoutLocale = window.location.href.replace(/[?&]kc_locale=[^&]*/, "");
             const newSeparator = urlWithoutLocale.includes("?") ? "&" : "?";
             window.location.href = `${urlWithoutLocale}${newSeparator}kc_locale=${langCode}`;

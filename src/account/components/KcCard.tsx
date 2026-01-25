@@ -29,7 +29,7 @@ export function KcCard({
     const realmName: string | undefined = (realm && "displayName" in realm && typeof realm.displayName === "string" ? realm.displayName : undefined) || 
                       (realm && "name" in realm && typeof realm.name === "string" ? realm.name : undefined);
 
-    // Title'ın HTML içerik olup olmadığını kontrol et
+    // Check if title is HTML content
     const isHtmlTitle = typeof title === 'string' && (title.includes('<') || title.includes('&'));
 
     return (

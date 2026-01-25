@@ -19,7 +19,7 @@ export default function LoginConfigTotpPage({
     const realmName = realm?.displayName || realm?.name || "";
     const title = i18nToString(i18n, "loginTotpTitle") || i18nToString(i18n, "loginTitle", undefined, realmName);
 
-    // Document title'ı ayarla
+    // Set document title
     useEffect(() => {
         const titleText = typeof title === "string" ? title.replace(/<[^>]*>/g, "") : title;
         document.title = titleText || "Mobile Authenticator Setup";

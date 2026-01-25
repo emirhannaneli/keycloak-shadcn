@@ -76,7 +76,7 @@
     }
 }
 
-/* Keycloak CSS çakışmalarını önlemek için */
+/* Prevent Keycloak CSS conflicts */
 #kc-container {
     @apply font-sans antialiased;
 }
@@ -85,12 +85,12 @@
     box-sizing: border-box;
 }
 
-/* Keycloak form stillerini override et */
+/* Override Keycloak form styles */
 #kc-container form {
     @apply m-0;
 }
 
-/* Keycloak'ın default stillerini sıfırla */
+/* Reset Keycloak's default styles */
 #kc-container .kc-form-group {
     @apply mb-0;
 }
@@ -99,21 +99,21 @@
     @apply mb-0;
 }
 
-/* UserProfileFormFields spacing düzenlemeleri */
-/* Boş div'leri gizle */
+/* UserProfileFormFields spacing adjustments */
+/* Hide empty divs */
 #kc-container form div:empty {
     display: none !important;
 }
 
-/* Password confirm alanı için fazladan boşlukları kaldır */
+/* Remove extra spacing for password confirm field */
 #kc-container input[name="password-confirm"],
 #kc-container input[id="password-confirm"] {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
 }
 
-/* UserProfileFormFields içindeki field wrapper'ları için spacing düzenle */
-/* Password confirm field'ının parent'ı ve kendisi için margin kaldır */
+/* Adjust spacing for field wrappers in UserProfileFormFields */
+/* Remove margin for password confirm field's parent and itself */
 #kc-container form > div > div[class*="space-y"] > div:has(input[name="password-confirm"]),
 #kc-container form > div > div[class*="space-y"] > div:has(input[id="password-confirm"]) {
     margin-top: 0 !important;
@@ -122,22 +122,22 @@
     padding-bottom: 0 !important;
 }
 
-/* Password field'ından sonra gelen confirm password field'ı için spacing kaldır */
+/* Remove spacing for confirm password field that comes after password field */
 #kc-container form > div > div[class*="space-y"] > div:has(input[name="password"]) + div:has(input[name="password-confirm"]),
 #kc-container form > div > div[class*="space-y"] > div:has(input[id="password"]) + div:has(input[id="password-confirm"]) {
     margin-top: 0 !important;
     padding-top: 0 !important;
 }
 
-/* Password confirm field'ından önceki field için margin-bottom kaldır */
+/* Remove margin-bottom for field before password confirm field */
 #kc-container form > div > div[class*="space-y"] > div:has(input[name="password"]):has(+ div:has(input[name="password-confirm"])),
 #kc-container form > div > div[class*="space-y"] > div:has(input[id="password"]):has(+ div:has(input[id="password-confirm"])) {
     margin-bottom: 0 !important;
     padding-bottom: 0 !important;
 }
 
-/* UserProfileFormFields tarafından render edilen input'ları stilleyin */
-/* !important ile Keycloak'ın default stillerini override et */
+/* Style inputs rendered by UserProfileFormFields */
+/* Override Keycloak's default styles with !important */
 input[type="text"],
 input[type="email"],
 input[type="password"],
