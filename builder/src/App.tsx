@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { WebContainer } from '@webcontainer/api';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
@@ -13,17 +13,17 @@ const IconLoading = () => <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-w
 
 export default function App() {
     const [status, setStatus] = useState('idle'); // idle, booting, downloading, configuring, installing, building, packaging, ready, error
-    const [downloadUrl, setDownloadUrl] = useState(null);
+    const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
     const [jarName, setJarName] = useState('');
     const [textInput, setTextInput] = useState('');
-    const [imageFile, setImageFile] = useState(null);
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const [imageError, setImageError] = useState('');
-    const terminalRef = useRef(null);
-    const xtermRef = useRef(null);
-    const webContainerRef = useRef(null);
+    const terminalRef = useRef<HTMLDivElement | null>(null);
+    const xtermRef = useRef<Terminal | null>(null);
+    const webContainerRef = useRef<WebContainer | null>(null);
 
     // Cloudflare Worker URL (if needed for proxying requests)
-    const CLOUDFLARE_WORKER_URL = 'https://keycloak-shadcn-builder.emirhannaneli.workers.dev';
+    const CLOUDFLARE_WORKER_URL = 'https://keycloak-shadcn-builder.emirman.workers.dev';
 
     // GitHub Repo Information
     const REPO_OWNER = 'emirhannaneli';
@@ -64,9 +64,9 @@ export default function App() {
         };
     }, []);
 
-    const log = (msg, type = 'info') => {
+    const log = (msg: string, type: 'info' | 'success' | 'error' | 'warn' = 'info') => {
         if (!xtermRef.current) return;
-        const colors = {
+        const colors: Record<'info' | 'success' | 'error' | 'warn', string> = {
             info: '\x1b[36mℹ',    // Cyan
             success: '\x1b[32m✔', // Green
             error: '\x1b[31m✖',   // Red
@@ -76,7 +76,7 @@ export default function App() {
     };
 
     // Handle text input - only allow English letters, - and _
-    const handleTextInputChange = (e) => {
+    const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         // Only allow English letters (a-z, A-Z), numbers, hyphens (-) and underscores (_)
         const validPattern = /^[a-zA-Z0-9_-]*$/;
@@ -86,8 +86,8 @@ export default function App() {
     };
 
     // Handle image file input - max 3MB
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
         setImageError('');
         
         if (!file) {
@@ -118,26 +118,27 @@ export default function App() {
     /**
      * Converts ZIP Blob data into a tree structure compatible with WebContainer file system.
      */
-    const convertZipToTree = async (zipContent) => {
+    const convertZipToTree = async (zipContent: Blob) => {
         const zip = await JSZip.loadAsync(zipContent);
-        const tree = {};
+        const tree: Record<string, any> = {};
         const rootDir = Object.keys(zip.files)[0]?.split('/')[0] || 'root';
 
         for (const [relativePath, file] of Object.entries(zip.files)) {
-            if (file.dir || !relativePath.startsWith(rootDir)) continue;
+            const zipFile = file as JSZip.JSZipObject;
+            if (zipFile.dir || !relativePath.startsWith(rootDir)) continue;
 
             // Remove root folder from path (e.g., keycloak-shadcn-main/package.json -> package.json)
             const pathParts = relativePath.split('/');
             pathParts.shift();
             if (pathParts.length === 0) continue;
 
-            let currentLevel = tree;
+            let currentLevel: Record<string, any> = tree;
             for (let i = 0; i < pathParts.length; i++) {
                 const part = pathParts[i];
                 const isFile = i === pathParts.length - 1;
 
                 if (isFile) {
-                    const content = await file.async('uint8array');
+                    const content = await zipFile.async('uint8array');
                     currentLevel[part] = {
                         file: {
                             contents: content
@@ -165,7 +166,8 @@ export default function App() {
     };
 
     // Update package.json name field
-    const updatePackageJson = async (themeName) => {
+    const updatePackageJson = async (themeName: string) => {
+        if (!webContainerRef.current) throw new Error('WebContainer not initialized');
         const packageJsonPath = 'package.json';
         const packageJsonContent = await webContainerRef.current.fs.readFile(packageJsonPath, 'utf8');
         const packageJson = JSON.parse(packageJsonContent);
@@ -176,7 +178,8 @@ export default function App() {
     };
 
     // Update src/config.ts themeName
-    const updateConfigTs = async (themeName) => {
+    const updateConfigTs = async (themeName: string) => {
+        if (!webContainerRef.current) throw new Error('WebContainer not initialized');
         const configPath = 'src/config.ts';
         const configContent = await webContainerRef.current.fs.readFile(configPath, 'utf8');
         // Replace themeName value using regex
@@ -189,7 +192,8 @@ export default function App() {
     };
 
     // Replace logo files with uploaded image
-    const replaceLogoFiles = async (imageFile) => {
+    const replaceLogoFiles = async (imageFile: File) => {
+        if (!webContainerRef.current) throw new Error('WebContainer not initialized');
         const imageArrayBuffer = await imageFile.arrayBuffer();
         const imageUint8Array = new Uint8Array(imageArrayBuffer);
         const imageSizeKB = (imageFile.size / 1024).toFixed(2);
@@ -200,40 +204,15 @@ export default function App() {
         log(`  ✓ Logo files replaced successfully (${imageSizeKB} KB)`, 'success');
     };
 
-    // Recursively read directory and add files to zip
-    const addDirectoryToZip = async (zip, dirPath, basePath = '') => {
-        const entries = await webContainerRef.current.fs.readdir(dirPath);
-        
-        for (const entry of entries) {
-            const fullPath = dirPath === 'dist_keycloak' ? `dist_keycloak/${entry}` : `${dirPath}/${entry}`;
-            const zipPath = basePath ? `${basePath}/${entry}` : entry;
-            
-            try {
-                // Try to read as file first
-                const fileData = await webContainerRef.current.fs.readFile(fullPath);
-                zip.file(zipPath, fileData);
-            } catch (fileError) {
-                // If readFile fails, try to read as directory
-                try {
-                    const subEntries = await webContainerRef.current.fs.readdir(fullPath);
-                    // If readdir succeeds, it's a directory - recurse
-                    await addDirectoryToZip(zip, fullPath, zipPath);
-                } catch (dirError) {
-                    // If both fail, log and continue
-                    log(`Warning: Could not process ${fullPath}`, 'warn');
-                }
-            }
-        }
-    };
-
     // Zip all files in dist_keycloak folder
-    const zipDistKeycloak = async (themeName) => {
+    const zipDistKeycloak = async (themeName: string) => {
+        if (!webContainerRef.current) throw new Error('WebContainer not initialized');
         const zip = new JSZip();
         let fileCount = 0;
         
         // Enhanced addDirectoryToZip with file counting
-        const addDirectoryToZipWithCount = async (zip, dirPath, basePath = '') => {
-            const entries = await webContainerRef.current.fs.readdir(dirPath);
+        const addDirectoryToZipWithCount = async (zip: JSZip, dirPath: string, basePath = '') => {
+            const entries = await webContainerRef.current!.fs.readdir(dirPath);
             
             for (const entry of entries) {
                 const fullPath = dirPath === 'dist_keycloak' ? `dist_keycloak/${entry}` : `${dirPath}/${entry}`;
@@ -241,7 +220,7 @@ export default function App() {
                 
                 try {
                     // Try to read as file first
-                    const fileData = await webContainerRef.current.fs.readFile(fullPath);
+                    const fileData = await webContainerRef.current!.fs.readFile(fullPath);
                     zip.file(zipPath, fileData);
                     fileCount++;
                     if (fileCount % 5 === 0) {
@@ -250,7 +229,7 @@ export default function App() {
                 } catch (fileError) {
                     // If readFile fails, try to read as directory
                     try {
-                        const subEntries = await webContainerRef.current.fs.readdir(fullPath);
+                        await webContainerRef.current!.fs.readdir(fullPath);
                         // If readdir succeeds, it's a directory - recurse
                         await addDirectoryToZipWithCount(zip, fullPath, zipPath);
                     } catch (dirError) {
@@ -281,13 +260,16 @@ export default function App() {
             validateInputs();
         } catch (error) {
             setStatus('error');
-            log(error.message, 'error');
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            log(errorMessage, 'error');
             return;
         }
 
         setDownloadUrl(null);
         setStatus('booting');
-        xtermRef.current.clear();
+        if (xtermRef.current) {
+            xtermRef.current.clear();
+        }
 
         try {
             // 1. Start WebContainer
@@ -312,6 +294,7 @@ export default function App() {
             log('Step 2/7: Creating file system structure... (usually takes 5-10 seconds)', 'info');
             const fileTree = await convertZipToTree(zipBlob);
 
+            if (!webContainerRef.current) throw new Error('WebContainer not initialized');
             await webContainerRef.current.mount(fileTree);
             log('Files loaded into virtual environment.', 'success');
 
@@ -323,6 +306,7 @@ export default function App() {
 
             // 4. Replace Logo Files
             log('Step 4/7: Replacing logo files... (usually takes 1 second)', 'info');
+            if (!imageFile) throw new Error('Image file is required');
             await replaceLogoFiles(imageFile);
 
             // 5. Install NPM Packages
@@ -330,11 +314,16 @@ export default function App() {
             log('Step 5/7: Installing dependencies (npm install)... (usually takes 2-5 minutes, this is the longest step)', 'warn');
             log('Please be patient, this step downloads and installs all required packages...', 'info');
 
+            if (!webContainerRef.current) throw new Error('WebContainer not initialized');
             const installProcess = await webContainerRef.current.spawn('npm', ['install']);
 
             // Pipe output to terminal
             installProcess.output.pipeTo(new WritableStream({
-                write(data) { xtermRef.current.write(data); }
+                write(data) { 
+                    if (xtermRef.current) {
+                        xtermRef.current.write(data);
+                    }
+                }
             }));
 
             const installExitCode = await installProcess.exit;
@@ -348,10 +337,15 @@ export default function App() {
             log('Step 6/7: Building theme (npm run build-keycloak-theme)... (usually takes 1-3 minutes)', 'info');
             log('Compiling React components and generating Keycloak theme files...', 'info');
 
+            if (!webContainerRef.current) throw new Error('WebContainer not initialized');
             const buildProcess = await webContainerRef.current.spawn('npm', ['run', 'build-keycloak-theme']);
 
             buildProcess.output.pipeTo(new WritableStream({
-                write(data) { xtermRef.current.write(data); }
+                write(data) { 
+                    if (xtermRef.current) {
+                        xtermRef.current.write(data);
+                    }
+                }
             }));
 
             const buildExitCode = await buildProcess.exit;
@@ -374,15 +368,17 @@ export default function App() {
                 log('Download link prepared. All steps completed!', 'success');
 
             } catch (err) {
-                throw new Error(`Packaging error: ${err.message}`);
+                const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+                throw new Error(`Packaging error: ${errorMessage}`);
             }
 
         } catch (error) {
             console.error(error);
             setStatus('error');
-            log(`CRITICAL ERROR: ${error.message}`, 'error');
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            log(`CRITICAL ERROR: ${errorMessage}`, 'error');
 
-            if (error.message.includes('SharedArrayBuffer')) {
+            if (errorMessage.includes('SharedArrayBuffer')) {
                 log('TIP: Make sure COOP and COEP headers are configured on the server.', 'warn');
             }
         }

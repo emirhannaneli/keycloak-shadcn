@@ -298,4 +298,3 @@ form input:not([type]):disabled {
 .scrollbar-hide::-webkit-scrollbar {
     display: none;  /* Chrome, Safari and Opera */
 }
-
