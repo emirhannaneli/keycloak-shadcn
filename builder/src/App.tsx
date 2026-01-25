@@ -1,15 +1,30 @@
-import { useState, useEffect, useRef } from 'react';
-import { WebContainer } from '@webcontainer/api';
-import { Terminal } from 'xterm';
-import { FitAddon } from 'xterm-addon-fit';
+import {useEffect, useRef, useState} from 'react';
+import {WebContainer} from '@webcontainer/api';
+import {Terminal} from 'xterm';
+import {FitAddon} from 'xterm-addon-fit';
 import JSZip from 'jszip';
 import 'xterm/css/xterm.css';
 
 // --- SCREEN COMPONENTS (ICONS) ---
-const IconGithub = () => <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>;
-const IconPlay = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
-const IconDownload = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>;
-const IconLoading = () => <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>;
+const IconGithub = () => <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+    <path
+        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+</svg>;
+const IconPlay = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+          d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+</svg>;
+const IconDownload = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+</svg>;
+const IconLoading = () => <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                               fill="none" viewBox="0 0 24 24">
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+    <path className="opacity-75" fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+</svg>;
 
 export default function App() {
     const [status, setStatus] = useState('idle'); // idle, booting, downloading, configuring, installing, building, packaging, ready, error
@@ -89,7 +104,7 @@ export default function App() {
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         setImageError('');
-        
+
         if (!file) {
             setImageFile(null);
             return;
@@ -123,6 +138,22 @@ export default function App() {
         const tree: Record<string, any> = {};
         const rootDir = Object.keys(zip.files)[0]?.split('/')[0] || 'root';
 
+        // Text file extensions that should be read as strings
+        const textExtensions = new Set([
+            'ts', 'tsx', 'js', 'jsx', 'json', 'css', 'html', 'md', 'txt',
+            'yml', 'yaml', 'xml', 'svg', 'scss', 'sass', 'less', 'vue',
+            'mjs', 'cjs', 'mts', 'cts', 'map'
+        ]);
+
+        const isTextFile = (filename: string): boolean => {
+            const lowerFilename = filename.toLowerCase();
+            // Check for special cases first (e.g., .d.ts)
+            if (lowerFilename.endsWith('.d.ts')) return true;
+            // Then check regular extensions
+            const ext = lowerFilename.split('.').pop();
+            return ext ? textExtensions.has(ext) : false;
+        };
+
         for (const [relativePath, file] of Object.entries(zip.files)) {
             const zipFile = file as JSZip.JSZipObject;
             if (zipFile.dir || !relativePath.startsWith(rootDir)) continue;
@@ -138,7 +169,11 @@ export default function App() {
                 const isFile = i === pathParts.length - 1;
 
                 if (isFile) {
-                    const content = await zipFile.async('uint8array');
+                    // Read text files as strings, binary files as uint8array
+                    const content = isTextFile(part)
+                        ? await zipFile.async('string')
+                        : await zipFile.async('uint8array');
+
                     currentLevel[part] = {
                         file: {
                             contents: content
@@ -146,7 +181,7 @@ export default function App() {
                     };
                 } else {
                     if (!currentLevel[part]) {
-                        currentLevel[part] = { directory: {} };
+                        currentLevel[part] = {directory: {}};
                     }
                     currentLevel = currentLevel[part].directory;
                 }
@@ -197,191 +232,164 @@ export default function App() {
         const imageArrayBuffer = await imageFile.arrayBuffer();
         const imageUint8Array = new Uint8Array(imageArrayBuffer);
         const imageSizeKB = (imageFile.size / 1024).toFixed(2);
-        
+
         // Write to both logo paths
         await webContainerRef.current.fs.writeFile('public/img/keycloak-logo.png', imageUint8Array);
         await webContainerRef.current.fs.writeFile('public/img/keycloak-logo-text.png', imageUint8Array);
         log(`  ✓ Logo files replaced successfully (${imageSizeKB} KB)`, 'success');
     };
 
-    // Zip all files in dist_keycloak folder
-    const zipDistKeycloak = async (themeName: string) => {
-        if (!webContainerRef.current) throw new Error('WebContainer not initialized');
-        const zip = new JSZip();
-        let fileCount = 0;
-        
-        // Enhanced addDirectoryToZip with file counting
-        const addDirectoryToZipWithCount = async (zip: JSZip, dirPath: string, basePath = '') => {
-            const entries = await webContainerRef.current!.fs.readdir(dirPath);
-            
-            for (const entry of entries) {
-                const fullPath = dirPath === 'dist_keycloak' ? `dist_keycloak/${entry}` : `${dirPath}/${entry}`;
-                const zipPath = basePath ? `${basePath}/${entry}` : entry;
-                
-                try {
-                    // Try to read as file first
-                    const fileData = await webContainerRef.current!.fs.readFile(fullPath);
-                    zip.file(zipPath, fileData);
-                    fileCount++;
-                    if (fileCount % 5 === 0) {
-                        log(`  Processing files... (${fileCount} files added so far)`, 'info');
-                    }
-                } catch (fileError) {
-                    // If readFile fails, try to read as directory
-                    try {
-                        await webContainerRef.current!.fs.readdir(fullPath);
-                        // If readdir succeeds, it's a directory - recurse
-                        await addDirectoryToZipWithCount(zip, fullPath, zipPath);
-                    } catch (dirError) {
-                        // If both fail, log and continue
-                        log(`  Warning: Could not process ${fullPath}`, 'warn');
-                    }
-                }
-            }
-        };
-        
-        await addDirectoryToZipWithCount(zip, 'dist_keycloak');
-        log(`  All files processed (${fileCount} files total)`, 'success');
-        
-        log('  Generating ZIP archive...', 'info');
-        const zipBlob = await zip.generateAsync({ type: 'blob' });
-        const zipSizeMB = (zipBlob.size / 1024 / 1024).toFixed(2);
-        const zipUrl = URL.createObjectURL(zipBlob);
-        const zipFileName = `${themeName}.zip`;
-        log(`  ✓ ZIP archive created: ${zipFileName} (${zipSizeMB} MB)`, 'success');
-        return { zipUrl, zipFileName };
-    };
-
     const startProcess = async () => {
         if (status !== 'idle' && status !== 'error' && status !== 'ready') return;
 
-        // Validate inputs
         try {
             validateInputs();
         } catch (error) {
             setStatus('error');
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            log(errorMessage, 'error');
+            log(error instanceof Error ? error.message : 'Unknown error', 'error');
             return;
         }
 
         setDownloadUrl(null);
         setStatus('booting');
-        if (xtermRef.current) {
-            xtermRef.current.clear();
-        }
+        if (xtermRef.current) xtermRef.current.clear();
 
         try {
             // 1. Start WebContainer
             if (!webContainerRef.current) {
-                log('Step 1/7: Starting WebContainer... (usually takes 5-10 seconds)', 'info');
+                log('Step 1/5: Starting WebContainer...', 'info');
                 webContainerRef.current = await WebContainer.boot();
                 log('WebContainer ready!', 'success');
-            } else {
-                log('Step 1/7: WebContainer already initialized, skipping...', 'info');
             }
 
-            // 2. Download Repository and Write to File System
+            // 2. Download Repository
             setStatus('downloading');
-            log(`Step 2/7: Downloading GitHub Repository: ${REPO_OWNER}/${REPO_NAME}... (usually takes 10-30 seconds depending on connection)`, 'info');
-
+            log(`Step 2/5: Downloading GitHub Repository...`, 'info');
             const response = await fetch(PROXIED_REPO_URL);
-            if (!response.ok) throw new Error(`Repository could not be downloaded. Status: ${response.status}`);
+            if (!response.ok) throw new Error(`Repo download failed: ${response.status}`);
             const zipBlob = await response.blob();
-            const zipSizeMB = (zipBlob.size / 1024 / 1024).toFixed(2);
-            log(`Repository downloaded successfully (${zipSizeMB} MB)`, 'success');
 
-            log('Step 2/7: Creating file system structure... (usually takes 5-10 seconds)', 'info');
             const fileTree = await convertZipToTree(zipBlob);
-
-            if (!webContainerRef.current) throw new Error('WebContainer not initialized');
             await webContainerRef.current.mount(fileTree);
-            log('Files loaded into virtual environment.', 'success');
+            log('Files loaded.', 'success');
 
-            // 3. Update Configuration Files
+            // 3. Update Configuration and Logo
             setStatus('configuring');
-            log('Step 3/7: Updating configuration files... (usually takes 1-2 seconds)', 'info');
             await updatePackageJson(textInput.trim());
             await updateConfigTs(textInput.trim());
+            if (imageFile) await replaceLogoFiles(imageFile);
 
-            // 4. Replace Logo Files
-            log('Step 4/7: Replacing logo files... (usually takes 1 second)', 'info');
-            if (!imageFile) throw new Error('Image file is required');
-            await replaceLogoFiles(imageFile);
-
-            // 5. Install NPM Packages
+            // 4. Install Dependencies
             setStatus('installing');
-            log('Step 5/7: Installing dependencies (npm install)... (usually takes 2-5 minutes, this is the longest step)', 'warn');
-            log('Please be patient, this step downloads and installs all required packages...', 'info');
+            log('Step 3/5: Installing dependencies...', 'warn');
 
-            if (!webContainerRef.current) throw new Error('WebContainer not initialized');
             const installProcess = await webContainerRef.current.spawn('npm', ['install']);
-
-            // Pipe output to terminal
             installProcess.output.pipeTo(new WritableStream({
-                write(data) { 
-                    if (xtermRef.current) {
-                        xtermRef.current.write(data);
-                    }
-                }
+                write(data) { if (xtermRef.current) xtermRef.current.write(data); }
             }));
+            if ((await installProcess.exit) !== 0) throw new Error('npm install failed.');
+            log('npm install completed!', 'success');
 
-            const installExitCode = await installProcess.exit;
-            if (installExitCode !== 0) {
-                throw new Error(`npm install failed (Code: ${installExitCode}).`);
-            }
-            log('npm install completed successfully!', 'success');
-
-            // 6. Build Process
+            // 5. Build Project
             setStatus('building');
-            log('Step 6/7: Building theme (npm run build-keycloak-theme)... (usually takes 1-3 minutes)', 'info');
-            log('Compiling React components and generating Keycloak theme files...', 'info');
+            log('Step 4/5: Building project...', 'info');
 
-            if (!webContainerRef.current) throw new Error('WebContainer not initialized');
-            const buildProcess = await webContainerRef.current.spawn('npm', ['run', 'build-keycloak-theme']);
+            const buildProcess = await webContainerRef.current.spawn('npm', ['run', 'build']);
 
             buildProcess.output.pipeTo(new WritableStream({
-                write(data) { 
-                    if (xtermRef.current) {
-                        xtermRef.current.write(data);
-                    }
-                }
+                write(data) { if (xtermRef.current) xtermRef.current.write(data); }
             }));
 
             const buildExitCode = await buildProcess.exit;
             if (buildExitCode !== 0) {
                 throw new Error(`Build process failed (Code: ${buildExitCode}).`);
             }
-            log('Build process completed successfully!', 'success');
+            log('Build completed successfully!', 'success');
 
-            // 7. Zip dist_keycloak Contents
-            setStatus('packaging');
-            log('Step 7/7: Creating ZIP archive from dist_keycloak folder... (usually takes 5-15 seconds)', 'info');
-
+            // 6. Clean up node_modules
+            log('Cleaning up node_modules...', 'info');
             try {
-                const { zipUrl, zipFileName } = await zipDistKeycloak(textInput.trim());
-                
-                setJarName(zipFileName);
-                setDownloadUrl(zipUrl);
-                setStatus('ready');
-                log('ZIP archive created successfully!', 'success');
-                log('Download link prepared. All steps completed!', 'success');
-
-            } catch (err) {
-                const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-                throw new Error(`Packaging error: ${errorMessage}`);
+                await webContainerRef.current.fs.rm('node_modules', { recursive: true });
+                log('node_modules removed.', 'success');
+            } catch (error) {
+                log('Warning: Could not remove node_modules', 'warn');
             }
+
+            // 7. Package Project
+            setStatus('packaging');
+            log('Step 5/5: Packaging project...', 'info');
+
+            const {zipUrl, zipFileName} = await zipProject(textInput.trim());
+
+            setJarName(zipFileName);
+            setDownloadUrl(zipUrl);
+            setStatus('ready');
+            log('ZIP archive created successfully! Ready to download.', 'success');
 
         } catch (error) {
             console.error(error);
             setStatus('error');
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            log(`CRITICAL ERROR: ${errorMessage}`, 'error');
-
-            if (errorMessage.includes('SharedArrayBuffer')) {
-                log('TIP: Make sure COOP and COEP headers are configured on the server.', 'warn');
-            }
+            log(`CRITICAL ERROR: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
         }
+    };
+
+    // Zip entire project root, excluding node_modules
+    const zipProject = async (themeName: string) => {
+        if (!webContainerRef.current) throw new Error('WebContainer not initialized');
+        const zip = new JSZip();
+        let fileCount = 0;
+
+        const excludeDirs = new Set(['node_modules', '.git', 'build', 'builder']);
+        const excludeFiles = new Set(['.gitignore', '.DS_Store']);
+
+        const addDirectoryToZip = async (zip: JSZip, dirPath: string, basePath = '') => {
+            const entries = await webContainerRef.current!.fs.readdir(dirPath);
+
+            for (const entry of entries) {
+                // Skip excluded directories and files
+                if (excludeDirs.has(entry) || excludeFiles.has(entry)) {
+                    continue;
+                }
+
+                const fullPath = dirPath === '.' ? entry : `${dirPath}/${entry}`;
+                const zipPath = basePath ? `${basePath}/${entry}` : entry;
+
+                // Try to read as directory first
+                let isDirectory = false;
+                try {
+                    await webContainerRef.current!.fs.readdir(fullPath);
+                    isDirectory = true;
+                } catch {
+                    // Not a directory, will try as file
+                }
+
+                if (isDirectory) {
+                    // It's a directory, recurse into it
+                    await addDirectoryToZip(zip, fullPath, zipPath);
+                } else {
+                    // It's a file, read and add to zip
+                    try {
+                        const fileData = await webContainerRef.current!.fs.readFile(fullPath);
+                        // Ensure proper path format (forward slashes for ZIP)
+                        const normalizedPath = zipPath.replace(/\\/g, '/');
+                        zip.file(normalizedPath, fileData);
+                        fileCount++;
+                    } catch (fileError) {
+                        // Skip if we can't read it
+                        log(`  Warning: Could not read ${fullPath}`, 'warn');
+                    }
+                }
+            }
+        };
+
+        await addDirectoryToZip(zip, '.');
+
+        const zipBlob = await zip.generateAsync({type: 'blob'});
+        const zipSizeMB = (zipBlob.size / 1024 / 1024).toFixed(2);
+        const zipUrl = URL.createObjectURL(zipBlob);
+        const zipFileName = `${themeName}.zip`;
+        log(`  ✓ ZIP archive created: ${zipFileName} (${zipSizeMB} MB, ${fileCount} files)`, 'success');
+        return {zipUrl, zipFileName};
     };
 
     return (
@@ -389,9 +397,10 @@ export default function App() {
             <div className="w-full space-y-4 sm:space-y-6 px-3 sm:px-4 md:px-6">
 
                 {/* Header and Repo Information */}
-                <div className="bg-slate-800 p-4 sm:p-6 rounded-xl shadow-xl border border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div
+                    className="bg-slate-800 p-4 sm:p-6 rounded-xl shadow-xl border border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex items-center gap-3 sm:gap-4 w-full md:w-auto">
-                        <img src="/logo.png" alt="Logo" className="h-12 sm:h-16 md:h-20 w-auto flex-shrink-0" />
+                        <img src="/logo.png" alt="Logo" className="h-12 sm:h-16 md:h-20 w-auto flex-shrink-0"/>
                         <div className="flex flex-col justify-center min-w-0 flex-1">
                             <h1 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent pb-2 sm:pb-3 leading-tight break-words">
                                 Keycloakify Browser Builder
@@ -401,8 +410,9 @@ export default function App() {
                             </p>
                         </div>
                     </div>
-                    <div className="flex items-center space-x-2 text-xs sm:text-sm text-slate-300 bg-slate-900/50 px-3 sm:px-4 py-2 rounded-full border border-slate-700 w-full md:w-auto justify-center md:justify-start">
-                        <IconGithub />
+                    <div
+                        className="flex items-center space-x-2 text-xs sm:text-sm text-slate-300 bg-slate-900/50 px-3 sm:px-4 py-2 rounded-full border border-slate-700 w-full md:w-auto justify-center md:justify-start">
+                        <IconGithub/>
                         <a
                             href={`https://github.com/${REPO_OWNER}/${REPO_NAME}`}
                             target="_blank"
@@ -417,7 +427,7 @@ export default function App() {
                 {/* Input Fields */}
                 <div className="bg-slate-800 p-4 sm:p-6 rounded-xl shadow-xl border border-slate-700 space-y-4">
                     <h2 className="text-base sm:text-lg font-semibold text-slate-200 mb-4">Configuration</h2>
-                    
+
                     {/* Text Input */}
                     <div className="space-y-2">
                         <label htmlFor="text-input" className="block text-sm font-medium text-slate-300">
@@ -463,10 +473,12 @@ export default function App() {
                 {/* Control Panel */}
                 <div className="bg-slate-800 p-1 rounded-xl shadow-xl border border-slate-700 overflow-hidden">
                     {/* Top Bar */}
-                    <div className="bg-slate-800 p-3 sm:p-4 border-b border-slate-700 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
+                    <div
+                        className="bg-slate-800 p-3 sm:p-4 border-b border-slate-700 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
 
                         {/* Status Indicator */}
-                        <div className="flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto justify-center sm:justify-start">
+                        <div
+                            className="flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto justify-center sm:justify-start">
                             <span className="text-xs sm:text-sm font-medium text-slate-400">STATUS:</span>
                             <div className={`flex items-center space-x-2 px-3 py-1 rounded-md bg-slate-900 border ${
                                 status === 'error' ? 'border-red-900/50 text-red-400' :
@@ -489,12 +501,13 @@ export default function App() {
                                     onClick={startProcess}
                                     className="flex items-center justify-center space-x-2 px-4 sm:px-6 py-2 sm:py-2.5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 transition rounded-lg font-medium text-white shadow-lg shadow-blue-900/20 text-sm sm:text-base w-full sm:w-auto"
                                 >
-                                    <IconPlay />
+                                    <IconPlay/>
                                     <span>Start Build</span>
                                 </button>
                             ) : (
-                                <button disabled className="flex items-center justify-center space-x-2 px-4 sm:px-6 py-2 sm:py-2.5 bg-slate-700 text-slate-400 cursor-not-allowed rounded-lg font-medium text-sm sm:text-base w-full sm:w-auto">
-                                    <IconLoading />
+                                <button disabled
+                                        className="flex items-center justify-center space-x-2 px-4 sm:px-6 py-2 sm:py-2.5 bg-slate-700 text-slate-400 cursor-not-allowed rounded-lg font-medium text-sm sm:text-base w-full sm:w-auto">
+                                    <IconLoading/>
                                     <span>Processing...</span>
                                 </button>
                             )}
@@ -505,8 +518,8 @@ export default function App() {
                                     download={jarName}
                                     className="flex items-center justify-center space-x-2 px-4 sm:px-6 py-2 sm:py-2.5 bg-green-600 hover:bg-green-500 active:bg-green-700 transition rounded-lg font-medium text-white shadow-lg shadow-green-900/20 animate-pulse text-sm sm:text-base w-full sm:w-auto"
                                 >
-                                    <IconDownload />
-                                    <span className="truncate">Download ZIP ({jarName})</span>
+                                    <IconDownload/>
+                                    <span className="truncate">Download ZIP ({jarName || 'project.zip'})</span>
                                 </a>
                             )}
                         </div>
@@ -519,7 +532,8 @@ export default function App() {
                             className="h-[300px] sm:h-[400px] md:h-[500px] w-full bg-[#0f172a] p-2 sm:p-4 overflow-hidden"
                         />
                         {/* Terminal Overlay Gradient */}
-                        <div className="absolute inset-0 pointer-events-none shadow-[inset_0_-20px_20px_rgba(0,0,0,0.5)]"></div>
+                        <div
+                            className="absolute inset-0 pointer-events-none shadow-[inset_0_-20px_20px_rgba(0,0,0,0.5)]"></div>
                     </div>
                 </div>
 
@@ -527,11 +541,13 @@ export default function App() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 text-xs text-slate-500">
                     <div className="bg-slate-800/50 p-3 sm:p-4 rounded-lg border border-slate-700/50">
                         <h3 className="font-semibold text-slate-400 mb-1 text-sm sm:text-base">Security Note</h3>
-                        <p className="text-xs sm:text-sm">All operations take place in a virtual container (WebContainer) inside your browser. Your code is not sent to any server.</p>
+                        <p className="text-xs sm:text-sm">All operations take place in a virtual container
+                            (WebContainer) inside your browser. Your code is not sent to any server.</p>
                     </div>
                     <div className="bg-slate-800/50 p-3 sm:p-4 rounded-lg border border-slate-700/50">
                         <h3 className="font-semibold text-slate-400 mb-1 text-sm sm:text-base">Requirements</h3>
-                        <p className="text-xs sm:text-sm">For this application to work, the server must send the <code className="text-xs">Cross-Origin-Embedder-Policy: require-corp</code> header.</p>
+                        <p className="text-xs sm:text-sm">For this application to work, the server must send the <code
+                            className="text-xs">Cross-Origin-Embedder-Policy: require-corp</code> header.</p>
                     </div>
                 </div>
 

@@ -18,7 +18,7 @@
         "baseUrl": ".",
         "paths": {
             "@/*": ["./src/*"],
-            "config": ["./src/config.ts"]
+            "config": ["./keycloak.config.ts"]
         },
 
         /* Linting */
