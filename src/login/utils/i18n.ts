@@ -143,3 +143,38 @@ export function i18nToString(
     }
 }
 
+/**
+ * Attribute displayName'ini i18n kullanarak çevirir
+ * Standart alanlar için (username, email, firstName, lastName) i18n key'lerini kullanır
+ * Diğer alanlar için attribute.displayName veya attribute.name kullanır
+ */
+export function getAttributeDisplayName(
+    i18n: I18n,
+    attribute: { name: string; displayName?: string }
+): string {
+    const attributeName = attribute.name;
+    
+    // Standart alanlar için i18n key'lerini kullan
+    const standardFieldMap: Record<string, string> = {
+        username: "username",
+        email: "email",
+        firstName: "firstName",
+        lastName: "lastName",
+        password: "password",
+        "password-confirm": "passwordConfirm",
+        "password-new": "passwordNew",
+        "password-new-confirm": "passwordNewConfirm",
+    };
+    
+    const i18nKey = standardFieldMap[attributeName];
+    if (i18nKey) {
+        const translated = i18nToString(i18n, i18nKey as any);
+        if (translated && translated !== i18nKey) {
+            return translated;
+        }
+    }
+    
+    // Eğer i18n çevirisi yoksa, attribute.displayName veya attribute.name kullan
+    return attribute.displayName || attributeName;
+}
+

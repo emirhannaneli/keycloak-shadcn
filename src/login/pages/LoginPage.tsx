@@ -3,6 +3,7 @@ import { useI18n } from "../i18n";
 import { KcForm, KcInput, KcButton, KcCard, KcAlert, KcCheckbox } from "../components";
 import { Label } from "@/components/ui/label";
 import { i18nToString } from "../utils/i18n";
+import { getLoginLogoUrl } from "../utils/logo";
 import React, { useEffect } from "react";
 import { 
     type LucideIcon
@@ -172,7 +173,7 @@ export default function LoginPage({ kcContext }: { kcContext: Extract<KcContext,
                 {/* Sistem Logosu */}
                 <div className="flex justify-center">
                     <img 
-                        src={getResourcePath("img/keycloak-logo-text.png")} 
+                        src={getLoginLogoUrl(i18n, "img/keycloak-logo-text.png", getResourcePath)} 
                         alt="Keycloak" 
                         className="h-20"
                     />

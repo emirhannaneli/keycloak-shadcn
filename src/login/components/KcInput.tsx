@@ -1,41 +1,46 @@
 import { Input, type InputProps } from "@/components/ui/input";
 import { type KcContext } from "../KcContext";
+import { forwardRef } from "react";
 
-interface KcInputProps extends InputProps {
+interface KcInputProps extends Omit<InputProps, "name"> {
     kcContext?: KcContext;
-    name: string;
+    name?: string;
     id?: string;
     autoComplete?: string;
     autoFocus?: boolean;
     defaultValue?: string;
+    value?: string;
     disabled?: boolean;
     required?: boolean;
     tabIndex?: number;
     type?: string;
 }
 
-export function KcInput({
+export const KcInput = forwardRef<HTMLInputElement, KcInputProps>(({
     kcContext,
     name,
     id,
     autoComplete,
     autoFocus,
     defaultValue,
+    value,
     disabled,
     required,
     tabIndex,
     type = "text",
     className,
     ...props
-}: KcInputProps) {
+}, ref) => {
     return (
         <Input
+            ref={ref}
             id={id || name}
             name={name}
             type={type}
             autoComplete={autoComplete}
             autoFocus={autoFocus}
             defaultValue={defaultValue}
+            value={value}
             disabled={disabled}
             required={required}
             tabIndex={tabIndex}
@@ -43,5 +48,7 @@ export function KcInput({
             {...props}
         />
     );
-}
+});
+
+KcInput.displayName = "KcInput";
 

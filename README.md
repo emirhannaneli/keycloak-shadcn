@@ -35,6 +35,7 @@ A modern, production-ready starter template for building custom Keycloak themes 
 - 📦 **Production Ready** - Optimized builds with code splitting
 - 🌍 **Multi-Language Support** - Built-in i18n with 21 languages for Account and 28 languages for Login themes
 - 🔤 **Translation Management** - Automated scripts for generating and fixing translations
+- 🖼️ **Dynamic Logo** - Change login logo dynamically via Keycloak Admin Console without rebuilding the theme
 
 ## 🎯 Customized Pages
 
@@ -187,6 +188,54 @@ This starter uses **shadcn/ui** components built on **Radix UI** primitives. All
 - **Tailwind CSS** - Utility-first CSS framework
 - **CSS Variables** - Theme customization via CSS variables
 - **Base Color:** Slate (configurable in `components.json`)
+
+### Dynamic Logo Configuration
+
+You can change the login logo dynamically through the Keycloak Admin Console without rebuilding the theme. This feature allows administrators to customize the logo for each realm without code changes.
+
+#### How to Configure
+
+1. **Access Keycloak Admin Console**
+   - Navigate to your realm
+   - Go to **Realm Settings** → **Localization**
+
+2. **Add Logo Configuration**
+   - Click on **Add Message** or edit existing messages
+   - **Key:** `loginLogoUrl`
+   - **Value:** Enter one of the following:
+     - **URL:** `https://example.com/logo.png` (external image URL)
+     - **Base64:** `data:image/png;base64,iVBORw0KG...` (Base64 encoded image)
+
+3. **Save Changes**
+   - Click **Save**
+   - The logo will be updated immediately on login pages
+
+#### Supported Formats
+
+- **External URLs:** Any publicly accessible image URL (HTTP/HTTPS)
+- **Base64 Encoded Images:** Direct Base64 data URIs (e.g., `data:image/png;base64,...`)
+- **Default Fallback:** If `loginLogoUrl` is not configured, the default logo (`img/keycloak-logo-text.png`) will be used
+
+#### Example Configurations
+
+**Using External URL:**
+```
+Key: loginLogoUrl
+Value: https://example.com/assets/company-logo.png
+```
+
+**Using Base64:**
+```
+Key: loginLogoUrl
+Value: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...
+```
+
+#### Technical Details
+
+- The logo is checked on both **Login** and **Register** pages
+- The feature uses Keycloak's i18n message system
+- Logo changes take effect immediately without theme rebuild
+- The default logo path is `img/keycloak-logo-text.png`
 
 ### Customization Strategies
 
