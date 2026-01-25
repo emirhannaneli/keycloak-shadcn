@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import { keycloakify } from "keycloakify/vite-plugin";
 import path from "path";
 import { fileURLToPath } from "url";
-import { keycloakThemeConfig, getKeycloakVersionTargets } from "./src/config";
+import { keycloakThemeConfig, getKeycloakVersionTargets } from "./src/config.ts";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
