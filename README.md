@@ -109,11 +109,11 @@ bun install
 ### Start Development Server
 
 ```bash
-yarn storybook
+yarn dev
 # or
-npm run storybook
+npm run dev
 # or
-bun run storybook
+bun run dev
 ```
 
 The development server will start at `http://localhost:5173` (or the next available port).
@@ -143,6 +143,8 @@ Start Storybook to visually develop and test components:
 yarn storybook
 # or
 npm run storybook
+# or
+bun run storybook
 ```
 
 Storybook will be available at `http://localhost:6006`.
