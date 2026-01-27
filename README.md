@@ -73,7 +73,7 @@ This starter includes **21 fully customized pages** with modern UI components:
 ### Prerequisites
 
 - **Node.js** >= 18.0.0 or >= 20.0.0
-- **npm**, **yarn**, or **pnpm** package manager
+- **npm**, **yarn**, **pnpm**, or **bun** package manager
 - **Maven** >= 3.1.1 (for building the theme)
 - **Java** >= 7 (for Maven)
 
@@ -90,6 +90,8 @@ yarn install
 npm install
 # or
 pnpm install
+# or
+bun install
 ```
 
 > **Note:** If you use a different package manager, make sure to delete the `yarn.lock` file.
@@ -107,9 +109,11 @@ pnpm install
 ### Start Development Server
 
 ```bash
-yarn dev
+yarn storybook
 # or
-npm run dev
+npm run storybook
+# or
+bun run storybook
 ```
 
 The development server will start at `http://localhost:5173` (or the next available port).
@@ -299,6 +303,8 @@ Build the Keycloak theme JAR files:
 yarn build-keycloak-theme
 # or
 npm run build-keycloak-theme
+# or
+bun run build-keycloak-theme
 ```
 
 This command will:
