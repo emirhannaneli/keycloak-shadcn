@@ -94,7 +94,7 @@ pnpm install
 bun install
 ```
 
-> **Note:** If you use a different package manager, make sure to delete the `yarn.lock` file.
+> **Note:** If you use a different package manager, make sure to delete the `bun.lock` file.
 
 ### Install Maven (if needed)
 
