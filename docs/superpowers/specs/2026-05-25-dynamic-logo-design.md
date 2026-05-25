@@ -134,7 +134,7 @@ Each Keycloak page is a fresh document (full reload between FreeMarker pages), s
 | `src/login/pages/RegisterPage.tsx` | inline `<img>` + `getLoginLogoUrl` | same as above |
 | Other login pages | no logo | unchanged |
 | `src/login/components/PageWrapper.tsx` | theme effect | + `useFavicon(kcContext)` |
-| `src/account/components/AccountSidebar.tsx` | no logo | new `<Logo className="h-12" />` at the top |
+| `src/account/components/AccountLayout.tsx` | no logo | new `<Logo className="h-12" />` above the main content area |
 | `src/account/components/PageWrapper.tsx` | theme effect | + `useFavicon(kcContext)` |
 | `src/login/utils/logo.ts` | exports `getLoginLogoUrl` | **file deleted** |
 
