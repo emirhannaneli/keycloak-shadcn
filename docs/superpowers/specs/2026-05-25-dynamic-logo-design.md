@@ -83,9 +83,10 @@ export function parseRealmLogoConfig(
 
 ```tsx
 type LogoProps = {
-  kcContext: { realm?: { displayNameHtml?: string }; url: { resourcesPath: string } };
-  defaultLight: string;          // theme-relative path, e.g. "img/keycloak-logo-text.png"
+  kcContext: { realm?: { displayNameHtml?: string } };
+  defaultLight: string;          // path passed verbatim to getResourcePath
   defaultDark?: string;          // optional; falls back to defaultLight if absent
+  getResourcePath: (path: string) => string;
   className?: string;
   alt: string;
 };
@@ -110,7 +111,7 @@ So a realm that sets only `logo-light` gets the same logo in both modes; a realm
 
 `onError` swaps `src` to the bundled default once; a state flag prevents a second error from looping if the default itself is missing.
 
-Resource path is read from `kcContext.url.resourcesPath` (Keycloakify guarantees it). No external `getResourcePath` parameter — the component is self-contained.
+A `getResourcePath` function is passed in as a prop. Each call site already maintains its own resolver (login pages and the account layout) because resource path resolution is non-trivial: it needs a DEV-mode branch (`/keycloakify-dev-resources/login/...`) and a fallback to the configured theme name when `kcContext.url.resourcesPath` is missing. Threading the function through keeps the component decoupled from those concerns and lets each theme pass its own theme-scoped resolver (`/login/` vs `/account/`).
 
 ### `useFavicon` — hook
 
