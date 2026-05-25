@@ -2,6 +2,7 @@ import { type KcContext } from "../KcContext";
 import { PageHeader } from "./PageHeader";
 import { AccountLayout } from "./AccountLayout";
 import { useEffect } from "react";
+import { useFavicon } from "@/lib/useFavicon";
 
 interface PageWrapperProps {
     kcContext: KcContext;
@@ -11,6 +12,8 @@ interface PageWrapperProps {
 type Theme = "light" | "dark" | "system";
 
 export function PageWrapper({ kcContext, children }: PageWrapperProps) {
+    useFavicon(kcContext as unknown as { realm?: { displayNameHtml?: string } });
+
     // Preserve theme state during page transitions
     useEffect(() => {
         const applyTheme = () => {

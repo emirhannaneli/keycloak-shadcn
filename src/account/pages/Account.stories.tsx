@@ -124,3 +124,32 @@ export const EmailAsUsername: Story = {
         />
     )
 };
+
+export const WithCustomLogo: Story = {
+    render: () => (
+        <KcPageStory
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            kcContext={{
+                realm: {
+                    displayNameHtml:
+                        "<!--logo-light:https://placehold.co/200x80/0066cc/white?text=Light+Logo-->" +
+                        "<!--logo-dark:https://placehold.co/200x80/00ccff/black?text=Dark+Logo-->",
+                },
+            } as any}
+        />
+    ),
+};
+
+export const WithFavicon: Story = {
+    render: () => (
+        <KcPageStory
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            kcContext={{
+                realm: {
+                    displayNameHtml:
+                        "<!--favicon:https://placehold.co/32x32/ff00ff/white.png-->",
+                },
+            } as any}
+        />
+    ),
+};
