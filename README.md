@@ -195,53 +195,57 @@ This starter uses **shadcn/ui** components built on **Radix UI** primitives. All
 - **CSS Variables** - Theme customization via CSS variables
 - **Base Color:** Slate (configurable in `components.json`)
 
-### Dynamic Logo Configuration
+### Dynamic Logo & Favicon Configuration
 
-You can change the login logo dynamically through the Keycloak Admin Console without rebuilding the theme. This feature allows administrators to customize the logo for each realm without code changes.
+You can change the logo (both light/dark variants) and favicon dynamically through the Keycloak Admin Console without rebuilding the theme. Configuration is embedded as HTML comments inside the realm's **Display Name HTML** field.
 
 #### How to Configure
 
 1. **Access Keycloak Admin Console**
    - Navigate to your realm
-   - Go to **Realm Settings** → **Localization**
+   - Go to **Realm Settings** → **General**
+   - Locate the **Display name HTML** field
 
-2. **Add Logo Configuration**
-   - Click on **Add Message** or edit existing messages
-   - **Key:** `loginLogoUrl`
-   - **Value:** Enter one of the following:
-     - **URL:** `https://example.com/logo.png` (external image URL)
-     - **Base64:** `data:image/png;base64,iVBORw0KG...` (Base64 encoded image)
+2. **Add Logo / Favicon Comments**
+
+   Append (or replace) HTML comments using this format:
+
+   ```html
+   <strong>My Realm</strong>
+   <!--logo-light:https://cdn.example.com/logo.png-->
+   <!--logo-dark:https://cdn.example.com/logo-dark.png-->
+   <!--favicon:https://cdn.example.com/favicon.ico-->
+   ```
+
+   Each comment is one key / value pair. Any non-comment HTML you put in this field continues to work as the realm's display name. Order does not matter. Unknown keys are ignored.
 
 3. **Save Changes**
    - Click **Save**
-   - The logo will be updated immediately on login pages
+   - Logo + favicon update immediately on next page load — no theme rebuild needed.
 
-#### Supported Formats
+#### Supported Keys
 
-- **External URLs:** Any publicly accessible image URL (HTTP/HTTPS)
-- **Base64 Encoded Images:** Direct Base64 data URIs (e.g., `data:image/png;base64,...`)
-- **Default Fallback:** If `loginLogoUrl` is not configured, the default logo (`img/keycloak-logo-text.png`) will be used
+- `logo-light` — Logo shown in light mode (and in dark mode if `logo-dark` is absent).
+- `logo-dark` — Logo shown in dark mode. Falls back to `logo-light`, then to the bundled default.
+- `favicon` — Browser tab icon. If absent, the bundled favicon is preserved.
 
-#### Example Configurations
+#### Supported Value Formats
 
-**Using External URL:**
-```
-Key: loginLogoUrl
-Value: https://example.com/assets/company-logo.png
-```
+- **External URL:** `https://cdn.example.com/logo.png`
+- **Data URI:** `data:image/png;base64,iVBORw0KGgo...`
+- **Absolute path:** `/themes/my-theme/.../logo.png` (Keycloak-served resource)
 
-**Using Base64:**
-```
-Key: loginLogoUrl
-Value: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...
-```
+#### Fallback Behaviour
 
-#### Technical Details
+If a key is missing or the URL fails to load, the theme falls back to the bundled default logo (`img/keycloak-logo-text.png`) or the bundled favicon (`public/favicon-32x32.png`). Pages still render — the logo is never blocking.
 
-- The logo is checked on both **Login** and **Register** pages
-- The feature uses Keycloak's i18n message system
-- Logo changes take effect immediately without theme rebuild
-- The default logo path is `img/keycloak-logo-text.png`
+#### Where the Logo Appears
+
+- **Login theme:** Top of the Login and Register pages.
+- **Account theme:** Top of the account console.
+- **Favicon:** Browser tab on both themes.
+
+Other login pages (password reset, OTP, etc.) do not display a logo by default; this is a separate UX decision unrelated to dynamic logo configuration.
 
 ### Customization Strategies
 
