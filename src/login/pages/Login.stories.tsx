@@ -411,3 +411,16 @@ export const WithFavicon: Story = {
         />
     ),
 };
+
+export const WithDarkLogoOnly: Story = {
+    render: () => (
+        <KcPageStory
+            kcContext={{
+                realm: {
+                    displayNameHtml:
+                        "<!--logo-dark:https://placehold.co/200x80/00ccff/black?text=Dark+Only-->",
+                },
+            }}
+        />
+    ),
+};

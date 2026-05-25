@@ -316,3 +316,29 @@ export const WithBrokenLogoUrl: Story = {
         />
     ),
 };
+
+export const WithDarkLogoOnly: Story = {
+    render: () => (
+        <KcPageStory
+            kcContext={{
+                realm: {
+                    displayNameHtml:
+                        "<!--logo-dark:https://placehold.co/200x80/00ccff/black?text=Dark+Only-->",
+                },
+            }}
+        />
+    ),
+};
+
+export const WithFavicon: Story = {
+    render: () => (
+        <KcPageStory
+            kcContext={{
+                realm: {
+                    displayNameHtml:
+                        "<!--favicon:https://placehold.co/32x32/ff00ff/white.png-->",
+                },
+            }}
+        />
+    ),
+};

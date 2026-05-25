@@ -13,7 +13,7 @@ The current implementation also covers only `LoginPage` and `RegisterPage`, has 
 ## Goals
 
 1. A single realm-level config source for: light logo, dark logo, favicon — readable at runtime, no theme rebuild required.
-2. Logo visible on the existing login pages (`LoginPage`, `RegisterPage`) and the account console (`AccountSidebar`).
+2. Logo visible on the existing login pages (`LoginPage`, `RegisterPage`) and the account console (`AccountLayout`).
 3. Favicon updated dynamically in the browser tab on both themes.
 4. Independent of `realm.internationalizationEnabled`.
 5. Light/dark logo variants, automatic selection from the active theme (including system-mode following).

@@ -153,3 +153,45 @@ export const WithFavicon: Story = {
         />
     ),
 };
+
+export const WithLightLogoOnly: Story = {
+    render: () => (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        <KcPageStory
+            kcContext={{
+                realm: {
+                    displayNameHtml:
+                        "<!--logo-light:https://placehold.co/200x80/0066cc/white?text=Light+Only-->",
+                },
+            } as any}
+        />
+    ),
+};
+
+export const WithDarkLogoOnly: Story = {
+    render: () => (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        <KcPageStory
+            kcContext={{
+                realm: {
+                    displayNameHtml:
+                        "<!--logo-dark:https://placehold.co/200x80/00ccff/black?text=Dark+Only-->",
+                },
+            } as any}
+        />
+    ),
+};
+
+export const WithBrokenLogoUrl: Story = {
+    render: () => (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        <KcPageStory
+            kcContext={{
+                realm: {
+                    displayNameHtml:
+                        "<!--logo-light:https://example.invalid/missing.png-->",
+                },
+            } as any}
+        />
+    ),
+};
