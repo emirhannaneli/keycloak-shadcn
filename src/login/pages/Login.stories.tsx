@@ -358,3 +358,56 @@ export const WithSocialProvidersAndWithoutRememberMe: Story = {
         />
     )
 };
+
+export const WithCustomLogo: Story = {
+    render: () => (
+        <KcPageStory
+            kcContext={{
+                realm: {
+                    displayNameHtml:
+                        "<!--logo-light:https://placehold.co/200x80/0066cc/white?text=Light+Logo-->" +
+                        "<!--logo-dark:https://placehold.co/200x80/00ccff/black?text=Dark+Logo-->",
+                },
+            }}
+        />
+    ),
+};
+
+export const WithLightLogoOnly: Story = {
+    render: () => (
+        <KcPageStory
+            kcContext={{
+                realm: {
+                    displayNameHtml:
+                        "<!--logo-light:https://placehold.co/200x80/0066cc/white?text=Logo-->",
+                },
+            }}
+        />
+    ),
+};
+
+export const WithBrokenLogoUrl: Story = {
+    render: () => (
+        <KcPageStory
+            kcContext={{
+                realm: {
+                    displayNameHtml:
+                        "<!--logo-light:https://example.invalid/missing.png-->",
+                },
+            }}
+        />
+    ),
+};
+
+export const WithFavicon: Story = {
+    render: () => (
+        <KcPageStory
+            kcContext={{
+                realm: {
+                    displayNameHtml:
+                        "<!--favicon:https://placehold.co/32x32/ff00ff/white.png-->",
+                },
+            }}
+        />
+    ),
+};

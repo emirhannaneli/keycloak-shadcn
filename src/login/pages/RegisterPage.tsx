@@ -2,7 +2,7 @@ import { type KcContext } from "../KcContext";
 import { useI18n } from "../i18n";
 import { KcForm, KcButton, KcCard, KcAlert, KcInput } from "../components";
 import { i18nToString } from "../utils/i18n";
-import { getLoginLogoUrl } from "../utils/logo";
+import { Logo } from "@/components/Logo";
 import { Suspense, lazy, useEffect, useMemo } from "react";
 import { 
     type LucideIcon
@@ -209,11 +209,13 @@ export default function RegisterPage({ kcContext }: { kcContext: Extract<KcConte
     return (
         <div className="flex min-h-screen items-center justify-center p-4">
             <div className="w-full max-w-md space-y-6">
-                {/* Sistem Logosu */}
+                {/* System Logo */}
                 <div className="flex justify-center">
-                    <img 
-                        src={getLoginLogoUrl(i18n, "img/keycloak-logo-text.png", getResourcePath)} 
-                        alt="Keycloak" 
+                    <Logo
+                        kcContext={kcContext}
+                        defaultLight="img/keycloak-logo-text.png"
+                        getResourcePath={getResourcePath}
+                        alt="Logo"
                         className="h-20"
                     />
                 </div>
