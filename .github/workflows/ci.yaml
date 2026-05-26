@@ -78,4 +78,4 @@ jobs:
                       dist_keycloak/keycloak-shadcn-*.jar
                       dist_keycloak/theme-config-spi.jar
               env:
-                  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.PAT }}
