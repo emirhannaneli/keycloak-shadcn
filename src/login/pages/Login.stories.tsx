@@ -464,3 +464,49 @@ export const WithSPIFavicon: Story = {
         );
     },
 };
+
+export const WithCustomColors: Story = {
+    render: () => {
+        seedThemeCache("master", {
+            colorPrimary: "#0066cc",
+            colorSecondary: "#6c757d",
+            colorAccent: "#28a745",
+        });
+        return (
+            <KcPageStory
+                kcContext={{ realm: { name: "master" } }}
+            />
+        );
+    },
+};
+
+export const WithCustomLogoSize: Story = {
+    render: () => {
+        seedThemeCache("master", {
+            logoHeightLogin: "120",
+        });
+        return (
+            <KcPageStory
+                kcContext={{ realm: { name: "master" } }}
+            />
+        );
+    },
+};
+
+export const WithAllCustomizations: Story = {
+    render: () => {
+        seedThemeCache("master", {
+            logoLight: "https://placehold.co/200x80/0066cc/white?text=Brand",
+            logoDark: "https://placehold.co/200x80/00ccff/black?text=Brand",
+            colorPrimary: "#0066cc",
+            colorBackgroundLight: "#f5f7fa",
+            colorForegroundLight: "#1a1a2e",
+            logoHeightLogin: "100",
+        });
+        return (
+            <KcPageStory
+                kcContext={{ realm: { name: "master" } }}
+            />
+        );
+    },
+};

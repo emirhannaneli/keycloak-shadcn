@@ -12,6 +12,8 @@ interface LogoProps {
     defaultDark?: string;
     /** Resolves a theme-relative path to an absolute URL Keycloak can serve. */
     getResourcePath: (path: string) => string;
+    /** Optional explicit height in pixels. Overrides className h-* if provided. */
+    heightPx?: number;
     className?: string;
     alt: string;
 }
@@ -31,6 +33,7 @@ export function Logo({
     defaultLight,
     defaultDark,
     getResourcePath,
+    heightPx,
     className,
     alt,
 }: LogoProps) {
@@ -60,10 +63,13 @@ export function Logo({
         setDarkFailed(false);
     }, [darkSrc]);
 
+    const inlineStyle = heightPx ? { height: `${heightPx}px` } : undefined;
+
     return (
         <>
             <img
                 src={lightFailed ? fallbackLight : lightSrc}
+                style={inlineStyle}
                 alt={alt}
                 className={cn(className, "block dark:hidden")}
                 onError={() => {
@@ -72,6 +78,7 @@ export function Logo({
             />
             <img
                 src={darkFailed ? fallbackDark : darkSrc}
+                style={inlineStyle}
                 alt={alt}
                 className={cn(className, "hidden dark:block")}
                 onError={() => {

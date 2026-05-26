@@ -197,9 +197,9 @@ This starter uses **shadcn/ui** components built on **Radix UI** primitives. All
 - **CSS Variables** - Theme customization via CSS variables
 - **Base Color:** Slate (configurable in `components.json`)
 
-### Dynamic Logo & Favicon Configuration
+### Dynamic Theme Branding
 
-The theme reads per-realm branding from realm attributes (`theme.logoLight`, `theme.logoDark`, `theme.faviconUrl`). You can edit these in two ways:
+The theme reads per-realm branding from realm attributes (logo URLs, favicon, theme colors, and logo sizes). You can edit these via the Keycloak admin console (Option A) or the admin REST API (Option B).
 
 #### Option A — Admin Console UI (Phase 2)
 
@@ -259,13 +259,24 @@ Verify: `curl http://localhost:8080/realms/<your-realm>/theme-config` returns th
 
 #### Supported keys
 
-| Attribute | Purpose |
-|---|---|
-| `theme.logoLight` | Logo shown in light mode |
-| `theme.logoDark` | Logo shown in dark mode (falls back to `logoLight` if absent) |
-| `theme.faviconUrl` | Browser tab icon |
+| Attribute | Type | Purpose |
+|---|---|---|
+| `theme.logoLight` | URL | Logo shown in light mode |
+| `theme.logoDark` | URL | Logo shown in dark mode (falls back to `logoLight` if absent) |
+| `theme.faviconUrl` | URL | Browser tab icon |
+| `theme.colorPrimary` | HEX | Button / accent color, both modes |
+| `theme.colorSecondary` | HEX | Secondary accent, both modes |
+| `theme.colorAccent` | HEX | Highlight / focus ring, both modes |
+| `theme.colorBackgroundLight` | HEX | Page background in light mode |
+| `theme.colorBackgroundDark` | HEX | Page background in dark mode |
+| `theme.colorForegroundLight` | HEX | Text color in light mode |
+| `theme.colorForegroundDark` | HEX | Text color in dark mode |
+| `theme.logoHeightLogin` | px | Logo height on Login/Register pages (default: 80) |
+| `theme.logoHeightAccount` | px | Logo height on Account console (default: 48) |
 
-Any other `theme.*` attribute is also exposed on the endpoint (without the prefix), but only these three are surfaced as inputs in Option A's UI.
+URL values must start with `http://`, `https://`, `data:image/`, or `/`. HEX values must be 6-digit `#RRGGBB`. Sizes must be positive integers (1-9999).
+
+Any other `theme.*` attribute is also exposed on the endpoint (without the prefix), but only the twelve keys listed above are surfaced as inputs in Option A's UI.
 
 #### Building the SPI
 
@@ -286,6 +297,14 @@ This mechanism is preserved for backward compatibility. New deployments should u
 #### Fallback behaviour
 
 If neither source provides a value, or a URL fails to load, the bundled defaults (`img/keycloak-logo-text.png`, `public/favicon-32x32.png`) are used. Pages never block on a missing logo.
+
+#### Limitations
+
+- **HEX input only.** Color fields require `#RRGGBB` (6-digit). HSL / RGB / named CSS colors are rejected.
+- **No color picker UI.** Keycloak's Declarative UI SPI exposes text inputs only. Admin types the hex string.
+- **Single value for primary / secondary / accent.** These three colors use the same value in light and dark mode. Background and foreground are mode-specific.
+- **FOUC on cold cache.** First page load fetches the SPI asynchronously; the page renders with bundled defaults for ~50ms before custom colors apply. Subsequent visits within the 30-second cache window are FOUC-free.
+- **Propagation delay.** Changes take effect after the 30-second cache TTL or a hard refresh (`Ctrl+Shift+R`).
 
 ### Customization Strategies
 

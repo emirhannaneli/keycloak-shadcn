@@ -9,6 +9,7 @@ import {
     type LucideIcon
 } from "lucide-react";
 import { keycloakThemeConfig } from "config";
+import { useThemeConfigContext } from "@/lib/themeConfigContext";
 
 // Google SVG ikonu - img/social/google.svg
 const GoogleIcon = ({ className, resourcePath }: { className?: string; resourcePath: (path: string) => string }) => (
@@ -111,6 +112,8 @@ function getProviderIcon(providerId: string | undefined, resourcePath: (path: st
 
 export default function LoginPage({ kcContext }: { kcContext: Extract<KcContext, { pageId: "login.ftl" }> }) {
     const { i18n } = useI18n({ kcContext });
+    const themeConfig = useThemeConfigContext();
+    const heightPx = parseInt(themeConfig.logoHeightLogin ?? "0", 10) || undefined;
 
     const {
         url,
@@ -178,6 +181,7 @@ export default function LoginPage({ kcContext }: { kcContext: Extract<KcContext,
                         getResourcePath={getResourcePath}
                         alt="Logo"
                         className="h-20"
+                        heightPx={heightPx}
                     />
                 </div>
                 
