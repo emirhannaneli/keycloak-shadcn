@@ -3,6 +3,8 @@ import { PageHeader } from "./PageHeader";
 import { AccountLayout } from "./AccountLayout";
 import { useEffect } from "react";
 import { useFavicon } from "@/lib/useFavicon";
+import { useThemeConfig } from "@/lib/useThemeConfig";
+import { ThemeConfigProvider } from "@/lib/themeConfigContext";
 
 interface PageWrapperProps {
     kcContext: KcContext;
@@ -13,6 +15,8 @@ type Theme = "light" | "dark" | "system";
 
 export function PageWrapper({ kcContext, children }: PageWrapperProps) {
     useFavicon(kcContext as unknown as { realm?: { displayNameHtml?: string } });
+
+    const themeConfig = useThemeConfig((kcContext.realm as { name?: string } | undefined)?.name ?? "");
 
     // Preserve theme state during page transitions
     useEffect(() => {
@@ -51,10 +55,12 @@ export function PageWrapper({ kcContext, children }: PageWrapperProps) {
     }, [kcContext.pageId]); // Check theme state when page changes
 
     return (
-        <AccountLayout kcContext={kcContext}>
-            {children}
-            <PageHeader kcContext={kcContext} />
-        </AccountLayout>
+        <ThemeConfigProvider value={themeConfig}>
+            <AccountLayout kcContext={kcContext}>
+                {children}
+                <PageHeader kcContext={kcContext} />
+            </AccountLayout>
+        </ThemeConfigProvider>
     );
 }
 
