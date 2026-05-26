@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { parseRealmLogoConfig } from "./realmLogoConfig";
-import { useThemeConfigContext } from "./themeConfigContext";
+import type { ThemeConfig } from "./themeConfig";
 
 /**
  * Updates <link rel="icon"> in document.head with the realm-configured favicon.
@@ -11,9 +11,15 @@ import { useThemeConfigContext } from "./themeConfigContext";
  *
  * Restores the previous state on unmount or when the resolved favicon changes —
  * for Storybook hygiene; production has full reloads between Keycloak pages.
+ *
+ * `themeConfig` is passed in (not read from context) because this hook is
+ * called from PageWrapper itself, which lives outside the ThemeConfigProvider
+ * it returns — a context read here would always see the default {}.
  */
-export function useFavicon(kcContext: { realm?: { displayNameHtml?: string } }) {
-    const themeConfig = useThemeConfigContext();
+export function useFavicon(
+    themeConfig: ThemeConfig,
+    kcContext: { realm?: { displayNameHtml?: string } }
+) {
     const legacy = parseRealmLogoConfig(kcContext.realm?.displayNameHtml);
     const favicon = themeConfig.faviconUrl ?? legacy.favicon;
 

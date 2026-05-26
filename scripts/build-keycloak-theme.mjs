@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { existsSync, readdirSync, statSync } from "node:fs";
+import { readdirSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { homedir } from "node:os";

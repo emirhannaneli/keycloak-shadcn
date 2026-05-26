@@ -13,9 +13,8 @@ interface PageWrapperProps {
 type Theme = "light" | "dark" | "system";
 
 export function PageWrapper({ kcContext, children }: PageWrapperProps) {
-    useFavicon(kcContext);
-
     const themeConfig = useThemeConfig(kcContext.realm.name);
+    useFavicon(themeConfig, kcContext);
 
     // Preserve theme state during page transitions
     useEffect(() => {
