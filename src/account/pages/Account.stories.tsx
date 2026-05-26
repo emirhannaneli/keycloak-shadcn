@@ -227,3 +227,28 @@ export const WithSPIFavicon: Story = {
         );
     },
 };
+
+export const WithCustomColors: Story = {
+    render: () => {
+        seedThemeCache("master", {
+            colorPrimary: "#0066cc",
+            colorAccent: "#28a745",
+        });
+        return (
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            <KcPageStory kcContext={{ realm: { name: "master" } } as any} />
+        );
+    },
+};
+
+export const WithCustomLogoSize: Story = {
+    render: () => {
+        seedThemeCache("master", {
+            logoHeightAccount: "72",
+        });
+        return (
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            <KcPageStory kcContext={{ realm: { name: "master" } } as any} />
+        );
+    },
+};

@@ -365,3 +365,18 @@ export const WithSPILogo: Story = {
         );
     },
 };
+
+export const WithCustomColors: Story = {
+    render: () => {
+        seedThemeCache("master", {
+            colorPrimary: "#0066cc",
+            colorSecondary: "#6c757d",
+            colorAccent: "#28a745",
+        });
+        return (
+            <KcPageStory
+                kcContext={{ realm: { name: "master" } }}
+            />
+        );
+    },
+};
