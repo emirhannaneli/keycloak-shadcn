@@ -13,7 +13,19 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
-            - uses: bahmutov/npm-install@v1
+              with:
+                  node-version: '20'
+                  cache: 'npm'
+            - uses: actions/setup-java@v4
+              with:
+                  distribution: 'temurin'
+                  java-version: '17'
+            - uses: actions/cache@v4
+              with:
+                  path: ~/.m2
+                  key: ${{ runner.os }}-m2-${{ hashFiles('spi/pom.xml', '.mvn/wrapper/maven-wrapper.properties') }}
+                  restore-keys: ${{ runner.os }}-m2-
+            - run: npm ci
             - run: npm run build-keycloak-theme
 
     check_if_version_upgraded:
@@ -40,7 +52,19 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
-            - uses: bahmutov/npm-install@v1
+              with:
+                  node-version: '20'
+                  cache: 'npm'
+            - uses: actions/setup-java@v4
+              with:
+                  distribution: 'temurin'
+                  java-version: '17'
+            - uses: actions/cache@v4
+              with:
+                  path: ~/.m2
+                  key: ${{ runner.os }}-m2-${{ hashFiles('spi/pom.xml', '.mvn/wrapper/maven-wrapper.properties') }}
+                  restore-keys: ${{ runner.os }}-m2-
+            - run: npm ci
             - run: npm run build-keycloak-theme
             - uses: softprops/action-gh-release@v2
               with:
@@ -50,6 +74,8 @@ jobs:
                   generate_release_notes: true
                   draft: false
                   prerelease: ${{ needs.check_if_version_upgraded.outputs.is_pre_release == 'true' }}
-                  files: dist_keycloak/keycloak-shadcn-*.jar
+                  files: |
+                      dist_keycloak/keycloak-shadcn-*.jar
+                      dist_keycloak/theme-config-spi.jar
               env:
                   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
