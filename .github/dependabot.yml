@@ -1,0 +1,51 @@
+version: 2
+updates:
+    # Theme + tooling — npm packages including keycloakify itself
+    - package-ecosystem: "npm"
+      directory: "/"
+      schedule:
+          interval: "weekly"
+          day: "monday"
+          time: "09:00"
+          timezone: "UTC"
+      open-pull-requests-limit: 5
+      labels:
+          - "dependencies"
+          - "automated"
+      groups:
+          # Group all keycloakify-related bumps together — they often need
+          # 'npx keycloakify update-kc-gen' run after, so reviewing them as
+          # one PR is cleaner than three separate PRs.
+          keycloakify:
+              patterns:
+                  - "keycloakify"
+                  - "keycloakify-*"
+                  - "@keycloakify/*"
+
+    # Java SPI module — Keycloak provider/jakarta-rs versions
+    - package-ecosystem: "maven"
+      directory: "/spi"
+      schedule:
+          interval: "weekly"
+          day: "monday"
+          time: "09:00"
+          timezone: "UTC"
+      open-pull-requests-limit: 3
+      labels:
+          - "dependencies"
+          - "automated"
+          - "java"
+
+    # GitHub Actions workflow files
+    - package-ecosystem: "github-actions"
+      directory: "/"
+      schedule:
+          interval: "weekly"
+          day: "monday"
+          time: "09:00"
+          timezone: "UTC"
+      open-pull-requests-limit: 5
+      labels:
+          - "dependencies"
+          - "automated"
+          - "ci"

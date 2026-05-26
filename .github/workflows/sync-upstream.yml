@@ -6,111 +6,98 @@ on:
     workflow_dispatch: # manual trigger from Actions tab
 
 permissions:
-    contents: write
-    pull-requests: write
+    contents: read
+    issues: write
 
 jobs:
-    sync:
+    notify:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
               with:
                   fetch-depth: 0
 
-            - name: Configure git author
-              run: |
-                  git config user.name "github-actions[bot]"
-                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-            - name: Sync upstream
-              id: sync
+            - name: Compare with upstream
+              id: cmp
               run: |
                   git remote add upstream https://github.com/keycloakify/keycloakify-starter.git
-                  git fetch upstream main
+                  # depth=200 is enough for the "last 20 commits" diff list below
+                  git fetch upstream main --depth=200 --no-tags || git fetch upstream main --no-tags
 
-                  COMMITS=$(git rev-list HEAD..upstream/main --count)
+                  COMMITS=$(git rev-list HEAD..upstream/main --count || echo 0)
                   echo "commits=$COMMITS" >> "$GITHUB_OUTPUT"
                   echo "[sync-upstream] $COMMITS commit(s) ahead in upstream"
 
                   if [ "$COMMITS" = "0" ]; then
-                      echo "Already up to date — skipping branch + PR creation"
+                      echo "Up to date — will close tracking issue if open"
                       exit 0
                   fi
 
-                  BRANCH="sync-upstream-$(date -u +%Y%m%d)"
-                  echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+                  {
+                      echo "commit_list<<COMMITS_EOF"
+                      git log HEAD..upstream/main --oneline --max-count=20 || echo "(failed to list)"
+                      echo "COMMITS_EOF"
+                  } >> "$GITHUB_OUTPUT"
 
-                  # If a sync branch from today already exists on origin, just reuse it.
-                  # peter-evans-style behavior: don't error on existing remote branch.
-                  git checkout -B "$BRANCH"
-
-                  if git merge upstream/main --no-edit -m "Sync upstream keycloakify/keycloakify-starter"; then
-                      echo "conflicts=false" >> "$GITHUB_OUTPUT"
-                      echo "[sync-upstream] Clean merge"
-                  else
-                      echo "conflicts=true" >> "$GITHUB_OUTPUT"
-                      echo "[sync-upstream] Merge conflicts — committing with markers for manual resolution"
-                      # Stage everything, including files with conflict markers
-                      git add -A
-                      git commit -m "Sync upstream (CONFLICTS — manual resolution needed)"
-                  fi
-
-                  git push --force origin "$BRANCH"
-
-            - name: Create or update PR
-              if: steps.sync.outputs.commits != '0' && steps.sync.outputs.commits != ''
+            - name: Create or update tracking issue
+              if: steps.cmp.outputs.commits != '0' && steps.cmp.outputs.commits != ''
               env:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  BRANCH: ${{ steps.sync.outputs.branch }}
-                  CONFLICTS: ${{ steps.sync.outputs.conflicts }}
-                  COMMITS: ${{ steps.sync.outputs.commits }}
+                  COMMITS: ${{ steps.cmp.outputs.commits }}
+                  COMMIT_LIST: ${{ steps.cmp.outputs.commit_list }}
               run: |
                   set -euo pipefail
 
-                  if [ "$CONFLICTS" = "true" ]; then
-                      STATUS_LINE="⚠️ **Conflicts detected.** Files contain merge markers (\`<<<<<<<\`, \`=======\`, \`>>>>>>>\`). Review each conflict and resolve before merging."
-                  else
-                      STATUS_LINE="✅ Clean merge — no conflicts."
-                  fi
+                  TITLE="📡 Upstream tracking: $COMMITS commit(s) ahead in keycloakify-starter"
 
                   BODY=$(cat <<EOF
-                  ## Automated upstream sync
+                  ## Upstream activity report
 
-                  Pulled $COMMITS commit(s) from [keycloakify/keycloakify-starter](https://github.com/keycloakify/keycloakify-starter)'s \`main\` branch.
+                  [keycloakify/keycloakify-starter](https://github.com/keycloakify/keycloakify-starter) is **$COMMITS commit(s)** ahead of our \`main\`.
 
-                  $STATUS_LINE
+                  ### Recent upstream commits (latest 20)
 
-                  ### Review checklist
+                  \`\`\`
+                  $COMMIT_LIST
+                  \`\`\`
 
-                  - [ ] Read the diff for breaking changes (especially \`kc.gen.tsx\`, \`KcContext.ts\`, theme generator updates)
-                  - [ ] Resolve any conflicts in the working tree, if applicable
-                  - [ ] Run \`npm run build-keycloak-theme\` locally to verify the build passes
-                  - [ ] Test login / register / account pages render correctly with the new generator output
+                  ### What to do
 
-                  ### Notes
+                  This repo started from \`keycloakify-starter\` as a template, not as a fork. Updates do NOT auto-merge — your customizations (pages, components, SPI, theme colors) stay intact.
 
-                  - This PR was opened by \`.github/workflows/sync-upstream.yml\` running on a weekly schedule (Monday 09:00 UTC) and can be triggered manually from the Actions tab.
-                  - Created with the default \`GITHUB_TOKEN\` — the standard CI workflow will NOT run on this PR. Run the build locally or trigger CI manually after merging.
+                  To pull in upstream improvements:
+
+                  - **Dependency updates** (e.g. \`keycloakify\` npm version bump): wait for the Dependabot PR.
+                  - **Auto-generated files** (\`src/kc.gen.tsx\`, \`KcContext.ts\`): run \`npx keycloakify update-kc-gen\` after a dep update.
+                  - **Translations**: run \`npx keycloakify update-kc-messages\` if new keys are needed.
+                  - **Other interesting changes**: review the commit list above and cherry-pick what applies.
+
+                  ---
+
+                  *Auto-generated by \`.github/workflows/sync-upstream.yml\` every Monday 09:00 UTC. Closes itself automatically when 0 commits ahead.*
                   EOF
                   )
 
-                  # Check whether a PR already exists for this branch
-                  EXISTING=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+                  EXISTING=$(gh issue list --state open --search "📡 Upstream tracking in:title" --json number --jq '.[0].number // empty')
 
                   if [ -n "$EXISTING" ]; then
-                      echo "[sync-upstream] Updating existing PR #$EXISTING"
-                      gh pr edit "$EXISTING" --title "Sync upstream keycloakify/keycloakify-starter" --body "$BODY"
+                      echo "[sync-upstream] Updating existing tracking issue #$EXISTING"
+                      gh issue edit "$EXISTING" --title "$TITLE" --body "$BODY"
                   else
-                      echo "[sync-upstream] Creating new PR"
-                      gh pr create \
-                          --base main \
-                          --head "$BRANCH" \
-                          --title "Sync upstream keycloakify/keycloakify-starter" \
-                          --body "$BODY" \
-                          --label "upstream-sync,automated" || \
-                      gh pr create \
-                          --base main \
-                          --head "$BRANCH" \
-                          --title "Sync upstream keycloakify/keycloakify-starter" \
-                          --body "$BODY"
+                      echo "[sync-upstream] Creating new tracking issue"
+                      gh issue create --title "$TITLE" --body "$BODY" --label "upstream-tracking" 2>/dev/null \
+                          || gh issue create --title "$TITLE" --body "$BODY"
+                  fi
+
+            - name: Close tracking issue if up to date
+              if: steps.cmp.outputs.commits == '0'
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  EXISTING=$(gh issue list --state open --search "📡 Upstream tracking in:title" --json number --jq '.[0].number // empty')
+                  if [ -n "$EXISTING" ]; then
+                      echo "[sync-upstream] Closing tracking issue #$EXISTING — up to date"
+                      gh issue close "$EXISTING" --comment "Now up to date with upstream."
+                  else
+                      echo "[sync-upstream] No tracking issue open and 0 commits ahead — nothing to do"
                   fi
