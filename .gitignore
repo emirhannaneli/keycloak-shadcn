@@ -58,3 +58,6 @@ jspm_packages
 
 # build output of `jsx-email`
 /.rendered
+
+# Maven SPI build output
+spi/target/
