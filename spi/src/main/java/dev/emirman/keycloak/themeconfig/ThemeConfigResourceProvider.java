@@ -1,6 +1,7 @@
 package dev.emirman.keycloak.themeconfig;
 
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -32,6 +33,7 @@ public class ThemeConfigResourceProvider implements RealmResourceProvider {
     }
 
     @GET
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getThemeConfig() {
         RealmModel realm = session.getContext().getRealm();
