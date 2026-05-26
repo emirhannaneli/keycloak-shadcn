@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { parseRealmLogoConfig } from "@/lib/realmLogoConfig";
+import { useThemeConfigContext } from "@/lib/themeConfigContext";
 
 interface LogoProps {
-    /** kcContext, used for realm.displayNameHtml lookup. */
+    /** kcContext, used for the displayNameHtml fallback. */
     kcContext: { realm?: { displayNameHtml?: string } };
     /** Theme-relative default path, e.g. "img/keycloak-logo-text.png". */
     defaultLight: string;
@@ -16,9 +17,14 @@ interface LogoProps {
 }
 
 /**
- * Renders the realm's configured logo with light/dark variants. Both <img>
- * elements are rendered; Tailwind's class-based dark mode selects which is
- * visible. If a custom URL fails to load, onError swaps to the bundled default.
+ * Renders the realm's configured logo with light/dark variants. Priority order:
+ *   1. ThemeConfig (SPI) — `logoLight` / `logoDark`
+ *   2. parseRealmLogoConfig(displayNameHtml) — legacy fallback
+ *   3. bundled default via getResourcePath
+ *
+ * Both <img> elements are rendered; Tailwind's class-based dark mode selects
+ * which is visible. If a custom URL fails to load, onError swaps to the
+ * bundled default.
  */
 export function Logo({
     kcContext,
@@ -28,19 +34,31 @@ export function Logo({
     className,
     alt,
 }: LogoProps) {
-    const config = parseRealmLogoConfig(kcContext.realm?.displayNameHtml);
+    const themeConfig = useThemeConfigContext();
+    const legacy = parseRealmLogoConfig(kcContext.realm?.displayNameHtml);
 
     const fallbackLight = getResourcePath(defaultLight);
     const fallbackDark = getResourcePath(defaultDark ?? defaultLight);
 
-    const lightSrc = config.light ?? fallbackLight;
-    // When config.dark is absent we deliberately fall back to config.light so
-    // dark mode shows the customised logo too; if that URL fails, both <img>s
-    // fire onError independently and both fail-flags flip — intended.
-    const darkSrc = config.dark ?? config.light ?? fallbackDark;
+    const lightSrc = themeConfig.logoLight ?? legacy.light ?? fallbackLight;
+    // dark fallback chain: SPI dark → SPI light → legacy dark → legacy light → bundled
+    const darkSrc =
+        themeConfig.logoDark ??
+        themeConfig.logoLight ??
+        legacy.dark ??
+        legacy.light ??
+        fallbackDark;
 
     const [lightFailed, setLightFailed] = useState(false);
     const [darkFailed, setDarkFailed] = useState(false);
+
+    useEffect(() => {
+        setLightFailed(false);
+    }, [lightSrc]);
+
+    useEffect(() => {
+        setDarkFailed(false);
+    }, [darkSrc]);
 
     return (
         <>
