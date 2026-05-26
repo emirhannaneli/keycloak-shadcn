@@ -44,8 +44,11 @@ Embed config as HTML comments inside the realm's existing **Display Name HTML** 
 - Keys: `logo-light`, `logo-dark`, `favicon`. Unknown keys are ignored.
 - Values may be: absolute URL (`http(s)://...`), data URI (`data:image/*;base64,...`), or a path starting with `/` (Keycloak resources).
 - Order is irrelevant. Free HTML (including the display name itself) can coexist with the comments.
+- **Plain URL shorthand**: if the entire trimmed input is itself URL-shaped (no comments anywhere in the field), it is taken as `logo-light`. This serves the common admin case where someone pastes a single URL into the field without using the comment syntax. Comment-format and plain-URL paths do not mix — once any comment matches, the shorthand is not applied.
 
 JSON was considered and rejected: it forces admins to maintain a single block, fail-closed on a quoting mistake, and complicates partial edits. Independent comments are simpler to copy/paste per value.
+
+Why also plain URL: real-world smoke-test showed admins naturally paste a URL into "Display name HTML" rather than learn the comment syntax. Accepting plain URL as `logo-light` removes a documentation barrier without breaking the advanced multi-value path.
 
 ## Architecture
 

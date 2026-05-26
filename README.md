@@ -197,55 +197,52 @@ This starter uses **shadcn/ui** components built on **Radix UI** primitives. All
 
 ### Dynamic Logo & Favicon Configuration
 
-You can change the logo (both light/dark variants) and favicon dynamically through the Keycloak Admin Console without rebuilding the theme. Configuration is embedded as HTML comments inside the realm's **Display Name HTML** field.
+You can change the logo and favicon dynamically through the Keycloak Admin Console without rebuilding the theme. Configuration is read from the realm's **Display name HTML** field (Realm Settings → General → Display name HTML).
 
-#### How to Configure
+#### Quick start: just paste a URL
 
-1. **Access Keycloak Admin Console**
-   - Navigate to your realm
-   - Go to **Realm Settings** → **General**
-   - Locate the **Display name HTML** field
+For most cases, paste a logo URL directly into the Display name HTML field:
 
-2. **Add Logo / Favicon Comments**
+```
+https://cdn.example.com/logo.png
+```
 
-   Append (or replace) HTML comments using this format:
+That's it. The same URL is used in both light and dark modes. The bundled favicon is preserved.
 
-   ```html
-   <strong>My Realm</strong>
-   <!--logo-light:https://cdn.example.com/logo.png-->
-   <!--logo-dark:https://cdn.example.com/logo-dark.png-->
-   <!--favicon:https://cdn.example.com/favicon.ico-->
-   ```
+#### Advanced: separate light / dark / favicon
 
-   Each comment is one key / value pair. Any non-comment HTML you put in this field continues to work as the realm's display name. Order does not matter. Unknown keys are ignored.
+For full control (different logos per theme, plus a favicon), use HTML comments inside the field. Each comment is one key/value pair and is invisible in the rendered display name, so you can mix them with regular HTML if needed:
 
-3. **Save Changes**
-   - Click **Save**
-   - Logo + favicon update immediately on next page load — no theme rebuild needed.
+```html
+<strong>My Realm</strong>
+<!--logo-light:https://cdn.example.com/logo.png-->
+<!--logo-dark:https://cdn.example.com/logo-dark.png-->
+<!--favicon:https://cdn.example.com/favicon.ico-->
+```
 
-#### Supported Keys
+| Comment key | Purpose |
+|---|---|
+| `logo-light` | Logo shown in light mode (and in dark mode if `logo-dark` is absent) |
+| `logo-dark` | Logo shown in dark mode |
+| `favicon` | Browser tab icon |
 
-- `logo-light` — Logo shown in light mode (and in dark mode if `logo-dark` is absent).
-- `logo-dark` — Logo shown in dark mode. Falls back to `logo-light`, then to the bundled default.
-- `favicon` — Browser tab icon. If absent, the bundled favicon is preserved.
+Order does not matter. Unknown keys are ignored.
 
-#### Supported Value Formats
+#### Supported value formats
 
 - **External URL:** `https://cdn.example.com/logo.png`
 - **Data URI:** `data:image/png;base64,iVBORw0KGgo...`
 - **Absolute path:** `/themes/my-theme/.../logo.png` (Keycloak-served resource)
 
-#### Fallback Behaviour
+#### Fallback behaviour
 
-If a key is missing or the URL fails to load, the theme falls back to the bundled default logo (`img/keycloak-logo-text.png`) or the bundled favicon (`public/favicon-32x32.png`). Pages still render — the logo is never blocking.
+If the field is empty or the URL fails to load, the theme falls back to the bundled default logo (`img/keycloak-logo-text.png`) or the bundled favicon (`public/favicon-32x32.png`). Pages always render — the logo is never blocking.
 
-#### Where the Logo Appears
+#### Where the logo appears
 
 - **Login theme:** Top of the Login and Register pages.
 - **Account theme:** Top of the account console.
-- **Favicon:** Browser tab on both themes.
-
-Other login pages (password reset, OTP, etc.) do not display a logo by default; this is a separate UX decision unrelated to dynamic logo configuration.
+- **Favicon:** Browser tab on both themes (only when configured via the `favicon` comment).
 
 ### Customization Strategies
 
