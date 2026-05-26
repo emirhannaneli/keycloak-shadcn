@@ -47,7 +47,12 @@ const env = { ...process.env };
 const mvnBin = locateWrapperMaven();
 if (mvnBin) {
     const sep = process.platform === "win32" ? ";" : ":";
-    env.PATH = mvnBin + sep + (env.PATH ?? "");
+    // Windows stores PATH under "Path" (mixed case). Node's process.env is
+    // case-insensitive on read but case-sensitive on write, so blindly setting
+    // env.PATH would create a second entry alongside env.Path, and cmd.exe
+    // would pick the original. Find the existing key and modify it in place.
+    const pathKey = Object.keys(env).find(k => k.toUpperCase() === "PATH") ?? "PATH";
+    env[pathKey] = mvnBin + sep + (env[pathKey] ?? "");
     console.log(`[build-keycloak-theme] Using wrapper-downloaded Maven: ${mvnBin}`);
 } else {
     console.log("[build-keycloak-theme] Wrapper-downloaded Maven not found at ~/.m2/wrapper/dists/.");
