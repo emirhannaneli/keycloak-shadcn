@@ -209,6 +209,8 @@ A "Theme Config" tab appears under **Realm Settings** in the Keycloak admin cons
 
    ```bash
    # Docker (dev mode):
+   # WARNING: avoid keycloak:26.2.x — custom UI tabs broken (regression keycloak#39971).
+   # Use 26.0, 26.1, or 26.3+.
    docker run -p 8080:8080 \
      -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin \
      -v "$(pwd)/dist_keycloak:/opt/keycloak/providers" \
@@ -220,7 +222,7 @@ A "Theme Config" tab appears under **Realm Settings** in the Keycloak admin cons
    bin/kc.sh start
    ```
 
-2. Deploy the SPI JAR (`dist_keycloak/theme-config-spi.jar`) into Keycloak's `providers/` directory alongside the theme JAR matching your Keycloak version. Restart Keycloak.
+2. Deploy the SPI JAR (`dist_keycloak/theme-config-spi.jar`) into Keycloak's `providers/` directory **together with only one theme JAR — the one matching your Keycloak version** (e.g. `keycloak-shadcn-26.0-to-26.1.jar` for Keycloak 26.0.x / 26.1.x). Do NOT copy all version JARs; multiple theme JARs cause an ambiguous parent-theme chain and the built-in account console replaces the custom one. Restart Keycloak.
 
 3. Open Admin Console → Realm Settings → "Theme Config" tab. Fill in URLs, save.
 
@@ -228,7 +230,7 @@ A "Theme Config" tab appears under **Realm Settings** in the Keycloak admin cons
 
 - The `declarative-ui` feature is marked experimental by Keycloak. It may change without notice in future Keycloak versions.
 - Keycloak **26.2.x has a regression** ([keycloak#39971](https://github.com/keycloak/keycloak/issues/39971)) that hides custom UI tabs. Use Option B or upgrade to 26.3.x+.
-- The form stores values in a Keycloak `ComponentModel` and mirrors them to `realm.attributes`. If you edit attributes via REST first and then open the UI, the form shows empty until you save once — **pick one workflow, UI or REST, not both**.
+- The form stores values in a Keycloak `ComponentModel` and mirrors them to `realm.attributes`. If you edit attributes via REST first and then open the UI, the form shows empty (the ComponentModel has not been initialised yet). **Clicking Save on the empty form will delete all `theme.*` attributes you previously set via REST** — the mirror logic interprets empty fields as "clear this attribute". Re-enter the URLs before saving, or **pick one workflow, UI or REST, and stick with it.**
 
 #### Option B — Admin REST API
 
