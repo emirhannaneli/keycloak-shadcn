@@ -7,7 +7,7 @@
 export type ThemeConfig = Record<string, string>;
 
 const CACHE_KEY = "kc-theme-config";
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes — matches SPI Cache-Control
+const CACHE_TTL_MS = 30 * 1000; // 30 seconds — matches SPI Cache-Control
 
 type CacheEntry = { realm: string; data: ThemeConfig; ts: number };
 

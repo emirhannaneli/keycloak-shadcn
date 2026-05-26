@@ -45,7 +45,7 @@ public class ThemeConfigResourceProvider implements RealmResourceProvider {
         if (attrs == null) {
             return Response
                     .ok(Map.of())
-                    .header("Cache-Control", "private, max-age=300")
+                    .header("Cache-Control", "private, max-age=30")
                     .build();
         }
 
@@ -60,7 +60,7 @@ public class ThemeConfigResourceProvider implements RealmResourceProvider {
 
         return Response
                 .ok(filtered)
-                .header("Cache-Control", "private, max-age=300")
+                .header("Cache-Control", "private, max-age=30")
                 .build();
     }
 
