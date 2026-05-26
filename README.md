@@ -35,7 +35,9 @@ A modern, production-ready starter template for building custom Keycloak themes 
 - 📦 **Production Ready** - Optimized builds with code splitting
 - 🌍 **Multi-Language Support** - Built-in i18n with 21 languages for Account and 28 languages for Login themes
 - 🔤 **Translation Management** - Automated scripts for generating and fixing translations
-- 🖼️ **Dynamic Logo** - Change login logo dynamically via Keycloak Admin Console without rebuilding the theme
+- 🖼️ **Dynamic Logo & Favicon** - Light/dark logo + favicon switchable per realm at runtime, no theme rebuild required
+- 🔌 **Theme Config SPI** - Bundled Java Keycloak SPI exposes realm `theme.*` attributes via a public REST endpoint (`/realms/{realm}/theme-config`) that the theme fetches and caches in `localStorage`
+- 🎛️ **Admin UI Tab** - A "Theme Config" tab under Realm Settings lets admins edit logo / favicon URLs visually (Keycloak Declarative UI SPI)
 
 ## 🎯 Customized Pages
 
@@ -341,7 +343,7 @@ node scripts/update-i18n.js
 
 ## 📦 Building the Theme
 
-Build the Keycloak theme JAR files:
+Build the Keycloak theme JAR files **and** the bundled Theme Config SPI JAR:
 
 ```bash
 yarn build-keycloak-theme
@@ -351,20 +353,29 @@ npm run build-keycloak-theme
 bun run build-keycloak-theme
 ```
 
-This command will:
-1. Build the React application
-2. Generate Keycloak theme JAR files in `dist_keycloak/`
+This single command runs:
 
-The theme generates multiple JAR files for different Keycloak versions. The JAR file names are automatically generated based on the theme name configured in `src/config.ts`. By default, the following JAR files are generated:
+1. `tsc && vite build` — TypeScript check + React app bundle.
+2. `keycloakify build` — packages the React bundle into per-Keycloak-version theme JARs.
+3. `node scripts/build-spi.mjs` — builds the Java SPI module via the bundled Apache Maven Wrapper (`./mvnw` / `mvnw.cmd`), copies the resulting JAR into `dist_keycloak/`.
 
-- `keycloak-shadcn-26.2-and-above.jar` - For Keycloak 26.2 and above
-- `keycloak-shadcn-26.0-to-26.1.jar` - For Keycloak 26.0 to 26.1
-- `keycloak-shadcn-25.jar` - For Keycloak 25
-- `keycloak-shadcn-24.jar` - For Keycloak 24
-- `keycloak-shadcn-23.jar` - For Keycloak 23
-- `keycloak-shadcn-21-and-below.jar` - For Keycloak 21 and below
+**Prerequisites:** Node 18+ and JDK 17+. **System Maven is NOT required** — the wrapper downloads Maven 3.9.16 to `~/.m2/wrapper/dists/` on first invocation (~30 seconds, one-time).
 
-> **Note:** To customize the theme name and JAR file names, edit the `themeName` property in `src/config.ts`. See the [Theme Name Configuration](#theme-name-configuration) section above.
+After running the command, `dist_keycloak/` contains:
+
+| Artifact | Purpose | Deploy when |
+|---|---|---|
+| `keycloak-shadcn-26.2-and-above.jar` | Theme for Keycloak 26.2 and above | running Keycloak 26.2+ |
+| `keycloak-shadcn-26.0-to-26.1.jar` | Theme for Keycloak 26.0 / 26.1 | running Keycloak 26.0.x or 26.1.x |
+| `keycloak-shadcn-25.jar` | Theme for Keycloak 25 | running Keycloak 25.x |
+| `keycloak-shadcn-24.jar` | Theme for Keycloak 24 | running Keycloak 24.x |
+| `keycloak-shadcn-23.jar` | Theme for Keycloak 23 | running Keycloak 23.x |
+| `keycloak-shadcn-21-and-below.jar` | Theme for Keycloak 21 and below | running Keycloak 21.x or older |
+| `theme-config-spi.jar` | Theme Config SPI (REST endpoint + admin UI tab) | always, alongside the theme JAR |
+
+**Deploy only one theme JAR — the one matching your Keycloak version — together with the SPI JAR.** Copying multiple version JARs into the same `providers/` directory causes Keycloak to pick an ambiguous parent-theme chain and the built-in account console silently replaces the custom one.
+
+> **Note:** To customize the theme name and JAR file names, edit the `themeName` property in `src/config.ts`. See the [Theme Name Configuration](#theme-name-configuration) section above. (The SPI JAR name `theme-config-spi.jar` is independent of the theme name.)
 
 ### Important: After Changing Theme Name
 
@@ -428,9 +439,27 @@ npx keycloakify initialize-email-theme
 
 ### Manual Deployment
 
-1. Build the theme: `yarn build-keycloak-theme`
-2. Upload the JAR files from `dist_keycloak/` to your Keycloak instance
-3. Enable the theme in Keycloak Admin Console
+1. Build the theme + SPI: `npm run build-keycloak-theme` (or yarn / bun equivalents).
+2. Copy **two** JARs from `dist_keycloak/` into your Keycloak's `providers/` directory:
+   - The theme JAR matching your Keycloak version (e.g. `keycloak-shadcn-26.0-to-26.1.jar` for Keycloak 26.0.x / 26.1.x).
+   - The SPI JAR (`theme-config-spi.jar`) — always required for the dynamic logo / favicon and the admin UI tab.
+3. Start (or restart) Keycloak with the Declarative UI feature flag enabled if you want the admin UI tab:
+
+   ```bash
+   # Docker (dev mode):
+   docker run -p 8080:8080 \
+     -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin \
+     -v "$(pwd)/dist_keycloak:/opt/keycloak/providers" \
+     quay.io/keycloak/keycloak:26.0 \
+     start-dev --features=declarative-ui
+
+   # Local install (production):
+   bin/kc.sh build --features=declarative-ui
+   bin/kc.sh start
+   ```
+
+   Without `--features=declarative-ui` the admin tab is hidden but the REST endpoint still works — admins can configure via the REST API. See [Dynamic Logo & Favicon Configuration](#dynamic-logo--favicon-configuration) for both workflows.
+4. Enable the theme on your realm in Keycloak Admin Console → Realm Settings → Themes.
 
 ### GitHub Actions
 
@@ -455,6 +484,9 @@ To release a new version, simply update the `version` field in `package.json` an
 - **Forms:** React Hook Form + Zod
 - **Icons:** Lucide React
 - **Theme Builder:** Keycloakify v11
+- **Keycloak SPI:** Java 17 + Keycloak server-spi (26.0+) — public REST endpoint via `RealmResourceProvider`
+- **Admin UI Extension:** Keycloak Declarative UI SPI (`UiTabProvider`, requires `--features=declarative-ui`)
+- **Build (Java):** Apache Maven Wrapper 3.3.2 (script-only mode, no system Maven required)
 - **Internationalization:** Keycloakify i18n with 21-28 language support
 
 ## 📖 Documentation
