@@ -39,7 +39,7 @@
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-toast": "^1.2.15",
-    "@storybook/react-vite": "^10.2.0",
+    "@storybook/react-vite": "^10.4.1",
     "@types/node": "^25.0.3",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
