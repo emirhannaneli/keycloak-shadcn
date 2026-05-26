@@ -61,3 +61,6 @@ jspm_packages
 
 # Maven SPI build output
 spi/target/
+
+# Superpowers spec / plan docs — local-only, not for upstream
+docs/superpowers/
