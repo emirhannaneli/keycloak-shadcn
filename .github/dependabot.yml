@@ -43,6 +43,17 @@ updates:
           # dedicated migration PR, not an automated bump.
           - dependency-name: "lucide-react"
             update-types: ["version-update:semver-major"]
+          # React 19 is a major release with rendering-model + types
+          # changes. Keep react / react-dom / @types/react / @types/react-dom
+          # all pinned together at v18.x until we do a coordinated upgrade.
+          - dependency-name: "react"
+            update-types: ["version-update:semver-major"]
+          - dependency-name: "react-dom"
+            update-types: ["version-update:semver-major"]
+          - dependency-name: "@types/react"
+            update-types: ["version-update:semver-major"]
+          - dependency-name: "@types/react-dom"
+            update-types: ["version-update:semver-major"]
       groups:
           # Group all keycloakify-related bumps together — they often need
           # 'npx keycloakify update-kc-gen' run after, so reviewing them as
