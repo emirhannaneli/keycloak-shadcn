@@ -276,7 +276,7 @@ Verify: `curl http://localhost:8080/realms/<your-realm>/theme-config` returns th
 
 URL values must start with `http://`, `https://`, `data:image/`, or `/`. HEX values must be 6-digit `#RRGGBB`. Sizes must be positive integers (1-9999).
 
-Any other `theme.*` attribute is also exposed on the endpoint (without the prefix), but only these three are surfaced as inputs in Option A's UI.
+Any other `theme.*` attribute is also exposed on the endpoint (without the prefix), but only the twelve keys listed above are surfaced as inputs in Option A's UI.
 
 #### Building the SPI
 
