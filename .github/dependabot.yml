@@ -38,6 +38,11 @@ updates:
           # eslint-plugin-react-hooks 7 is a major; hold on 5.x.
           - dependency-name: "eslint-plugin-react-hooks"
             update-types: ["version-update:semver-major"]
+          # lucide-react 1.0 is a major release with renamed/restructured
+          # icons. 42+ source files import from this package; needs a
+          # dedicated migration PR, not an automated bump.
+          - dependency-name: "lucide-react"
+            update-types: ["version-update:semver-major"]
       groups:
           # Group all keycloakify-related bumps together — they often need
           # 'npx keycloakify update-kc-gen' run after, so reviewing them as
