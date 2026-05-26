@@ -12,6 +12,16 @@ updates:
       labels:
           - "dependencies"
           - "automated"
+      ignore:
+          # Locked to v4.x because v6 requires vite@^8, while
+          # @storybook/react-vite@10.x caps at vite@^7. Revisit when
+          # Storybook supports Vite 8 OR when we drop Storybook.
+          - dependency-name: "@vitejs/plugin-react"
+            update-types: ["version-update:semver-major"]
+          # Major bump 15→17 includes breaking changes to ESLint flat-config
+          # globals object. Hold until we audit the impact.
+          - dependency-name: "globals"
+            update-types: ["version-update:semver-major"]
       groups:
           # Group all keycloakify-related bumps together — they often need
           # 'npx keycloakify update-kc-gen' run after, so reviewing them as
@@ -35,6 +45,11 @@ updates:
           - "dependencies"
           - "automated"
           - "java"
+      ignore:
+          # Keycloak 26 still ships JAX-RS 3.x; bumping to 4.0 breaks
+          # the provided runtime. Revisit when Keycloak upgrades.
+          - dependency-name: "jakarta.ws.rs:jakarta.ws.rs-api"
+            update-types: ["version-update:semver-major"]
 
     # GitHub Actions workflow files
     - package-ecosystem: "github-actions"
