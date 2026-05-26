@@ -64,3 +64,6 @@ spi/target/
 
 # Superpowers spec / plan docs — local-only, not for upstream
 docs/superpowers/
+
+# Removed builder/ sub-project — gitignore so it can't sneak back in
+/builder/

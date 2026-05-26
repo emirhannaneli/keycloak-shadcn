@@ -50,7 +50,10 @@ public class ThemeConfigUiTabProviderFactory
 
     @Override
     public String getHelpText() {
-        return "Custom logo and favicon URLs served by the Theme Config SPI to login and account pages.";
+        return "Custom logo and favicon URLs served by the Theme Config SPI to login and account pages. "
+                + "Changes propagate within ~30 seconds — browsers and the SPI both cache the values for "
+                + "that duration. To see updates immediately, users can hard-refresh (Ctrl+Shift+R) or "
+                + "clear the 'kc-theme-config' entry from localStorage.";
     }
 
     @Override
