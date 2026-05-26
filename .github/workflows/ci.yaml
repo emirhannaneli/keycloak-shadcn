@@ -15,7 +15,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/setup-node@v6
               with:
                   node-version: '20'
                   cache: 'npm'
@@ -52,7 +52,7 @@ jobs:
         if: needs.check_if_version_upgraded.outputs.is_upgraded_version == 'true'
         steps:
             - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/setup-node@v6
               with:
                   node-version: '20'
                   cache: 'npm'
