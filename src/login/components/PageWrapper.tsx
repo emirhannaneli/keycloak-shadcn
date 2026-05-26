@@ -2,6 +2,7 @@ import { type KcContext } from "../KcContext";
 import { PageHeader } from "./PageHeader";
 import { useEffect } from "react";
 import { useFavicon } from "@/lib/useFavicon";
+import { useThemeColors } from "@/lib/useThemeColors";
 import { useThemeConfig } from "@/lib/useThemeConfig";
 import { ThemeConfigProvider } from "@/lib/themeConfigContext";
 
@@ -15,6 +16,7 @@ type Theme = "light" | "dark" | "system";
 export function PageWrapper({ kcContext, children }: PageWrapperProps) {
     const themeConfig = useThemeConfig(kcContext.realm.name);
     useFavicon(themeConfig, kcContext);
+    useThemeColors(themeConfig);
 
     // Preserve theme state during page transitions
     useEffect(() => {
