@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import React from "react";
 import { keycloakThemeConfig } from "config";
+import { useThemeConfigContext } from "@/lib/themeConfigContext";
 
 const UserProfileFormFields = lazy(
     () => import("keycloakify/login/UserProfileFormFields")
@@ -115,6 +116,8 @@ function getProviderIcon(providerId: string | undefined, resourcePath: (path: st
 
 export default function RegisterPage({ kcContext }: { kcContext: Extract<KcContext, { pageId: "register.ftl" }> }) {
     const { i18n } = useI18n({ kcContext });
+    const themeConfig = useThemeConfigContext();
+    const heightPx = parseInt(themeConfig.logoHeightLogin ?? "0", 10) || undefined;
 
     const {
         url,
@@ -217,6 +220,7 @@ export default function RegisterPage({ kcContext }: { kcContext: Extract<KcConte
                         getResourcePath={getResourcePath}
                         alt="Logo"
                         className="h-20"
+                        heightPx={heightPx}
                     />
                 </div>
                 

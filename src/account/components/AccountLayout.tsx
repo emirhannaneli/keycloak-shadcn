@@ -1,6 +1,7 @@
 import { type KcContext } from "../KcContext";
 import { Logo } from "@/components/Logo";
 import { keycloakThemeConfig } from "config";
+import { useThemeConfigContext } from "@/lib/themeConfigContext";
 
 interface AccountLayoutProps {
     kcContext: KcContext;
@@ -9,6 +10,8 @@ interface AccountLayoutProps {
 
 export function AccountLayout({ kcContext, children }: AccountLayoutProps) {
     const { url, themeName } = kcContext as KcContext & { themeName?: string };
+    const themeConfig = useThemeConfigContext();
+    const heightPx = parseInt(themeConfig.logoHeightAccount ?? "0", 10) || undefined;
 
     const getResourcePath = (path: string) => {
         if (import.meta.env.DEV) {
@@ -34,6 +37,7 @@ export function AccountLayout({ kcContext, children }: AccountLayoutProps) {
                     getResourcePath={getResourcePath}
                     alt="Logo"
                     className="h-12"
+                    heightPx={heightPx}
                 />
             </div>
             <main className="flex-1 px-4 md:px-6 pb-6 flex items-center justify-center w-full pt-4">
