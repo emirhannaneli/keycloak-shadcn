@@ -424,3 +424,43 @@ export const WithDarkLogoOnly: Story = {
         />
     ),
 };
+
+// SPI-driven logo / favicon: seed localStorage cache before render. fetch will
+// fail in Storybook (no Keycloak) but the seeded cache renders correctly.
+function seedThemeCache(realm: string, data: Record<string, string>) {
+    localStorage.setItem(
+        "kc-theme-config",
+        JSON.stringify({ realm, data, ts: Date.now() })
+    );
+}
+
+export const WithSPILogo: Story = {
+    render: () => {
+        seedThemeCache("master", {
+            logoLight: "https://placehold.co/200x80/0066cc/white?text=SPI+Light",
+            logoDark: "https://placehold.co/200x80/00ccff/black?text=SPI+Dark",
+        });
+        return (
+            <KcPageStory
+                kcContext={{
+                    realm: { name: "master" },
+                }}
+            />
+        );
+    },
+};
+
+export const WithSPIFavicon: Story = {
+    render: () => {
+        seedThemeCache("master", {
+            faviconUrl: "https://placehold.co/32x32/ff00ff/white.png",
+        });
+        return (
+            <KcPageStory
+                kcContext={{
+                    realm: { name: "master" },
+                }}
+            />
+        );
+    },
+};

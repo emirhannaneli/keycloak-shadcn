@@ -342,3 +342,26 @@ export const WithFavicon: Story = {
         />
     ),
 };
+
+function seedThemeCache(realm: string, data: Record<string, string>) {
+    localStorage.setItem(
+        "kc-theme-config",
+        JSON.stringify({ realm, data, ts: Date.now() })
+    );
+}
+
+export const WithSPILogo: Story = {
+    render: () => {
+        seedThemeCache("master", {
+            logoLight: "https://placehold.co/200x80/0066cc/white?text=SPI+Light",
+            logoDark: "https://placehold.co/200x80/00ccff/black?text=SPI+Dark",
+        });
+        return (
+            <KcPageStory
+                kcContext={{
+                    realm: { name: "master" },
+                }}
+            />
+        );
+    },
+};
