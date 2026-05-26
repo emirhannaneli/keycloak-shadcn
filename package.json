@@ -28,7 +28,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "keycloakify": "^11.15.3",
     "lucide-react": "^0.554.0",
-    "react": "^18.2.0",
+    "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-hook-form": "^7.76.1",
     "zod": "^4.4.3"
@@ -41,7 +41,7 @@
     "@radix-ui/react-toast": "^1.2.15",
     "@storybook/react-vite": "^10.4.1",
     "@types/node": "^25.0.3",
-    "@types/react": "^18.2.43",
+    "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.15.0",
     "@typescript-eslint/parser": "^8.60.0",
