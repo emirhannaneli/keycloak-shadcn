@@ -54,6 +54,11 @@ updates:
             update-types: ["version-update:semver-major"]
           - dependency-name: "@types/react-dom"
             update-types: ["version-update:semver-major"]
+          # Tailwind CSS 4 is a major rewrite with new config format,
+          # new PostCSS plugin, and breaking utility changes. Migration
+          # is a dedicated effort. Hold on 3.x.
+          - dependency-name: "tailwindcss"
+            update-types: ["version-update:semver-major"]
       groups:
           # Group all keycloakify-related bumps together — they often need
           # 'npx keycloakify update-kc-gen' run after, so reviewing them as
