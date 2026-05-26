@@ -197,52 +197,63 @@ This starter uses **shadcn/ui** components built on **Radix UI** primitives. All
 
 ### Dynamic Logo & Favicon Configuration
 
-You can change the logo and favicon dynamically through the Keycloak Admin Console without rebuilding the theme. Configuration is read from the realm's **Display name HTML** field (Realm Settings → General → Display name HTML).
+The theme reads per-realm branding from two sources, in priority order:
 
-#### Quick start: just paste a URL
+1. **Theme Config SPI** (primary, recommended) — the bundled Java SPI exposes a public REST endpoint `/realms/{realm}/theme-config` that serves all `theme.*` attributes of the realm. The theme fetches this on page load and caches the result in `localStorage` for 5 minutes.
+2. **`displayNameHtml`** (legacy fallback) — for realms set up before the SPI existed, the theme still parses HTML comments out of `Realm Settings → General → Display name HTML` (e.g. `<!--logo-light:URL-->`) and accepts a bare URL as the logo.
 
-For most cases, paste a logo URL directly into the Display name HTML field:
+#### Recommended workflow (SPI)
 
-```
-https://cdn.example.com/logo.png
-```
+1. Build and deploy: `npm run build-keycloak-theme` produces both `dist_keycloak/keycloak-shadcn-*.jar` (theme) and `dist_keycloak/theme-config-spi.jar` (SPI). Copy both into your Keycloak's `providers/` directory and restart.
+2. Set realm attributes via the Keycloak admin REST API:
 
-That's it. The same URL is used in both light and dark modes. The bundled favicon is preserved.
+   ```bash
+   TOKEN=$(curl -s -X POST http://localhost:8080/realms/master/protocol/openid-connect/token \
+     -d "client_id=admin-cli" -d "username=admin" -d "password=admin" \
+     -d "grant_type=password" | jq -r .access_token)
 
-#### Advanced: separate light / dark / favicon
+   curl -X PATCH http://localhost:8080/admin/realms/<your-realm> \
+     -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "attributes": {
+         "theme.logoLight": "https://cdn.example.com/logo.png",
+         "theme.logoDark":  "https://cdn.example.com/logo-dark.png",
+         "theme.faviconUrl": "https://cdn.example.com/favicon.ico"
+       }
+     }'
+   ```
+3. Verify: `curl http://localhost:8080/realms/<your-realm>/theme-config` should return the JSON without the `theme.` prefix.
 
-For full control (different logos per theme, plus a favicon), use HTML comments inside the field. Each comment is one key/value pair and is invisible in the rendered display name, so you can mix them with regular HTML if needed:
+#### Supported keys
+
+| Attribute | Purpose |
+|---|---|
+| `theme.logoLight` | Logo shown in light mode |
+| `theme.logoDark` | Logo shown in dark mode (falls back to `logoLight` if absent) |
+| `theme.faviconUrl` | Browser tab icon |
+
+Any other `theme.*` attribute is also exposed on the endpoint (without the prefix) for future use.
+
+#### Building the SPI
+
+The `npm run build-keycloak-theme` script invokes the bundled Apache Maven Wrapper (`./mvnw` / `mvnw.cmd`), so no system Maven install is required. First invocation downloads Maven 3.9.16 into `~/.m2/wrapper/dists/` (~30 seconds). Subsequent builds reuse the cached Maven.
+
+#### Legacy: Display name HTML
+
+You can still configure the logo via `Realm Settings → General → Display name HTML`. Either paste a bare URL (taken as `logo-light`) or use the HTML comment form:
 
 ```html
-<strong>My Realm</strong>
 <!--logo-light:https://cdn.example.com/logo.png-->
 <!--logo-dark:https://cdn.example.com/logo-dark.png-->
 <!--favicon:https://cdn.example.com/favicon.ico-->
 ```
 
-| Comment key | Purpose |
-|---|---|
-| `logo-light` | Logo shown in light mode (and in dark mode if `logo-dark` is absent) |
-| `logo-dark` | Logo shown in dark mode |
-| `favicon` | Browser tab icon |
-
-Order does not matter. Unknown keys are ignored.
-
-#### Supported value formats
-
-- **External URL:** `https://cdn.example.com/logo.png`
-- **Data URI:** `data:image/png;base64,iVBORw0KGgo...`
-- **Absolute path:** `/themes/my-theme/.../logo.png` (Keycloak-served resource)
+This mechanism is preserved for backward compatibility. New deployments should use the SPI.
 
 #### Fallback behaviour
 
-If the field is empty or the URL fails to load, the theme falls back to the bundled default logo (`img/keycloak-logo-text.png`) or the bundled favicon (`public/favicon-32x32.png`). Pages always render — the logo is never blocking.
-
-#### Where the logo appears
-
-- **Login theme:** Top of the Login and Register pages.
-- **Account theme:** Top of the account console.
-- **Favicon:** Browser tab on both themes (only when configured via the `favicon` comment).
+If neither source provides a value, or a URL fails to load, the bundled defaults (`img/keycloak-logo-text.png`, `public/favicon-32x32.png`) are used. Pages never block on a missing logo.
 
 ### Customization Strategies
 
