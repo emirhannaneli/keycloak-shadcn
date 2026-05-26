@@ -7,6 +7,9 @@ on:
         branches:
             - main
 
+permissions:
+    contents: write
+
 jobs:
     test:
         runs-on: ubuntu-latest
@@ -77,5 +80,3 @@ jobs:
                   files: |
                       dist_keycloak/keycloak-shadcn-*.jar
                       dist_keycloak/theme-config-spi.jar
-              env:
-                  GITHUB_TOKEN: ${{ secrets.PAT }}
