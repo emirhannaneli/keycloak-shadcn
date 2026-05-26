@@ -204,7 +204,7 @@ The theme reads per-realm branding from two sources, in priority order:
 
 #### Recommended workflow (SPI)
 
-1. Build and deploy: `npm run build-keycloak-theme` produces both `dist_keycloak/keycloak-shadcn-*.jar` (theme) and `dist_keycloak/theme-config-spi.jar` (SPI). Copy both into your Keycloak's `providers/` directory and restart.
+1. Build and deploy: `npm run build-keycloak-theme` produces several theme JARs (one per Keycloak version range — `dist_keycloak/keycloak-shadcn-21-and-below.jar` through `keycloak-shadcn-26.2-and-above.jar`) plus `dist_keycloak/theme-config-spi.jar`. **Copy only the theme JAR matching your Keycloak version** into `providers/`, together with the SPI JAR. Deploying multiple theme version JARs simultaneously causes Keycloak to pick an ambiguous parent-theme chain (one JAR may have legacy `parent=keycloak` for the account theme that no longer exists in Keycloak 26), leading to the built-in account console replacing the custom one. Restart Keycloak after copying.
 2. Set realm attributes via the Keycloak admin REST API:
 
    ```bash
