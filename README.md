@@ -197,33 +197,61 @@ This starter uses **shadcn/ui** components built on **Radix UI** primitives. All
 
 ### Dynamic Logo & Favicon Configuration
 
-The theme reads per-realm branding from two sources, in priority order:
+The theme reads per-realm branding from realm attributes (`theme.logoLight`, `theme.logoDark`, `theme.faviconUrl`). You can edit these in two ways:
 
-1. **Theme Config SPI** (primary, recommended) — the bundled Java SPI exposes a public REST endpoint `/realms/{realm}/theme-config` that serves all `theme.*` attributes of the realm. The theme fetches this on page load and caches the result in `localStorage` for 5 minutes.
-2. **`displayNameHtml`** (legacy fallback) — for realms set up before the SPI existed, the theme still parses HTML comments out of `Realm Settings → General → Display name HTML` (e.g. `<!--logo-light:URL-->`) and accepts a bare URL as the logo.
+#### Option A — Admin Console UI (Phase 2)
 
-#### Recommended workflow (SPI)
+A "Theme Config" tab appears under **Realm Settings** in the Keycloak admin console. Three text inputs: light logo URL, dark logo URL, favicon URL. Validation is light (URL-shape check); blank fields clear the attribute and fall back to the bundled default.
 
-1. Build and deploy: `npm run build-keycloak-theme` produces several theme JARs (one per Keycloak version range — `dist_keycloak/keycloak-shadcn-21-and-below.jar` through `keycloak-shadcn-26.2-and-above.jar`) plus `dist_keycloak/theme-config-spi.jar`. **Copy only the theme JAR matching your Keycloak version** into `providers/`, together with the SPI JAR. Deploying multiple theme version JARs simultaneously causes Keycloak to pick an ambiguous parent-theme chain (one JAR may have legacy `parent=keycloak` for the account theme that no longer exists in Keycloak 26), leading to the built-in account console replacing the custom one. Restart Keycloak after copying.
-2. Set realm attributes via the Keycloak admin REST API:
+**Prerequisites:**
+
+1. Keycloak must start with the experimental feature flag enabled:
 
    ```bash
-   TOKEN=$(curl -s -X POST http://localhost:8080/realms/master/protocol/openid-connect/token \
-     -d "client_id=admin-cli" -d "username=admin" -d "password=admin" \
-     -d "grant_type=password" | jq -r .access_token)
+   # Docker (dev mode):
+   docker run -p 8080:8080 \
+     -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin \
+     -v "$(pwd)/dist_keycloak:/opt/keycloak/providers" \
+     quay.io/keycloak/keycloak:26.0 \
+     start-dev --features=declarative-ui
 
-   curl -X PATCH http://localhost:8080/admin/realms/<your-realm> \
-     -H "Authorization: Bearer $TOKEN" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "attributes": {
-         "theme.logoLight": "https://cdn.example.com/logo.png",
-         "theme.logoDark":  "https://cdn.example.com/logo-dark.png",
-         "theme.faviconUrl": "https://cdn.example.com/favicon.ico"
-       }
-     }'
+   # Local install (production):
+   bin/kc.sh build --features=declarative-ui
+   bin/kc.sh start
    ```
-3. Verify: `curl http://localhost:8080/realms/<your-realm>/theme-config` should return the JSON without the `theme.` prefix.
+
+2. Deploy the SPI JAR (`dist_keycloak/theme-config-spi.jar`) into Keycloak's `providers/` directory alongside the theme JAR matching your Keycloak version. Restart Keycloak.
+
+3. Open Admin Console → Realm Settings → "Theme Config" tab. Fill in URLs, save.
+
+**Caveats:**
+
+- The `declarative-ui` feature is marked experimental by Keycloak. It may change without notice in future Keycloak versions.
+- Keycloak **26.2.x has a regression** ([keycloak#39971](https://github.com/keycloak/keycloak/issues/39971)) that hides custom UI tabs. Use Option B or upgrade to 26.3.x+.
+- The form stores values in a Keycloak `ComponentModel` and mirrors them to `realm.attributes`. If you edit attributes via REST first and then open the UI, the form shows empty until you save once — **pick one workflow, UI or REST, not both**.
+
+#### Option B — Admin REST API
+
+The Phase 1 workflow remains available. Set the realm attributes directly via Keycloak's admin REST API — no feature flag needed:
+
+```bash
+TOKEN=$(curl -s -X POST http://localhost:8080/realms/master/protocol/openid-connect/token \
+  -d "client_id=admin-cli" -d "username=admin" -d "password=admin" \
+  -d "grant_type=password" | jq -r .access_token)
+
+curl -X PATCH http://localhost:8080/admin/realms/<your-realm> \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "attributes": {
+      "theme.logoLight": "https://cdn.example.com/logo.png",
+      "theme.logoDark":  "https://cdn.example.com/logo-dark.png",
+      "theme.faviconUrl": "https://cdn.example.com/favicon.ico"
+    }
+  }'
+```
+
+Verify: `curl http://localhost:8080/realms/<your-realm>/theme-config` returns the JSON without the `theme.` prefix.
 
 #### Supported keys
 
@@ -233,11 +261,11 @@ The theme reads per-realm branding from two sources, in priority order:
 | `theme.logoDark` | Logo shown in dark mode (falls back to `logoLight` if absent) |
 | `theme.faviconUrl` | Browser tab icon |
 
-Any other `theme.*` attribute is also exposed on the endpoint (without the prefix) for future use.
+Any other `theme.*` attribute is also exposed on the endpoint (without the prefix), but only these three are surfaced as inputs in Option A's UI.
 
 #### Building the SPI
 
-The `npm run build-keycloak-theme` script invokes the bundled Apache Maven Wrapper (`./mvnw` / `mvnw.cmd`), so no system Maven install is required. First invocation downloads Maven 3.9.16 into `~/.m2/wrapper/dists/` (~30 seconds). Subsequent builds reuse the cached Maven.
+The `npm run build-keycloak-theme` script invokes the bundled Apache Maven Wrapper (`./mvnw` / `mvnw.cmd`), so no system Maven install is required. First invocation downloads Maven 3.9.16 into `~/.m2/wrapper/dists/` (~30 seconds). Subsequent builds reuse the cached Maven. Deploy **only the theme JAR matching your Keycloak version** (e.g. `keycloak-shadcn-26.0-to-26.1.jar` for Keycloak 26.0.x / 26.1.x), together with `theme-config-spi.jar`. Deploying multiple version JARs together causes Keycloak to pick an ambiguous parent-theme chain.
 
 #### Legacy: Display name HTML
 
@@ -249,7 +277,7 @@ You can still configure the logo via `Realm Settings → General → Display nam
 <!--favicon:https://cdn.example.com/favicon.ico-->
 ```
 
-This mechanism is preserved for backward compatibility. New deployments should use the SPI.
+This mechanism is preserved for backward compatibility. New deployments should use Option A or B above.
 
 #### Fallback behaviour
 
