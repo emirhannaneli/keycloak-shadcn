@@ -14,14 +14,14 @@ jobs:
     test:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
               with:
                   node-version: '20'
                   cache: 'npm'
             - name: Use pre-installed Temurin JDK 17
               run: echo "JAVA_HOME=$JAVA_HOME_17_X64" >> $GITHUB_ENV
-            - uses: actions/cache@v4
+            - uses: actions/cache@v5
               with:
                   path: ~/.m2
                   key: ${{ runner.os }}-m2-${{ hashFiles('spi/pom.xml', '.mvn/wrapper/maven-wrapper.properties') }}
@@ -51,21 +51,21 @@ jobs:
         needs: check_if_version_upgraded
         if: needs.check_if_version_upgraded.outputs.is_upgraded_version == 'true'
         steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
               with:
                   node-version: '20'
                   cache: 'npm'
             - name: Use pre-installed Temurin JDK 17
               run: echo "JAVA_HOME=$JAVA_HOME_17_X64" >> $GITHUB_ENV
-            - uses: actions/cache@v4
+            - uses: actions/cache@v5
               with:
                   path: ~/.m2
                   key: ${{ runner.os }}-m2-${{ hashFiles('spi/pom.xml', '.mvn/wrapper/maven-wrapper.properties') }}
                   restore-keys: ${{ runner.os }}-m2-
             - run: npm ci
             - run: npm run build-keycloak-theme
-            - uses: softprops/action-gh-release@v2
+            - uses: softprops/action-gh-release@v3
               with:
                   name: Release v${{ needs.check_if_version_upgraded.outputs.to_version }}
                   tag_name: v${{ needs.check_if_version_upgraded.outputs.to_version }}

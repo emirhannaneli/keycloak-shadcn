@@ -12,6 +12,53 @@ updates:
       labels:
           - "dependencies"
           - "automated"
+      ignore:
+          # Locked to v4.x because v6 requires vite@^8, while
+          # @storybook/react-vite@10.x caps at vite@^7. Revisit when
+          # Storybook supports Vite 8 OR when we drop Storybook.
+          - dependency-name: "@vitejs/plugin-react"
+            update-types: ["version-update:semver-major"]
+          # Vite 8 not supported by @storybook/react-vite@10.x.
+          - dependency-name: "vite"
+            update-types: ["version-update:semver-major"]
+          # Major bump 15→17 includes breaking changes to ESLint flat-config
+          # globals object. Hold until we audit the impact.
+          - dependency-name: "globals"
+            update-types: ["version-update:semver-major"]
+          # ESLint 10 / @eslint/js 10 is a major; hold with the rest of
+          # the flat-config pin until we audit.
+          - dependency-name: "@eslint/js"
+            update-types: ["version-update:semver-major"]
+          - dependency-name: "eslint"
+            update-types: ["version-update:semver-major"]
+          # TypeScript 6 is a major release with breaking changes; hold
+          # on 5.x until tested.
+          - dependency-name: "typescript"
+            update-types: ["version-update:semver-major"]
+          # eslint-plugin-react-hooks 7 is a major; hold on 5.x.
+          - dependency-name: "eslint-plugin-react-hooks"
+            update-types: ["version-update:semver-major"]
+          # lucide-react 1.0 is a major release with renamed/restructured
+          # icons. 42+ source files import from this package; needs a
+          # dedicated migration PR, not an automated bump.
+          - dependency-name: "lucide-react"
+            update-types: ["version-update:semver-major"]
+          # React 19 is a major release with rendering-model + types
+          # changes. Keep react / react-dom / @types/react / @types/react-dom
+          # all pinned together at v18.x until we do a coordinated upgrade.
+          - dependency-name: "react"
+            update-types: ["version-update:semver-major"]
+          - dependency-name: "react-dom"
+            update-types: ["version-update:semver-major"]
+          - dependency-name: "@types/react"
+            update-types: ["version-update:semver-major"]
+          - dependency-name: "@types/react-dom"
+            update-types: ["version-update:semver-major"]
+          # Tailwind CSS 4 is a major rewrite with new config format,
+          # new PostCSS plugin, and breaking utility changes. Migration
+          # is a dedicated effort. Hold on 3.x.
+          - dependency-name: "tailwindcss"
+            update-types: ["version-update:semver-major"]
       groups:
           # Group all keycloakify-related bumps together — they often need
           # 'npx keycloakify update-kc-gen' run after, so reviewing them as
@@ -35,6 +82,11 @@ updates:
           - "dependencies"
           - "automated"
           - "java"
+      ignore:
+          # Keycloak 26 still ships JAX-RS 3.x; bumping to 4.0 breaks
+          # the provided runtime. Revisit when Keycloak upgrades.
+          - dependency-name: "jakarta.ws.rs:jakarta.ws.rs-api"
+            update-types: ["version-update:semver-major"]
 
     # GitHub Actions workflow files
     - package-ecosystem: "github-actions"
