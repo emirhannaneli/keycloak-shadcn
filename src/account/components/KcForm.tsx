@@ -1,5 +1,5 @@
 import { type KcContext } from "../KcContext";
-import { type ReactNode } from "react";
+import { type FormEventHandler, type ReactNode } from "react";
 
 interface KcFormProps {
     kcContext?: KcContext;
@@ -8,6 +8,7 @@ interface KcFormProps {
     children: ReactNode;
     className?: string;
     id?: string;
+    onSubmit?: FormEventHandler<HTMLFormElement>;
 }
 
 export function KcForm({
@@ -16,9 +17,10 @@ export function KcForm({
     children,
     className,
     id,
+    onSubmit,
 }: KcFormProps) {
     return (
-        <form action={action} method={method} id={id} className={className}>
+        <form action={action} method={method} id={id} className={className} onSubmit={onSubmit}>
             {children}
         </form>
     );
