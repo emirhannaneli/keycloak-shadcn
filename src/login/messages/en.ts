@@ -51,6 +51,11 @@ const messages = {
     hidePassword: "Hide password",
     showPassword: "Show password",
 
+    // User profile attributes
+    // For each custom attribute whose Display name in Keycloak is
+    // "${profile.attributes.<name>}", add the matching key here.
+    "profile.attributes.test": "Test",
+
     // Messages
     noAccount: "New user?",
     backToLogin: "Back to Login",

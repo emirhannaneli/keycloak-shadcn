@@ -51,6 +51,11 @@ const messages = {
     hidePassword: "Şifreyi Gizle",
     showPassword: "Şifreyi Göster",
 
+    // Kullanıcı profili öznitelikleri
+    // Keycloak'ta Display name değeri "${profile.attributes.<ad>}" olan her
+    // özel öznitelik için ilgili anahtarı buraya ekleyin.
+    "profile.attributes.test": "Test",
+
     // Messages
     noAccount: "Yeni kullanıcı?",
     backToLogin: "Giriş Sayfasına Dön",
