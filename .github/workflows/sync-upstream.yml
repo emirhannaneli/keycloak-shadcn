@@ -78,15 +78,26 @@ jobs:
                   EOF
                   )
 
-                  EXISTING=$(gh issue list --state open --search "📡 Upstream tracking in:title" --json number --jq '.[0].number // empty')
+                  # Always write the report to the run summary so it is visible
+                  # even when Issues are disabled on the repo or the token lacks
+                  # issues:write — in that case the gh calls below are skipped.
+                  {
+                      echo "## $TITLE"
+                      echo ""
+                      echo "$BODY"
+                  } >> "$GITHUB_STEP_SUMMARY"
+
+                  EXISTING=$(gh issue list --state open --search "📡 Upstream tracking in:title" --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
 
                   if [ -n "$EXISTING" ]; then
                       echo "[sync-upstream] Updating existing tracking issue #$EXISTING"
-                      gh issue edit "$EXISTING" --title "$TITLE" --body "$BODY"
+                      gh issue edit "$EXISTING" --title "$TITLE" --body "$BODY" \
+                          || echo "::warning::Could not update issue #$EXISTING — report written to job summary instead. Enable Issues + set workflow 'Read and write permissions' to restore issue tracking."
                   else
                       echo "[sync-upstream] Creating new tracking issue"
                       gh issue create --title "$TITLE" --body "$BODY" --label "upstream-tracking" 2>/dev/null \
-                          || gh issue create --title "$TITLE" --body "$BODY"
+                          || gh issue create --title "$TITLE" --body "$BODY" 2>/dev/null \
+                          || echo "::warning::Could not create tracking issue (Issues disabled or missing issues:write) — report written to job summary instead."
                   fi
 
             - name: Close tracking issue if up to date

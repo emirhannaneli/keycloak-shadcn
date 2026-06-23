@@ -68,6 +68,14 @@ updates:
                   - "keycloakify"
                   - "keycloakify-*"
                   - "@keycloakify/*"
+          # The typescript-eslint monorepo ships parser, eslint-plugin and the
+          # `typescript-eslint` meta-package in lockstep — their peer deps
+          # require identical versions. Bumping one alone breaks `npm ci`
+          # (ERESOLVE), so group them into a single PR.
+          typescript-eslint:
+              patterns:
+                  - "typescript-eslint"
+                  - "@typescript-eslint/*"
 
     # Java SPI module — Keycloak provider/jakarta-rs versions
     - package-ecosystem: "maven"
