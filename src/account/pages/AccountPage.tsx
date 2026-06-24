@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { useAccountProfile, type AccountUpdatePayload } from "../utils/accountProfile";
 
 export default function AccountPage({
     kcContext,
@@ -24,17 +25,122 @@ export default function AccountPage({
     const showUsername = !realm?.registrationEmailAsUsername;
     const canEditUsername = realm?.editUsernameAllowed ?? false;
 
-    // Filter dynamic attributes - exclude standard fields
-    // In Account context, attributes may be under account.profile.attributes
-    const standardFields = ["username", "email", "firstName", "lastName"];
+    // Fields handled outside the dynamic-attribute loop (rendered explicitly or
+    // managed by Keycloak itself), so they are not shown as custom attributes.
+    const standardFields = ["username", "email", "firstName", "lastName", "locale"];
+
+    // The legacy account.ftl context does NOT carry User Profile metadata
+    // (input type, options, required, ...). So — exactly like keycloak.v3 — we read
+    // and write the profile through the Account REST API, using a token obtained
+    // via the public `account-console` client. See ../utils/accountProfile.ts.
+    const { state: profileState, save } = useAccountProfile({ accountUrl: url.accountUrl });
+    const restReady = profileState.status === "ready";
+    const restProfile = restReady ? profileState.profile : undefined;
+
+    // Errors / status for the REST-based save (keycloak.v3 style).
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+    const [saving, setSaving] = useState(false);
+    const [saveSuccess, setSaveSuccess] = useState(false);
+
+    // Surface why the REST path failed (token/redirect-uri/CORS) so it can be fixed;
+    // we still degrade gracefully to the legacy HTML form POST + account.attributes.
+    useEffect(() => {
+        if (profileState.status === "error") {
+            console.warn(
+                "[AccountPage] Account REST API unavailable, falling back to legacy form. Reason:",
+                profileState.error
+            );
+        }
+    }, [profileState]);
+
+    // Prefer authoritative REST values once loaded; otherwise the FreeMarker context.
+    const fieldValue = (name: "username" | "email" | "firstName" | "lastName") =>
+        (restProfile?.[name] ?? account?.[name] ?? "") as string;
+
+    // Combine REST field errors with any server-rendered (legacy form) errors.
+    const getError = (field: string): string | undefined => {
+        if (fieldErrors[field]) return fieldErrors[field];
+        return messagesPerField.existsError(field) ? messagesPerField.get(field) : undefined;
+    };
+
+    const handleRestSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        if (!save) return; // not ready -> let the native HTML form POST happen
+        e.preventDefault();
+        setSaving(true);
+        setSaveSuccess(false);
+        setFieldErrors({});
+
+        const form = e.currentTarget;
+        const data = new FormData(form);
+        const getStr = (name: string) => {
+            const v = data.get(name);
+            return typeof v === "string" ? v : "";
+        };
+
+        const payload: AccountUpdatePayload = {
+            email: getStr("email"),
+            firstName: getStr("firstName"),
+            lastName: getStr("lastName"),
+            attributes: {}
+        };
+        if (showUsername && canEditUsername) payload.username = getStr("username");
+        for (const attribute of dynamicAttributes) {
+            if (attribute.readOnly) continue;
+            payload.attributes![attribute.name] = [getStr(attribute.name)];
+        }
+
+        const result = await save(payload);
+        setSaving(false);
+        if (result.ok) {
+            setSaveSuccess(true);
+            return;
+        }
+        const errs: Record<string, string> = {};
+        for (const err of result.errors) {
+            if (err.field) errs[err.field] = err.errorMessage ?? "Invalid value";
+        }
+        if (result.message && Object.keys(errs).length === 0) errs["__global"] = result.message;
+        setFieldErrors(errs);
+    };
+
     const dynamicAttributes = useMemo(() => {
-        // In Account context, profile info may be under account.profile
-        const profileData = (account as any)?.profile;
-        if (!profileData?.attributes) return [];
-        return profileData.attributes.filter(
-            (attr: any) => attr.name && !standardFields.includes(attr.name)
-        );
-    }, [account]);
+        // Preferred: full User Profile metadata from the Account REST API.
+        if (profileState.status === "ready") {
+            const meta = profileState.profile.userProfileMetadata?.attributes ?? [];
+            const values = profileState.profile.attributes ?? {};
+            return meta
+                .filter(attr => attr.name && !standardFields.includes(attr.name))
+                .map(attr => {
+                    const displayName =
+                        attr.displayName && !/^\$\{.*\}$/.test(attr.displayName)
+                            ? attr.displayName
+                            : attr.name;
+                    return {
+                        name: attr.name,
+                        value: values[attr.name] ?? [],
+                        displayName,
+                        required: attr.required ?? false,
+                        readOnly: attr.readOnly ?? false,
+                        annotations: (attr.annotations ?? {}) as Record<string, any>,
+                        validators: attr.validators
+                    };
+                });
+        }
+        // Fallback (loading / error / dev): legacy raw values, no metadata.
+        const raw = (account as any)?.attributes as Record<string, unknown> | undefined;
+        if (!raw) return [];
+        return Object.entries(raw)
+            .filter(([name]) => name && !standardFields.includes(name))
+            .map(([name, value]) => ({
+                name,
+                value: Array.isArray(value) ? value : value == null ? "" : value,
+                displayName: name,
+                required: false,
+                readOnly: false,
+                annotations: {} as Record<string, any>,
+                validators: undefined as Record<string, Record<string, unknown>> | undefined
+            }));
+    }, [profileState, account]);
 
     const realmName: string = (realm && "displayName" in realm && typeof realm.displayName === "string" ? realm.displayName : undefined) || 
                       (realm && "name" in realm && typeof realm.name === "string" ? realm.name : undefined) || "";
@@ -227,16 +333,32 @@ export default function AccountPage({
                 className="w-full mx-auto"
             >
                 {message && <KcAlert message={message} className="mb-4" />}
+                {saveSuccess && (
+                    <KcAlert
+                        message={{
+                            type: "success",
+                            summary:
+                                i18nToString(i18n, "accountUpdatedMessage" as any) ||
+                                "Your account has been updated."
+                        }}
+                        className="mb-4"
+                    />
+                )}
+                {fieldErrors["__global"] && (
+                    <KcAlert message={{ type: "error", summary: fieldErrors["__global"] }} className="mb-4" />
+                )}
 
                 <div className="mb-4 text-sm text-muted-foreground">
                     <span className="text-destructive">*</span> {i18nToString(i18n, "requiredFields") || "Required fields"}
                 </div>
 
                 <KcForm
+                    key={restReady ? "rest" : "legacy"}
                     action={url.accountUrl}
                     method="post"
                     id="kc-account-form"
                     className="w-full"
+                    onSubmit={handleRestSubmit}
                 >
                     <input type="hidden" name="stateChecker" value={kcContext.stateChecker} />
 
@@ -252,25 +374,17 @@ export default function AccountPage({
                                     kcContext={kcContext}
                                     id="username"
                                     name="username"
-                                    defaultValue={account?.username ?? ""}
+                                    defaultValue={fieldValue("username")}
                                     disabled={!canEditUsername}
                                     required={canEditUsername}
                                     autoComplete="username"
-                                    aria-invalid={messagesPerField.existsError("username")}
-                                    aria-describedby={
-                                        messagesPerField.existsError("username")
-                                            ? "username-error"
-                                            : undefined
-                                    }
-                                    className={
-                                        messagesPerField.existsError("username")
-                                            ? "border-destructive"
-                                            : ""
-                                    }
+                                    aria-invalid={!!getError("username")}
+                                    aria-describedby={getError("username") ? "username-error" : undefined}
+                                    className={getError("username") ? "border-destructive" : ""}
                                 />
-                                {messagesPerField.existsError("username") && (
+                                {getError("username") && (
                                     <span id="username-error" className="text-sm text-destructive">
-                                        {messagesPerField.get("username")}
+                                        {getError("username")}
                                     </span>
                                 )}
                             </div>
@@ -286,24 +400,16 @@ export default function AccountPage({
                                 id="email"
                                 name="email"
                                 type="email"
-                                defaultValue={account?.email ?? ""}
+                                defaultValue={fieldValue("email")}
                                 required
                                 autoComplete="email"
-                                aria-invalid={messagesPerField.existsError("email")}
-                                aria-describedby={
-                                    messagesPerField.existsError("email")
-                                        ? "email-error"
-                                        : undefined
-                                }
-                                className={
-                                    messagesPerField.existsError("email")
-                                        ? "border-destructive"
-                                        : ""
-                                }
+                                aria-invalid={!!getError("email")}
+                                aria-describedby={getError("email") ? "email-error" : undefined}
+                                className={getError("email") ? "border-destructive" : ""}
                             />
-                            {messagesPerField.existsError("email") && (
+                            {getError("email") && (
                                 <span id="email-error" className="text-sm text-destructive">
-                                    {messagesPerField.get("email")}
+                                    {getError("email")}
                                 </span>
                             )}
                         </div>
@@ -317,24 +423,16 @@ export default function AccountPage({
                                 kcContext={kcContext}
                                 id="firstName"
                                 name="firstName"
-                                defaultValue={account?.firstName ?? ""}
+                                defaultValue={fieldValue("firstName")}
                                 required
                                 autoComplete="given-name"
-                                aria-invalid={messagesPerField.existsError("firstName")}
-                                aria-describedby={
-                                    messagesPerField.existsError("firstName")
-                                        ? "firstName-error"
-                                        : undefined
-                                }
-                                className={
-                                    messagesPerField.existsError("firstName")
-                                        ? "border-destructive"
-                                        : ""
-                                }
+                                aria-invalid={!!getError("firstName")}
+                                aria-describedby={getError("firstName") ? "firstName-error" : undefined}
+                                className={getError("firstName") ? "border-destructive" : ""}
                             />
-                            {messagesPerField.existsError("firstName") && (
+                            {getError("firstName") && (
                                 <span id="firstName-error" className="text-sm text-destructive">
-                                    {messagesPerField.get("firstName")}
+                                    {getError("firstName")}
                                 </span>
                             )}
                         </div>
@@ -348,33 +446,26 @@ export default function AccountPage({
                                 kcContext={kcContext}
                                 id="lastName"
                                 name="lastName"
-                                defaultValue={account?.lastName ?? ""}
+                                defaultValue={fieldValue("lastName")}
                                 required
                                 autoComplete="family-name"
-                                aria-invalid={messagesPerField.existsError("lastName")}
-                                aria-describedby={
-                                    messagesPerField.existsError("lastName")
-                                        ? "lastName-error"
-                                        : undefined
-                                }
-                                className={
-                                    messagesPerField.existsError("lastName")
-                                        ? "border-destructive"
-                                        : ""
-                                }
+                                aria-invalid={!!getError("lastName")}
+                                aria-describedby={getError("lastName") ? "lastName-error" : undefined}
+                                className={getError("lastName") ? "border-destructive" : ""}
                             />
-                            {messagesPerField.existsError("lastName") && (
+                            {getError("lastName") && (
                                 <span id="lastName-error" className="text-sm text-destructive">
-                                    {messagesPerField.get("lastName")}
+                                    {getError("lastName")}
                                 </span>
                             )}
                         </div>
 
                         {/* Dynamic Attributes */}
                         {dynamicAttributes.map((attribute: any) => {
-                            const fieldName = `user.attributes.${attribute.name}`;
-                            const hasError = messagesPerField.existsError(fieldName);
-                            const errorMessage = hasError ? messagesPerField.get(fieldName) : undefined;
+                            // Declarative User Profile reads form params by plain attribute name.
+                            const fieldName = attribute.name;
+                            const errorMessage = getError(fieldName);
+                            const hasError = !!errorMessage;
                             const attributeValue = Array.isArray(attribute.value) 
                                 ? attribute.value[0] || "" 
                                 : attribute.value || "";
@@ -534,8 +625,11 @@ export default function AccountPage({
                             <KcButton
                                 kcContext={kcContext}
                                 type="submit"
+                                disabled={saving}
                             >
-                                {i18nToString(i18n, "doSubmit" as any) || "Submit"}
+                                {saving
+                                    ? i18nToString(i18n, "doSaving" as any) || "Saving..."
+                                    : i18nToString(i18n, "doSubmit" as any) || "Submit"}
                             </KcButton>
                         </div>
                     </div>

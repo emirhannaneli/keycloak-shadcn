@@ -125,6 +125,51 @@ export const EmailAsUsername: Story = {
     )
 };
 
+/**
+ * WithCustomAttributes:
+ * - Purpose: Verify that custom User Profile attributes render in the account form.
+ * - Scenario: The legacy account context exposes attribute *values* under
+ *   `account.attributes` (Record<string, string>). Standard fields are filtered out.
+ * - Note: To render selects/textareas/required, configure CUSTOM_ATTRIBUTE_CONFIG
+ *   in AccountPage.tsx — there is no metadata in this context.
+ */
+export const WithCustomAttributes: Story = {
+    render: () => (
+        <KcPageStory
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            kcContext={{
+                account: {
+                    username: "john_doe",
+                    email: "john.doe@gmail.com",
+                    firstName: "John",
+                    lastName: "Doe",
+                    attributes: {
+                        // standard fields are present here too but get filtered out
+                        username: "john_doe",
+                        email: "john.doe@gmail.com",
+                        firstName: "John",
+                        lastName: "Doe",
+                        // custom attributes:
+                        phoneNumber: "+90 555 123 45 67",
+                        department: "engineering"
+                    }
+                },
+                realm: {
+                    registrationEmailAsUsername: false,
+                    editUsernameAllowed: true
+                },
+                url: {
+                    accountUrl: "/account"
+                },
+                messagesPerField: {
+                    printIfExists: () => ""
+                },
+                stateChecker: "state-checker"
+            } as any}
+        />
+    )
+};
+
 export const WithCustomLogo: Story = {
     render: () => (
         <KcPageStory
