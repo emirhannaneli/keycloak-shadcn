@@ -57,7 +57,7 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "eslint-plugin-storybook": "^10.4.2",
     "globals": "^15.15.0",
-    "postcss": "^8.5.15",
+    "postcss": "^8.5.16",
     "prettier": "3.8.4",
     "storybook": "^10.4.1",
     "tailwind-merge": "^3.6.0",
